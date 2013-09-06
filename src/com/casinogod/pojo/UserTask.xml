@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userTask">
+    
+    <typeAlias alias="UserTask" type="com.casinogod.pojo.UserTask" /> 
+   
+    <resultMap id="userTaskInfo" class="UserTask"> 
+        <result property="id" column="id" />  
+        <result property="userId" column="userId" />  
+        <result property="taskId" column="taskId" />
+        <result property="status" column="status"/>
+        <result property="updateTime" column="updateTime"/>
+    </resultMap>
+    
+    <insert id="insertUserTask"  parameterClass="UserTask">
+        <![CDATA[ 
+           insert into casinoGod_userTask(userId,taskId,status,updateTime)
+           values(#userId#,#taskId#,#status#,#updateTime#);
+          ]]>
+           <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="userTaskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_userTask
+          ]]>
+    </select>
+    
+ 
+    
+    <select id="findById" parameterClass="int"  resultMap="userTaskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_userTask  where userId=#userId# 
+          ]]>
+    </select>
+    
+    <select id="findByStatus" parameterClass="java.util.Map"  resultMap="userTaskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_userTask  
+           where userId=#userId# and taskId=#taskId# and updateTime like CONCAT('%', #updateTime#, '%') and status=#status#
+          ]]>
+    </select>
+    
+     <select id="findByIdAndType" parameterClass="java.util.Map"  resultMap="userTaskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_userTask  
+           where userId=#userId# and taskId=#taskId# and updateTime like CONCAT('%', #updateTime#, '%')
+          ]]>
+    </select>
+    
+     <select id="findByIdAndTypeNoTime" parameterClass="java.util.Map"  resultMap="userTaskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_userTask  
+           where userId=#userId# and taskId=#taskId# and status=#status#
+          ]]>
+    </select>
+    
+    <update id="updateTask"  parameterClass="UserTask">  
+        <![CDATA[ 
+           update casinoGod_userTask 
+           set status=#status#,updateTime=#updateTime#
+           where userId=#userId# and taskId=#taskId#
+          ]]>
+    </update>
+    
+  
+    
+    
+
+</sqlMap>

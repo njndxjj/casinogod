@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="iAPlog">
+    
+    <typeAlias alias="IAPlog" type="com.casinogod.pojo.IAPlog" /> 
+   
+    <resultMap id="iAPlog" class="IAPlog"> 
+       
+        <result property="id" column="id" /> 
+        <result property="userId" column="userId" />  
+        <result property="productId" column="productId" />
+        <result property="quantity" column="quantity" nullValue="0"/>
+        <result property="money" column="money" nullValue="0"/>
+        <result property="statue" column="statue" nullValue="0"/>
+        <result property="purchaseTime" column="purchaseTime"/>
+        
+    </resultMap>
+    
+    <insert id="insertIAP"  parameterClass="IAPlog">
+        <![CDATA[ 
+           insert into casinoGod_iapLog(userId,productId,quantity,money,statue,purchaseTime)
+           values(#userId#,#productId#,#quantity#,#money#,#statue#,#purchaseTime#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+          </selectKey> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="iAPlog">
+        <![CDATA[ 
+           select *  from casinoGod_iapLog 
+          ]]>
+    </select>
+    
+    <select id="findByUserId" parameterClass="int"  resultMap="iAPlog">
+        <![CDATA[ 
+           select *  from casinoGod_iapLog  where userId=#userId# order by purchaseTime desc 
+          ]]>
+    </select>
+    
+    <select id="findByDate" parameterClass="java.util.Map"  resultMap="iAPlog">
+        <![CDATA[ 
+           select *  from casinoGod_iapLog  where purchaseTime>=#startDate# and purchaseTime<=#endDate#
+           order by purchaseTime desc 
+          ]]>
+    </select>
+    
+   
+    
+    
+
+</sqlMap>

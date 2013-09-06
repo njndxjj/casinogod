@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="logInRewardConfig">
+    
+    <typeAlias alias="LogInRewardConfig" type="com.casinogod.pojo.LogInRewardConfig" /> 
+   
+    <resultMap id="logInRewardConfig" class="LogInRewardConfig"> 
+       
+        <result property="id" column="id" /> 
+        <result property="day" column="day" />  
+        <result property="reward" column="reward" />
+    </resultMap>
+    
+    <insert id="insertConfig"  parameterClass="LogInRewardConfig">
+        <![CDATA[ 
+           insert into casinoGod_logInRewardConfig(day,reward)
+           values(#day#,#reward#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <update id="updateConfig"  parameterClass="LogInRewardConfig">
+        
+        <![CDATA[ 
+           update casinoGod_logInRewardConfig set day=#day#,reward=#reward#
+           where id=#id#;
+          ]]>
+    </update>
+    
+    <delete id="deleteConfig" parameterClass="int">
+         <![CDATA[ 
+           delete from casinoGod_logInRewardConfig where id=#id#;
+          ]]>
+    </delete>
+    
+    <select id="querryAll" parameterClass="java.lang.String" resultMap="logInRewardConfig">
+        <![CDATA[ 
+           select * from  casinoGod_logInRewardConfig;
+          ]]>
+     </select>
+     
+    <select id="querryById" parameterClass="int" resultMap="logInRewardConfig">
+        <![CDATA[ 
+           select * from  casinoGod_logInRewardConfig where id=#id#;
+          ]]>
+     </select>
+     
+    <select id="querryByDay" parameterClass="int" resultMap="logInRewardConfig">
+        <![CDATA[ 
+           select * from  casinoGod_logInRewardConfig where day=#day#;
+          ]]>
+     </select>
+     
+    
+
+</sqlMap>

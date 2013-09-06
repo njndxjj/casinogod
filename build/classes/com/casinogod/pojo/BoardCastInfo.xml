@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="boardCastInfo">
+   
+    <typeAlias alias="BoardCastInfo" type="com.casinogod.pojo.BoardCastInfo"/>
+    
+    <resultMap id="boardCastInfo" class="BoardCastInfo"> 
+        <result property="id" column="id"/> 
+        <result property="title" column="title" />
+        <result property="content" column="content"/>
+        <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate" />
+    </resultMap>
+   
+    <insert id="insertBoardCast" parameterClass="BoardCastInfo">
+       <![CDATA[
+        insert into casinoGod_boardCastInfo(title,content,startDate,endDate)
+        values (#title#,#content#,#startDate#,#endDate#);
+       ]]> 
+        <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="boardCastInfo">
+        <![CDATA[ 
+           select *  from casinoGod_boardCastInfo 
+          ]]>
+    </select>
+    
+    <delete id="deleteById" parameterClass="int">
+        <![CDATA[ 
+           delete from casinoGod_boardCastInfo where id=#id# 
+          ]]>
+    </delete>
+    
+    <select id="findbetweenDate" parameterClass="BoardCastInfo"  resultMap="boardCastInfo">
+        <![CDATA[ 
+           select *  from casinoGod_boardCastInfo  where startDate>=#startDate# and endDate<=#endDate#
+          ]]>
+    </select>
+     
+</sqlMap>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <g1>
+	    <rate>1000000</rate>
+    </g1>
+     <g2>
+	    <rate>100000</rate>
+    </g2>
+     <g3>
+	    <rate>1200</rate>
+    </g3>
+     <g4>
+	    <rate>80</rate>
+    </g4>
+     <g5>
+	    <rate>4</rate>
+    </g5>
+     <g6>
+	    <rate>2</rate>
+    </g6>
+   
+</config>

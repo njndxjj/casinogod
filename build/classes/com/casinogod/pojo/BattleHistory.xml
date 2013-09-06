@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="battleHistory">
+   
+    <typeAlias alias="BattleHistory" type="com.casinogod.pojo.BattleHistory"/>
+    
+    <resultMap id="battleHistory" class="BattleHistory"> 
+        <result property="id" column="id"/> 
+        <result property="battleId" column="battleId" />
+        <result property="owenId" column="owenId"/>
+        <result property="userList" column="userList"/>
+        <result property="battleStatue" column="battleStatue" nullValue="0"/>
+        <result property="battleType" column="battleType" nullValue="0"/>
+        <result property="gameType" column="gameType"/>
+        <result property="createTime" column="createTime"/>
+        <result property="result" column="result"/>
+        <result property="otherNotes" column="otherNotes"/>
+        <result property="level" column="level"/>
+        <result property="isSpecialWin" column="isSpecialWin"/>
+    </resultMap>
+   
+    <insert id="insertBattleHistory" parameterClass="BattleHistory">
+       <![CDATA[
+        insert into casinoGod_battleHistory(battleId,owenId,userList,battleStatue,battleType,
+        gameType,createTime,result,otherNotes,level,isSpecialWin)values (#battleId#,#owenId#,#userList#,#battleStatue#,
+        #battleType#,#gameType#,#createTime#,#result#,#otherNotes#,#level#,#isSpecialWin#);
+       ]]> 
+        <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="battleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_battleHistory 
+          ]]>
+    </select>
+    
+    <select id="findUserRate" parameterClass="java.util.Map"  resultMap="battleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and gameType=#gameType#
+           order by createTime desc;
+          ]]>
+    </select>
+    
+    <select id="findUserWin" parameterClass="java.util.Map"  resultMap="battleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType#
+           order by createTime desc;
+          ]]>
+    </select>
+    
+    <select id="findAllUserWin" parameterClass="java.util.Map"  resultMap="battleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType#
+           order by createTime desc;
+          ]]>
+    </select>
+    
+    <select id="findIsSpecial" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(isSpecialWin),0) as total from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType#
+          ]]>
+    </select>
+    
+    <select id="findIsSpecialWinNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as total from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType# and result>0
+          ]]>
+    </select>
+    
+    <select id="findIsSpecialLoseNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as total from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType# and result<0
+          ]]>
+    </select>
+    
+     <select id="findIsSpecialDrawNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as total from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType# and result=0
+          ]]>
+    </select>
+    
+    <select id="findUserTotalWithDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType#  and gameType=#gameType#  and createTime>=#createTime# and createTime<=#endTime# ;
+          ]]>
+    </select>
+    
+     <select id="findUserTotalWithDateAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType#   and createTime>=#createTime# and createTime<=#endTime# ;
+          ]]>
+    </select>
+    
+    <select id="findUserTotal" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType#  and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserTotalAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseTotalWithDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0 and gameType=#gameType# and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseTotalWithDateAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0  and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseTotal" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0 and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseTotalAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0  ;
+          ]]>
+    </select>
+      
+    <select id="findUserWinTotalWithDateAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>=0  and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+  
+    <select id="findUserWinTotal" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>=0 and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserWinTotalDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>=0 and gameType=#gameType# and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+     <select id="findUserWinTotalAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>=0  ;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0 and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserLoseNumDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0 and gameType=#gameType# and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+     <select id="findUserLoseNumAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0  ;
+          ]]>
+    </select>
+    
+     <select id="findUserLoseNumAllDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result<0  and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+     <select id="findUserWinNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>0 and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserWinNumAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>0 ;
+          ]]>
+    </select>
+    
+    <select id="findUserWinNumAllDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result>0 and createTime>=#createTime# and createTime<=#endTime#;
+          ]]>
+    </select>
+    
+    <select id="findUserDrawNum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result=0 and gameType=#gameType# ;
+          ]]>
+    </select>
+    
+    <select id="findUserDrawNumAll" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result=0  ;
+          ]]>
+    </select>
+    
+    <select id="findUserDrawNumDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result=0 and gameType=#gameType# and createTime>=#createTime# and createTime<=#endTime# ;
+          ]]>
+    </select>
+    
+    <select id="findUserDrawNumAllDate" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select count(id) as totalRusult  from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 
+           and battleType=#battleType# and result=0  and createTime>=#createTime# and createTime<=#endTime# ;
+          ]]>
+    </select>
+     
+</sqlMap>

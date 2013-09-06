@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="itemHistory">
+    
+    <typeAlias alias="ItemHistory" type="com.casinogod.pojo.ItemHistory" /> 
+   
+    <resultMap id="itemHistory" class="ItemHistory"> 
+       
+        <result property="id" column="id" /> 
+        <result property="gameType" column="gameType" />  
+        <result property="owenId" column="owenId" />
+        <result property="purchaseType" column="purchaseType" />
+        <result property="itemName" column="itemName"/>
+        <result property="itemNum" column="itemNum"/>
+        <result property="giftUserId" column="giftUserId" nullValue="0"/>
+        <result property="purchaseTime" column="purchaseTime" nullValue="0000-00-00 00:00:00"/>
+        <result property="otherNotes" column="otherNotes"/>
+    </resultMap>
+    
+    <insert id="insertItemHistory"  parameterClass="ItemHistory">
+        <![CDATA[ 
+           insert into casinoGod_itemHistory(gameType,owenId,purchaseType,itemName,itemNum,giftUserId,
+           purchaseTime,otherNotes)
+           values(#gameType#,#owenId#,#purchaseType#,#itemName#,#itemNum#,#giftUserId#,
+           #purchaseTime#,#otherNotes#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllItemHistory" parameterClass="java.lang.String"  resultMap="itemHistory">
+        <![CDATA[ 
+           select *  from casinoGod_itemHistory 
+          ]]>
+    </select>
+    
+    <select id="findItemHistoryUser" parameterClass="java.lang.Long"  resultMap="itemHistory">
+        <![CDATA[ 
+           select *  from casinoGod_itemHistory  where owenId=#owenId#
+          ]]>
+    </select>
+
+</sqlMap>

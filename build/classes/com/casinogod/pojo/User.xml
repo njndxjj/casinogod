@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="user">
+    
+    <typeAlias alias="User" type="com.casinogod.pojo.User" /> 
+   
+    <resultMap id="userInfor" class="User"> 
+       
+        <result property="userId" column="userId" /> 
+        <result property="nickName" column="nickName" />  
+        <result property="gender" column="gender" />
+        <result property="emailAddress" column="emailAddress"/>
+        <result property="telephone" column="telephone"/>
+        <result property="userType" column="userType" nullValue="0"/>
+        <result property="registerDate" column="registerDate" nullValue="0000-00-00 00:00:00"/>
+        <result property="image" column="image" />
+        <result property="level" column="level" nullValue="0"/>
+        <result property="exp" column="exp" nullValue="0"/>
+        <result property="vipLevel" column="vipLevel" nullValue="0"/>
+        <result property="gold" column="gold" nullValue="0"/>
+        <result property="diamond" column="diamond" nullValue="0"/>
+        <result property="otherNotes" column="otherNotes" />
+        <result property="friendList" column="friendList" />
+        <!-- 一对多设置 通过 id得到-->
+        <result property="items" column="userId" select="itemUser.getItems"/>
+    </resultMap>
+    
+    <insert id="insertUser"  parameterClass="User">
+        <![CDATA[ 
+           insert into casinoGod_user(nickName,gender,emailAddress,telephone,userType,registerDate,
+           image,level,exp,vipLevel,gold,diamond,otherNotes,friendList)
+           values(#nickName#,#gender#,#emailAddress#,#telephone#,#userType#,#registerDate#,
+           #image#,#level#,#exp#,#vipLevel#,#gold#,#diamond#,#otherNotes#,#friendList#);
+          ]]>
+          <selectKey keyProperty="userId" resultClass="java.lang.Long">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+    
+    <select id="getUserByName" parameterClass="java.lang.String"  resultMap="userInfor">
+        <![CDATA[ 
+           select *  from casinoGod_user  where nickName = #nickName# 
+          ]]>
+    </select> 
+    
+    <select id="getUserById" parameterClass="java.lang.Long"  resultMap="userInfor">
+        <![CDATA[ 
+           select *  from casinoGod_user  where userId = #userId# 
+          ]]>
+    </select> 
+    
+    <select id="findAllUser" parameterClass="java.lang.String"  resultMap="userInfor">
+        <![CDATA[ 
+           select *  from casinoGod_user 
+          ]]>
+    </select>
+    
+    <update id="updateGold" parameterClass="User">
+       <![CDATA[  
+        update casinoGod_user
+        set    gold = #gold#,diamond=#diamond#
+        where  nickName = #nickName#
+         ]]>
+    </update>
+    
+    <update id="updateExp" parameterClass="User">
+       <![CDATA[  
+        update casinoGod_user
+        set    exp = #exp#,level = #level#
+        where  nickName = #nickName#
+         ]]>
+    </update>
+    
+    <update id="updateFriend" parameterClass="User">
+       <![CDATA[  
+        update casinoGod_user
+        set    friendList = #friendList#
+        where  nickName = #nickName#
+         ]]>
+    </update>
+    
+    <update id="updateProfile" parameterClass="java.util.Map">
+       <![CDATA[  
+        update casinoGod_user
+        set    nickName = #nickName#,
+            gender = #gender#,
+            emailAddress = #emailAddress#,
+            telephone = #telephone#,
+            image = #image# 
+        where  userId = #userId#
+         ]]>
+    </update>
+    
+    <delete id="delete" parameterClass="java.lang.Long">
+        <![CDATA[ delete from casinoGod_user
+        where userId=#id#
+        ]]>
+    </delete>
+    
+    <select id="getUserInfo" parameterClass="java.lang.String"  resultMap="userInfor">
+        <![CDATA[ 
+           select *  from casinoGod_user  where userId = #userId# 
+          ]]>
+    </select>
+    
+    
+
+</sqlMap>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userDeviceInfor">
+    
+    <typeAlias alias="UserDevice" type="com.casinogod.pojo.UserDevice" /> 
+   
+    <resultMap id="userDeviceInfor" class="UserDevice"> 
+       
+        <result property="userId" column="userId" />  
+        <result property="deviceToken" column="deviceToken" />
+        <result property="registerTime" column="registerTime"/>
+        <result property="notes" column="notes"/>
+        
+    </resultMap>
+    
+    <insert id="insertDevice"  parameterClass="UserDevice">
+        <![CDATA[ 
+           insert into casinoGod_userDevice(userId,deviceToken,registerTime,notes)
+           values(#userId#,#deviceToken#,#registerTime#,#notes#);
+          ]]>
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultClass="java.lang.String">
+        <![CDATA[ 
+           select deviceToken  from casinoGod_userDevice 
+          ]]>
+    </select>
+    
+    <select id="findAllDevice" parameterClass="java.lang.String"  resultMap="userDeviceInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userDevice 
+          ]]>
+    </select>
+    
+    <select id="findByUser" parameterClass="java.lang.Long"  resultClass="java.lang.String">
+        <![CDATA[ 
+           select deviceToken  from casinoGod_userDevice  where userId=#userId#
+          ]]>
+    </select>
+    
+    <update id="updateDevice"  parameterClass="java.util.Map" >  
+        <![CDATA[ 
+           update casinoGod_userDevice set deviceToken=#deviceToken#
+           where userId=#userId#;
+          ]]>
+    </update>
+    
+    <delete id="deleteDevice" parameterClass="java.lang.Long">
+      <![CDATA[ 
+           delete from casinoGod_userDevice where userId=#userId#;
+          ]]>
+    </delete>
+
+</sqlMap>

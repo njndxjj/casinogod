@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="task">
+    
+    <typeAlias alias="Task" type="com.casinogod.pojo.Task" /> 
+   
+    <resultMap id="taskInfo" class="Task"> 
+       <result property="taskId" column="taskId" />  
+       <result property="taskType" column="taskType" />  
+       <result property="taskRate" column="taskRate" />
+       <result property="itemId" column="itemId"/>
+       <result property="itemNum" column="itemNum"/>
+       <result property="status" column="status"/>
+       <result property="isDaily" column="isDaily"/>
+       <result property="battleType" column="battleType"/>
+       <result property="gameType" column="gameType"/>
+       <result property="description" column="description"/>
+
+    </resultMap>
+    
+    <insert id="insertTask"  parameterClass="Task">
+        <![CDATA[ 
+           insert into casinoGod_task(taskType,taskRate,itemId,itemNum,status,isDaily,
+           battleType,gameType,description)
+           values(#taskType#,#taskRate#,#itemId#,#itemNum#,#status#,#isDaily#,
+           #battleType#,#gameType#,#description#);
+          ]]>
+           <selectKey keyProperty="taskId" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="taskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_task
+          ]]>
+    </select>
+    
+     <select id="findAllStatus" parameterClass="java.lang.String"  resultMap="taskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_task where status=0
+          ]]>
+    </select>
+    
+    <select id="findByType" parameterClass="int"  resultMap="taskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_task  where taskType=#taskType# and status=0
+          ]]>
+    </select>
+    
+    <select id="findById" parameterClass="int"  resultMap="taskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_task  where taskId=#taskId# 
+          ]]>
+    </select>
+    
+    <select id="findByTypeAndRate" parameterClass="java.util.Map"  resultMap="taskInfo">
+        <![CDATA[ 
+           select *  from casinoGod_task  where taskType=#taskType# and taskRate=#taskRate# and status=0
+          ]]>
+    </select>
+    
+    <update id="updateTask"  parameterClass="Task">  
+        <![CDATA[ 
+           update casinoGod_task set taskRate=#taskRate#,itemId=#itemId#,
+           itemNum=#itemNum#,isDaily=#isDaily#,battleType=#battleType#,gameType=#gameType#,
+           description=#description#
+           where taskType=#taskType# and taskRate=#taskRate# and status=0
+          ]]>
+    </update>
+    
+    <delete id="deleteTask" parameterClass="java.util.Map">
+        <![CDATA[ update casinoGod_task set status=1
+        where taskType=#taskType# and taskRate=#taskRate#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>

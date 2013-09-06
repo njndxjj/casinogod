@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="itemUser">
+    
+    <typeAlias alias="ItemUser" type="com.casinogod.pojo.ItemUser" /> 
+   
+    <resultMap id="itemUserInfor" class="ItemUser">        
+        <result property="id" column="id" /> 
+        <result property="itemId" column="itemId" />
+        <result property="userId" column="userId" />  
+        <result property="itemName" column="itemName" />
+        <result property="itemNum" column="itemNum"/>
+        <result property="gameType" column="gameType"/>
+        <result property="comment" column="comment"/>   
+    </resultMap>
+    
+    <insert id="insert"  parameterClass="ItemUser">
+        <![CDATA[ 
+           insert into casinoGod_userItem(itemId,userId,itemName,itemNum,gameType,comment)
+           values(#itemId#,#userId#,#itemName#,#itemNum#,#gameType#,#comment#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+          </selectKey>
+    </insert>
+       
+    <select id="findAllItem" parameterClass="java.lang.String"  resultMap="itemUserInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userItem 
+          ]]>
+    </select>
+    
+    <select id="getItems" parameterClass="java.lang.Long"  resultMap="itemUserInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userItem where userId=#userId# 
+          ]]>
+    </select>
+    
+    <select id="getUserItems" parameterClass="int"  resultMap="itemUserInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userItem where itemId=#itemId#
+          ]]>
+    </select>
+    
+    <select id="getItem" parameterClass="ItemUser" resultMap="itemUserInfor">
+    select * from casinoGod_userItem
+       <dynamic prepend="WHERE">
+            <isNotNull property="userId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="userId" compareValue="0">
+                  userId = #userId#
+                </isGreaterThan>
+            </isNotNull>
+            <isNotEmpty prepend="and " property="itemName">
+             itemName = #itemName#
+            </isNotEmpty>
+            <isNotNull property="gameType">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="gameType" compareValue="0">
+                  gameType = #gameType#
+                </isGreaterThan>
+            </isNotNull>
+        </dynamic>
+  </select>
+  
+  <update id="updateItemUser" parameterClass="ItemUser">
+      <![CDATA[ 
+        update casinoGod_userItem
+        set itemNum = #itemNum#
+       ]]>
+        <dynamic prepend="WHERE">
+            <isNotNull property="userId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="userId" compareValue="0">
+                  userId = #userId#
+                </isGreaterThan>
+            </isNotNull>
+            <isNotEmpty prepend="and " property="itemName">
+             itemName = #itemName#
+            </isNotEmpty>
+            <isNotNull property="gameType">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="gameType" compareValue="0">
+                  gameType = #gameType#
+                </isGreaterThan>
+            </isNotNull>
+        </dynamic>
+       
+    </update>
+    
+    <update id="updateItemUserName" parameterClass="ItemUser">
+      <![CDATA[ 
+        update casinoGod_userItem
+        set itemName = #itemName#
+       ]]>
+        <dynamic prepend="WHERE">
+            <isNotNull property="itemId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="itemId" compareValue="0">
+                  itemId = #itemId#
+                </isGreaterThan>
+            </isNotNull>
+        </dynamic>
+       
+    </update>
+ 
+  <delete id="deleteItem" parameterClass="int" >
+    <![CDATA[ 
+        delete from casinoGod_userItem where id=#id#
+       ]]>
+    </delete>
+</sqlMap>

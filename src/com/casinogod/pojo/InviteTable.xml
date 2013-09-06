@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="inviteTable">
+    
+    <typeAlias alias="InviteTable" type="com.casinogod.pojo.InviteTable" /> 
+   
+    <resultMap id="inviteTableInfo" class="InviteTable"> 
+       
+        <result property="userId" column="userId" /> 
+        <result property="invitedId" column="invitedId" />  
+        <result property="inviteTime" column="inviteTime" />
+     
+        
+    </resultMap>
+    
+    <insert id="insert"  parameterClass="InviteTable">
+        <![CDATA[ 
+           insert into casinoGod_inviteTable(userId,invitedId,inviteTime)
+           values(#userId#,#invitedId#,#inviteTime#);
+          ]]>
+    </insert>
+    
+    <select id="findAll" parameterClass="int"  resultMap="inviteTableInfo">
+        <![CDATA[ 
+           select *  from casinoGod_inviteTable 
+          ]]>
+    </select>
+       
+    <select id="findAlluserId" parameterClass="int"  resultMap="inviteTableInfo">
+        <![CDATA[ 
+           select *  from casinoGod_inviteTable where userId=#userId# 
+          ]]>
+    </select>
+    
+    <select id="findByInvitedId" parameterClass="int"  resultMap="inviteTableInfo">
+        <![CDATA[ 
+           select *  from casinoGod_inviteTable  where invitedId=#invitedId#
+          ]]>
+    </select>
+    
+     
+</sqlMap>

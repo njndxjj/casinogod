@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bossConfig">
+    
+    <typeAlias alias="BossConfig" type="com.casinogod.pojo.BossConfig" /> 
+   
+    <resultMap id="bossConfig" class="BossConfig"> 
+       
+        <result property="bossId" column="bossId" /> 
+        <result property="maxHP" column="maxHP" />  
+        <result property="time" column="time" /> 
+        <result property="bossType" column="bossType" />
+        <result property="userSize" column="userSize" /> 
+        <result property="bossName" column="bossName" /> 
+        <result property="bossImage" column="bossImage" /> 
+        <result property="otherNotes" column="otherNotes" />
+    </resultMap>
+    
+    <insert id="insertBossConfig"  parameterClass="BossConfig">
+        <![CDATA[ 
+           insert into casinoGod_bossConfig(maxHP,time,otherNotes,bossType,userSize,bossName,bossImage)
+           values(#maxHP#,#time#,#otherNotes#,#bossType#,#userSize#,#bossName#,#bossImage#);
+          ]]>
+          <selectKey keyProperty="bossId" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="bossConfig">
+        <![CDATA[ 
+           select *  from casinoGod_bossConfig 
+          ]]>
+    </select>
+    
+    <select id="findBossConfigById" parameterClass="int"  resultMap="bossConfig">
+        <![CDATA[ 
+           select *  from casinoGod_bossConfig  where bossId=#bossId#
+          ]]>
+    </select>
+    
+    <select id="findBossConfigByType" parameterClass="int"  resultMap="bossConfig">
+        <![CDATA[ 
+           select *  from casinoGod_bossConfig  where bossType=#bossType#
+          ]]>
+    </select>
+    
+    <update id="updateBossConfig"  parameterClass="BossConfig">  
+        <![CDATA[ 
+           update casinoGod_bossConfig set maxHP=#maxHP#,time=#time#,
+           otherNotes=#otherNotes#,bossType=#bossType#,userSize=#userSize#,bossName=#bossName#,bossImage=#bossImage#
+           where bossId=#bossId#;
+          ]]>
+    </update>
+    
+    <delete id="deleteBossConfig" parameterClass="int">
+        <![CDATA[ delete from casinoGod_bossConfig
+        where bossId=#bossId#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>

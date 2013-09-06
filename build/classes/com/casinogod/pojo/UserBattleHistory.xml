@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userBattleHistory">
+   
+    <typeAlias alias="UserBattleHistory" type="com.casinogod.pojo.UserBattleHistory"/>
+    
+    <resultMap id="userBattleHistory" class="UserBattleHistory"> 
+        <result property="id" column="id"/> 
+        <result property="userId" column="userId" />
+        <result property="gameType" column="gameType"/>
+        <result property="winTimes" column="winTimes" nullValue="0"/>
+        <result property="lostTime" column="lostTime" nullValue="0"/>
+        <result property="winMoney" column="winMoney" nullValue="0"/>
+        <result property="lostMoney" column="lostMoney" nullValue="0"/>
+        <result property="drawTimes" column="drawTimes" nullValue="0"/>
+    </resultMap>
+   
+    <insert id="insertUserBattle" parameterClass="UserBattleHistory">
+       <![CDATA[
+        insert into casinoGod_userBattleHistory(userId,gameType,winTimes,lostTime,winMoney,
+        lostMoney,drawTimes)values (#userId#,#gameType#,#winTimes#,#lostTime#,
+        #winMoney#,#lostMoney#,#drawTimes#);
+       ]]> 
+        <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="userBattleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleHistory 
+          ]]>
+    </select>
+    
+    <select id="rankByTimes" parameterClass="java.lang.String"  resultMap="userBattleHistory">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleHistory 
+           where gameType=#gameType# order by winTimes desc
+          ]]>
+    </select>
+    
+    <update id="updateUser" parameterClass="java.util.Map">
+         <![CDATA[ 
+           update  casinoGod_userBattleHistory 
+           set winTimes=#winTimes#,lostTime=#lostTime#,winMoney=#winMoney#,
+            lostMoney=#lostMoney#,drawTimes=#drawTimes#
+          ]]>
+          <dynamic prepend="WHERE">
+            <isNotNull property="userId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="userId" compareValue="0">
+                  userId = #userId#
+                </isGreaterThan>
+            </isNotNull>
+            <isNotEmpty prepend="and" property="gameType">
+                  gameType = #gameType#
+            </isNotEmpty>
+        </dynamic>
+    </update>
+    
+   <select id="selectUser" parameterClass="java.util.Map" resultMap="userBattleHistory">
+         <![CDATA[ 
+           select  * from casinoGod_userBattleHistory
+          ]]>
+          <dynamic prepend="WHERE">
+            <isNotNull property="userId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend="and" property="userId" compareValue="0">
+                  userId = #userId#
+                </isGreaterThan>
+            </isNotNull>
+            <isNotEmpty prepend="and" property="gameType">
+                  gameType = #gameType#
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+</sqlMap>

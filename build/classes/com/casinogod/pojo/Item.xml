@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="item">
+    
+    <typeAlias alias="Item" type="com.casinogod.pojo.Item" /> 
+   
+    <resultMap id="itemInfor" class="Item"> 
+       
+        <result property="id" column="id" /> 
+        <result property="gameType" column="gameType" />  
+        <result property="itemName" column="itemName" />
+        <result property="itemPrice" column="itemPrice"/>
+        <result property="comment" column="comment"/>
+        
+    </resultMap>
+    
+    <insert id="insertItem"  parameterClass="Item">
+        <![CDATA[ 
+           insert into casinoGod_item(gameType,itemName,itemPrice,comment)
+           values(#gameType#,#itemName#,#itemPrice#,#comment#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllItem" parameterClass="java.lang.String"  resultMap="itemInfor">
+        <![CDATA[ 
+           select *  from casinoGod_item 
+          ]]>
+    </select>
+    
+    <select id="findItemById" parameterClass="int"  resultMap="itemInfor">
+        <![CDATA[ 
+           select *  from casinoGod_item  where id=#id#
+          ]]>
+    </select>
+    
+    <update id="updateItem"  parameterClass="Item">  
+        <![CDATA[ 
+           update casinoGod_item set itemName=#itemName#,itemPrice=#itemPrice#,comment=#comment#
+           where id=#id#;
+          ]]>
+    </update>
+    
+    <delete id="deleteItem" parameterClass="int">
+        <![CDATA[ delete from casinoGod_item
+        where id=#id#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>

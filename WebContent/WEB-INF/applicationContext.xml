@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation=" 
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd
+			http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	<!-- 注解 配置-->
+	<bean
+	    class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+
+	<!-- 配置数据源,导入c3p0-0.9.1.2.jar,mysql-connector-java-5.1.7-bin.jar -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>jdbc:mysql://localhost/casinoGod</value>
+		</property>
+		<property name="user">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>root</value>
+		</property>
+		
+		<!--每120秒检查所有连接池中的空闲连接。Default: 0 -->
+		<property name="idleConnectionTestPeriod">
+			<value>120</value>
+		</property>	
+		<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->	
+		
+		<property name="maxIdleTime">
+		    <value>2500</value>
+		 </property>
+		
+		<property name="maxPoolSize">
+		<value>15</value>
+		</property>
+		
+		<property name="minPoolSize">
+		  <value>5</value>
+		  </property>
+		
+		<property name="maxStatements">
+		  <value>0</value>
+		 </property>
+		 
+		 <property name="checkoutTimeout">
+		  <value>20000</value>
+		  </property>
+	
+	</bean>
+
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- iBatis 设置 -->
+	<!-- 数据库适配器 -->
+	<!-- <bean id="dialect" class="com.ibatis.sqlmap.client.dialect.OracleDialect">
+	</bean>  -->
+
+	 <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation"> 
+            <value>/WEB-INF/SqlMapConfig.xml</value>  
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+    </bean>
+	
+	<!-- 模板页面  -->
+    <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    
+    <!-- pojo类 -->
+    <bean id="user" class="com.casinogod.pojo.User"/>
+    <bean id="useraccount" class="com.casinogod.pojo.UserAccount"/>
+    <bean id="battleHistory" class="com.casinogod.pojo.BattleHistory"/>
+    <bean id="roomInfo" class="com.casinogod.pojo.RoomInfo"/>
+    <bean id="item" class="com.casinogod.pojo.Item"/>
+    <bean id="itemHistory" class="com.casinogod.pojo.ItemHistory"/>
+    <bean id="itemUser" class="com.casinogod.pojo.ItemUser"/>
+    <bean id="logInReward" class="com.casinogod.pojo.LogInReward"/>
+    <bean id="logInRewardConfig" class="com.casinogod.pojo.LogInRewardConfig"/>
+    <bean id="lottery" class="com.casinogod.pojo.Lottery"/>
+    <bean id="lotteryHistory" class="com.casinogod.pojo.LotteryHistory"/>
+    <bean id="friendRequest" class="com.casinogod.pojo.FriendRequest"/>
+    <bean id="boardCastInfo" class="com.casinogod.pojo.BoardCastInfo"/>
+    <bean id="userDevice" class="com.casinogod.pojo.UserDevice"/>
+    <bean id="userBattleHistory" class="com.casinogod.pojo.UserBattleHistory"/>
+    <bean id="product" class="com.casinogod.pojo.Product"/>
+    <bean id="authToken" class="com.casinogod.pojo.AuthToken"/>
+    <bean id="bossConfig" class="com.casinogod.pojo.BossConfig"/>
+    <bean id="bossBattleInfo" class="com.casinogod.pojo.BossBattleInfo"/>
+    <bean id="bossUserInfo" class="com.casinogod.pojo.BossUserInfo"/>
+    <bean id="iaPlog" class="com.casinogod.pojo.IAPlog"/>
+    <bean id="bossInstanceUserInfo" class="com.casinogod.pojo.BossInstanceUserInfo"/>
+    <bean id="eventConfig" class="com.casinogod.pojo.EventConfig"/>
+    <bean id="rankType" class="com.casinogod.pojo.RankType"/>
+    <bean id="rankUserInfo" class="com.casinogod.pojo.RankUserInfo"/>
+    <bean id="chatLimit" class="com.casinogod.pojo.ChatLimit"/>
+    <bean id="chatRoom" class="com.casinogod.pojo.ChatRoom"/>
+    <bean id="friendInvite" class="com.casinogod.pojo.FriendInvite"/>
+    <bean id="inviteTable" class="com.casinogod.pojo.InviteTable"/>
+    <bean id="task" class="com.casinogod.pojo.Task"/>
+     <bean id="userTask" class="com.casinogod.pojo.UserTask"/>
+    <bean id="userBattleResult" class="com.casinogod.pojo.UserBattleResult"/>
+    <bean id="configuration" class="com.casinogod.pojo.Configuration"/>
+    <!-- 用户DAO类 -->
+    <bean id="userAccountDAO" class="com.casinogod.dao.UserAccountDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>   
+    <bean id="userDao" class="com.casinogod.dao.UserDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="battleHistoryDao" class="com.casinogod.dao.BattleHistoryDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="roomInfoDAO" class="com.casinogod.dao.RoomInfoDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="itemDAO" class="com.casinogod.dao.ItemDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="itemUserDAO" class="com.casinogod.dao.ItemUserDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="itemHistoryDAO" class="com.casinogod.dao.ItemHistoryDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="logInConfigDAO" class="com.casinogod.dao.LogInConfigDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="logInRewardDAO" class="com.casinogod.dao.LogInRewardDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="lotteryDAO" class="com.casinogod.dao.LotteryDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="lotteryHistoryDAO" class="com.casinogod.dao.LotteryHistoryDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="requestDAO" class="com.casinogod.dao.RequestDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="boardCastDAO" class="com.casinogod.dao.BoardCastDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="userDeviceDAO" class="com.casinogod.dao.UserDeviceDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="userBattleHistoryDAO" class="com.casinogod.dao.UserBattleHistoryDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="productDAO" class="com.casinogod.dao.ProductDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="authTokenDAO" class="com.casinogod.dao.AuthTokenDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="bossConfigDAO" class="com.casinogod.dao.BossConfigDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="bossBattleInfoDAO" class="com.casinogod.dao.BossBattleInfoDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="bossInfoDAO" class="com.casinogod.dao.BossUserInfoDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="iapLogDAO" class="com.casinogod.dao.IAPLogDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="bossInstanceUserDAO" class="com.casinogod.dao.BossInstanceUserInfoDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="eventDAO" class="com.casinogod.dao.EventDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="rankTypeDAO" class="com.casinogod.dao.RankTypeDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="userRankDAO" class="com.casinogod.dao.UserRankDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="chatLimitDAO" class="com.casinogod.dao.ChatLimitDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+     <bean id="chatRoomDAO" class="com.casinogod.dao.ChatRoomDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="friendInviteDAO" class="com.casinogod.dao.FriendInviteDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="inviteTableDAO" class="com.casinogod.dao.InviteTableDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="taskDAO" class="com.casinogod.dao.TaskDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="userTaskDAO" class="com.casinogod.dao.UserTaskDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="userBattleResultDAO" class="com.casinogod.dao.UserBattleResultDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <bean id="configurationDAO" class="com.casinogod.dao.ConfigurationDAOImpl">
+       <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+       </property>
+    </bean>
+    
+    <!-- Login的注入 -->  
+    
+    <bean name="userLogInService" class="com.casinogod.service.LoginService" >  
+        <property name="userAccountDAO" ref="userAccountDAO" />  
+        <property name="useraccount" ref="useraccount" />
+    </bean>  
+    
+    <bean name="userProfileService" class="com.casinogod.service.UserProfileService" >  
+        <property name="userDao" ref="userDao" />  
+        <property name="userAccountDAO" ref="userAccountDAO" />
+        <property name="useraccount" ref="useraccount" />
+        <property name="user" ref="user" />
+    </bean> 
+    
+    <bean name="battleProfileService" class="com.casinogod.service.BattleProfileService" >  
+        <property name="battleHistory" ref="battleHistory" />  
+        <property name="battleHistoryDao" ref="battleHistoryDao" />
+    </bean> 
+    
+    <bean name="itemUserConfigService" class="com.casinogod.service.ItemUserConfigService" >  
+        <property name="itemUser" ref="itemUser" />  
+        <property name="itemUserDAO" ref="itemUserDAO" />
+    </bean>
+    
+    <bean name="roomProfileService" class="com.casinogod.service.RoomProfileService" >  
+        <property name="roomInfoDAO" ref="roomInfoDAO" />  
+        <property name="roomInfo" ref="roomInfo" />
+    </bean>
+    
+    <bean name="itemConfigService" class="com.casinogod.service.ItemConfigService" >  
+        <property name="itemDAO" ref="itemDAO" />  
+        <property name="item" ref="item" />
+    </bean>
+    
+    <bean name="itemHistoryConfigService" class="com.casinogod.service.ItemHistoryConfigService" >  
+        <property name="itemHistoryDAO" ref="itemHistoryDAO" />  
+        <property name="itemHistory" ref="itemHistory" />
+    </bean>
+    
+    <bean name="logInRewardConfigService" class="com.casinogod.service.LogInRewardConfigService" >  
+        <property name="logInRewardConfig" ref="logInRewardConfig" />  
+        <property name="logInConfigDAO" ref="logInConfigDAO" />
+    </bean>
+    
+    <bean name="logInRewardService" class="com.casinogod.service.LogInRewardService" >  
+        <property name="logInReward" ref="logInReward" />  
+        <property name="logInRewardDAO" ref="logInRewardDAO" />
+    </bean>
+    
+    <bean name="lotteryConfigService" class="com.casinogod.service.LotteryConfigService" >  
+        <property name="lottery" ref="lottery" />  
+        <property name="lotteryDAO" ref="lotteryDAO" />
+    </bean>
+    
+    <bean name="lotteryHistoryService" class="com.casinogod.service.LotteryHistoryService" >  
+        <property name="lotteryHistory" ref="lotteryHistory" />  
+        <property name="lotteryHistoryDAO" ref="lotteryHistoryDAO" />
+    </bean>
+    
+    <bean name="requestConfigService" class="com.casinogod.service.RequestConfigService" >  
+        <property name="friendRequest" ref="friendRequest" />  
+        <property name="requestDAO" ref="requestDAO" />
+    </bean>
+    
+    <bean name="boardCastService" class="com.casinogod.service.BoardCastService" >  
+        <property name="boardCastInfo" ref="boardCastInfo" />  
+        <property name="boardCastDAO" ref="boardCastDAO" />
+    </bean>
+    
+    <bean name="userDeviceService" class="com.casinogod.service.UserDeviceService" >  
+        <property name="userDevice" ref="userDevice" />  
+        <property name="userDeviceDAO" ref="userDeviceDAO" />
+    </bean>
+    
+    <bean name="userBattleService" class="com.casinogod.service.UserBattleService" >  
+        <property name="userBattleHistoryDAO" ref="userBattleHistoryDAO" />  
+        <property name="userBattleHistory" ref="userBattleHistory" />
+    </bean>
+    <bean name="productService" class="com.casinogod.service.ProductService" >  
+        <property name="productDAO" ref="productDAO" />  
+        <property name="product" ref="product"/>
+    </bean>
+    <bean name="authTokenService" class="com.casinogod.service.AuthTokenService" >  
+        <property name="authTokenDAO" ref="authTokenDAO" />  
+        <property name="authToken" ref="authToken"/>
+    </bean>
+    <bean name="bossConfigService" class="com.casinogod.service.BossConfigService" >  
+        <property name="bossConfigDAO" ref="bossConfigDAO" />  
+        <property name="bossConfig" ref="bossConfig"/>
+    </bean>
+    
+    <bean name="bossBattleService" class="com.casinogod.service.BossBattleService" >  
+        <property name="bossBattleInfoDAO" ref="bossBattleInfoDAO" />  
+        <property name="bossBattleInfo" ref="bossBattleInfo"/>
+    </bean>
+    
+    <bean name="bossUserService" class="com.casinogod.service.BossUserService" >  
+        <property name="bossInfoDAO" ref="bossInfoDAO" />  
+        <property name="bossUserInfo" ref="bossUserInfo"/>
+    </bean>
+    
+    <bean name="iAPLogService" class=" com.casinogod.service.IAPLogService " >  
+        <property name="iaPlog" ref="iaPlog" />  
+        <property name="iapLogDAO" ref="iapLogDAO"/>
+    </bean>
+    
+    <bean name="bossInstanceService" class=" com.casinogod.service.BossInstanceUserService " >  
+        <property name="bossInstanceUserInfo" ref="bossInstanceUserInfo" />  
+        <property name="bossInstanceUserDAO" ref="bossInstanceUserDAO"/>
+    </bean>
+    
+    <bean name="eventService" class=" com.casinogod.service.EventService " >  
+        <property name="eventConfig" ref="eventConfig" />  
+        <property name="eventDAO" ref="eventDAO"/>
+    </bean>
+    
+    <bean name="rankTypeService" class=" com.casinogod.service.RankTypeService" >  
+        <property name="rankType" ref="rankType" />  
+        <property name="rankTypeDAO" ref="rankTypeDAO"/>
+    </bean>
+    
+    <bean name="rankUserService" class=" com.casinogod.service.RankUserService" >  
+        <property name="rankUserInfo" ref="rankUserInfo" />  
+        <property name="userRankDAO" ref="userRankDAO"/>
+    </bean>
+    
+    <bean name="chatLimitService" class=" com.casinogod.service.ChatLimitService" >  
+        <property name="chatLimit" ref="chatLimit" />  
+        <property name="chatLimitDAO" ref="chatLimitDAO"/>
+    </bean>
+    
+     <bean name="chatRoomService" class=" com.casinogod.service.ChatRoomService" >  
+        <property name="chatRoom" ref="chatRoom" />  
+        <property name="chatRoomDAO" ref="chatRoomDAO"/>
+    </bean>
+    
+    <bean name="friendInvitedService" class=" com.casinogod.service.FriendInvitedService" >  
+        <property name="friendInvite" ref="friendInvite" />  
+        <property name="friendInviteDAO" ref="friendInviteDAO"/>
+    </bean>
+    
+    <bean name="invitedTableService" class=" com.casinogod.service.InvitedTableService" >  
+        <property name="inviteTable" ref="inviteTable" />  
+        <property name="inviteTableDAO" ref="inviteTableDAO"/>
+    </bean>
+    
+    <bean name="taskService" class=" com.casinogod.service.TaskService" >  
+        <property name="task" ref="task" />  
+        <property name="taskDAO" ref="taskDAO"/>
+    </bean>
+    
+     <bean name="userTaskService" class=" com.casinogod.service.UserTaskService" >  
+        <property name="userTask" ref="userTask" />  
+        <property name="userTaskDAO" ref="userTaskDAO"/>
+    </bean>
+    
+    <bean name="userResultService" class=" com.casinogod.service.UserResultService" >  
+        <property name="userBattleResult" ref="userBattleResult" />  
+        <property name="userBattleResultDAO" ref="userBattleResultDAO"/>
+    </bean>
+    
+    <bean name="configurationService" class=" com.casinogod.service.ConfigurationService" >  
+        <property name="configuration" ref="configuration" />  
+        <property name="configurationDAO" ref="configurationDAO"/>
+    </bean>
+    
+    <bean name="pageService" class="com.casinogod.service.PageService" >  
+    </bean>
+    
+        
+    <!--  spring 集成 struts2    -->
+    <!-- 产生一个叫Login的实例之前，调用set‘Service’方法，注入上一个实例‘LoginService’ --> 
+    <bean name="login" class="com.casinogod.action.Login"> 
+        <property name="userLogInService" ref="userLogInService" />  
+        <property name="userProfileService" ref="userProfileService" /> 
+        <property name="logInRewardConfigService" ref="logInRewardConfigService" />
+        <property name="logInRewardService" ref="logInRewardService" />
+        <property name="pageService" ref="pageService" />
+        <property name="configurationDAO" ref="configurationDAO" />
+    </bean>  
+     <bean name="itemConfig" class="com.casinogod.action.ConfigItem"> 
+        <property name="itemConfigService" ref="itemConfigService" />  
+        <property name="itemUserConfigService" ref="itemUserConfigService" /> 
+    </bean>
+    <bean name="userProfile" class="com.casinogod.action.UserProfileAction"> 
+        <property name="userProfileService" ref="userProfileService" />  
+         <property name="requestConfigService" ref="requestConfigService" />
+    </bean>
+    
+    <bean name="roomProfile" class="com.casinogod.action.ConfigRoomInfo"> 
+        <property name="roomProfileService" ref="roomProfileService" />  
+    </bean>
+    <bean name="itemPurchase" class="com.casinogod.action.ItemPurchase"> 
+        <property name="itemUserConfigService" ref="itemUserConfigService" />  
+        <property name="itemHistoryConfigService" ref="itemHistoryConfigService" />
+        <property name="itemConfigService" ref="itemConfigService" />
+        <property name="userProfileService" ref="userProfileService" />
+    </bean>
+    <bean name="itemAction" class="com.casinogod.action.ItemAction"> 
+        <property name="itemUserConfigService" ref="itemUserConfigService" />  
+        <property name="itemHistoryConfigService" ref="itemHistoryConfigService" />
+    </bean>
+    <bean name="rewardConfig" class="com.casinogod.action.ConfigReward"> 
+        <property name="logInRewardConfigService" ref="logInRewardConfigService" />  
+    </bean>
+    
+    <bean name="authority" class="com.casinogod.action.AuthorityInterceptor"> 
+    <property name="authTokenService" ref="authTokenService" /> 
+    </bean>
+    
+    <bean name="lotteryConfig" class="com.casinogod.action.LotteryAction"> 
+        <property name="lotteryHistoryService" ref="lotteryHistoryService" />  
+        <property name="lotteryConfigService" ref="lotteryConfigService" />  
+        <property name="userProfileService" ref="userProfileService" />
+    </bean>
+    
+    <bean name="requestConfig" class="com.casinogod.action.RequestAction"> 
+        <property name="requestConfigService" ref="requestConfigService" />  
+    </bean>
+    <bean name="configBoardCast" class="com.casinogod.action.ConfigBoardCast"> 
+        <property name="boardCastService" ref="boardCastService" />  
+    </bean>
+    <bean name="pnservice" class="com.casinogod.action.PushNotificationAction"> 
+        <property name="userDeviceService" ref="userDeviceService" />  
+    </bean>
+    
+    <bean name="lotteryAction" class="com.casinogod.action.LotteryHistoryAction"> 
+        <property name="lotteryHistoryService" ref="lotteryHistoryService" />  
+    </bean>
+    
+    <bean name="productAction" class="com.casinogod.action.ConfigProduct"> 
+        <property name="productService" ref="productService" />  
+    </bean>
+    <bean name="bossInfoAction" class="com.casinogod.action.BossInfoAction"> 
+        <property name="bossConfigService" ref="bossConfigService" />  
+    </bean>
+     <bean name="eventAction" class="com.casinogod.action.EventAction"> 
+        <property name="eventService" ref="eventService" />  
+    </bean>
+    
+    
+    <bean name="rankTypeAction" class="com.casinogod.action.ConfigRankType"> 
+        <property name="rankTypeService" ref="rankTypeService" />  
+        
+    </bean>
+    
+    <bean name="chatLimitAction" class="com.casinogod.action.ChatLimitAction"> 
+        <property name="chatLimitService" ref="chatLimitService" />  
+        
+    </bean>
+    
+     <bean name="chatRoomAction" class="com.casinogod.action.ChatRoomAction"> 
+        <property name="chatLimitService" ref="chatLimitService" />
+        <property name="chatRoomService" ref="chatRoomService" /> 
+        
+    </bean>
+    
+     <bean name="chatSetting" class="com.casinogod.action.ChatConfig"> 
+        <property name="userProfileService" ref="userProfileService" />        
+    </bean>
+
+    
+    <bean name="configAction" class="com.casinogod.action.ConfigAction">  
+     </bean>
+     
+     <bean name="systemSettingAction" class="com.casinogod.action.SystemSettingAction">  
+     <property name="configurationService" ref="configurationService" />
+     </bean>
+    
+    <bean name="startBattle" class="com.casinogod.webinterface.StartBattle">  
+        <property name="battleProfileService" ref="battleProfileService" />  
+        <property name="userBattleService" ref="userBattleService" /> 
+        <property name="bossConfigService" ref="bossConfigService" />
+        <property name="bossBattleService" ref="bossBattleService" /> 
+        <property name="bossUserService" ref="bossUserService" /> 
+        <property name="bossInstanceService" ref="bossInstanceService" />
+        <property name="eventService" ref="eventService" />
+        <property name="rankUserService" ref="rankUserService" />
+        <property name="rankTypeService" ref="rankTypeService" />
+        <property name="userResultService" ref="userResultService" />
+        <property name="itemConfigService" ref="itemConfigService" />
+        <property name="itemHistoryConfigService" ref="itemHistoryConfigService" />
+        <property name="itemUserConfigService" ref="itemUserConfigService" /> 
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    
+      <bean name="shareBoss" class="com.casinogod.webinterface.ShareBoss"> 
+        <property name="bossInstanceService" ref="bossInstanceService" /> 
+        <property name="logInRewardService" ref="logInRewardService" /> 
+        <property name="userDeviceService" ref="userDeviceService" />
+        <property name="userProfileService" ref="userProfileService" />
+        <property name="bossBattleService" ref="bossBattleService" />
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    
+    <bean name="userAuth" class="com.casinogod.webinterface.UserAuth"> 
+        <property name="userLogInService" ref="userLogInService" />  
+        <property name="userProfileService" ref="userProfileService" /> 
+        <property name="logInRewardConfigService" ref="logInRewardConfigService" />
+        <property name="logInRewardService" ref="logInRewardService" />
+        <property name="userDeviceService" ref="userDeviceService" />
+        <property name="authTokenService" ref="authTokenService" />
+        <property name="friendInvitedService" ref="friendInvitedService" /> 
+        <property name="configurationDAO" ref="configurationDAO" />
+    </bean>
+    
+      <bean name="updateUserProfile" class="com.casinogod.webinterface.UserProfile"> 
+        <property name="userProfileService" ref="userProfileService" /> 
+    </bean>
+    
+      <bean name="registerDevice" class="com.casinogod.webinterface.RegisterPN"> 
+        <property name="userDeviceService" ref="userDeviceService" />  
+    </bean>
+    
+    <bean name="showRoom" class="com.casinogod.webinterface.ConfigRoomInfo"> 
+        <property name="roomProfileService" ref="roomProfileService" />  
+    </bean>
+    <bean name="itemInfo" class="com.casinogod.webinterface.ItemInfo"> 
+        <property name="itemConfigService" ref="itemConfigService" />  
+    </bean>
+    <bean name="purchaseItem" class="com.casinogod.webinterface.ItemPurchase"> 
+        <property name="userProfileService" ref="userProfileService" /> 
+        <property name="itemConfigService" ref="itemConfigService" />
+        <property name="itemHistoryConfigService" ref="itemHistoryConfigService" />
+        <property name="itemUserConfigService" ref="itemUserConfigService" /> 
+        <property name="eventService" ref="eventService" />
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    <bean name="productInfo" class="com.casinogod.webinterface.ProudctInfo"> 
+        <property name="productService" ref="productService" />  
+    </bean>
+    <bean name="lotteryResultHistory" class="com.casinogod.webinterface.LotteryResultHistory"> 
+        <property name="lotteryHistoryService" ref="lotteryHistoryService" />  
+    </bean>
+    <bean name="detailLottery" class="com.casinogod.webinterface.DetailLottery"> 
+        <property name="lotteryHistoryService" ref="lotteryHistoryService" />  
+        <property name="lotteryConfigService" ref="lotteryConfigService" />  
+        <property name="userProfileService" ref="userProfileService" />
+    </bean>
+    <bean name="iapPurchase" class="com.casinogod.webinterface.IAPPurchase"> 
+        <property name="userProfileService" ref="userProfileService" /> 
+        <property name="productService" ref="productService" /> 
+        <property name="iAPLogService" ref="iAPLogService" /> 
+    </bean>
+    <bean name="boardCastPro" class="com.casinogod.webinterface.BoardCastPro"> 
+        <property name="boardCastService" ref="boardCastService" />  
+    </bean>
+    
+    <bean name="showBoss" class="com.casinogod.webinterface.ShowBoss"> 
+        <property name="bossUserService" ref="bossUserService" />  
+        <property name="bossInstanceService" ref="bossInstanceService" />
+         <property name="bossBattleService" ref="bossBattleService" />
+    </bean>
+    
+    <bean name="showEvent" class="com.casinogod.webinterface.ShowEvent"> 
+        <property name="eventService" ref="eventService" />      
+    </bean>
+    
+    <bean name="showRank" class="com.casinogod.webinterface.ShowRank"> 
+        <property name="rankUserService" ref="rankUserService" />  
+        <property name="userProfileService" ref="userProfileService" />
+        <property name="rankTypeService" ref="rankTypeService" />    
+        <property name="userResultService" ref="userResultService" />
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    
+    <bean name="friendRequestAction" class="com.casinogod.webinterface.FriendsRequest"> 
+        <property name="userProfileService" ref="userProfileService" />  
+        <property name="requestConfigService" ref="requestConfigService" /> 
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    
+    <bean name="chatLimitInfo" class="com.casinogod.webinterface.ChatLimitInfo"> 
+        <property name="chatLimitService" ref="chatLimitService" />  
+    </bean>
+    
+    <bean name="chatRoomInfo" class="com.casinogod.webinterface.ChatRoomInfo"> 
+        <property name="chatLimitService" ref="chatLimitService" /> 
+         <property name="chatRoomService" ref="chatRoomService" />   
+    </bean>
+    
+    <bean name="inviteFriend" class="com.casinogod.webinterface.InviteFriend"> 
+        <property name="friendInvitedService" ref="friendInvitedService" /> 
+        <property name="invitedTableService" ref="invitedTableService" />   
+        <property name="userProfileService" ref="userProfileService" />
+         <property name="itemUserConfigService" ref="itemUserConfigService" />  
+        <property name="itemConfigService" ref="itemConfigService" />
+        <property name="userLogInService" ref="userLogInService" />
+    </bean>
+    
+    <bean name="taskInterFace" class="com.casinogod.webinterface.TaskComplete"> 
+       
+        <property name="battleProfileService" ref="battleProfileService" />   
+        <property name="userProfileService" ref="userProfileService" />
+        <property name="itemUserConfigService" ref="itemUserConfigService" />  
+        <property name="itemConfigService" ref="itemConfigService" />
+        <property name="invitedTableService" ref="invitedTableService" />
+        <property name="userTaskService" ref="userTaskService" />
+    </bean>
+    
+     <bean name="iapLog" class="com.casinogod.action.IAPLogAction"> 
+        <property name="iAPLogService" ref="iAPLogService" />  
+     </bean>
+     
+     <bean name="taskAction" class="com.casinogod.action.ConfigTask"> 
+        <property name="taskService" ref="taskService" />  
+     </bean>
+     
+  
+     
+     
+</beans>

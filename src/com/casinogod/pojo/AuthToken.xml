@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authToken">
+    
+    <typeAlias alias="AuthToken" type="com.casinogod.pojo.AuthToken" /> 
+   
+    <resultMap id="tokenInfo" class="AuthToken"> 
+       
+        <result property="id" column="id" /> 
+        <result property="userId" column="userId" />  
+        <result property="authToken" column="authToken" />
+       
+        
+    </resultMap>
+    
+    <insert id="insertToken"  parameterClass="AuthToken">
+        <![CDATA[ 
+           insert into casinoGod_authToken(userId,authToken)
+           values(#userId#,#authToken#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllToken" parameterClass="java.lang.String"  resultMap="tokenInfo">
+        <![CDATA[ 
+           select *  from casinoGod_authToken
+          ]]>
+    </select>
+    
+    <select id="findByUserId" parameterClass="java.lang.Long"  resultMap="tokenInfo">
+        <![CDATA[ 
+           select *  from casinoGod_authToken  where userId=#userId#
+          ]]>
+    </select>
+    
+    <update id="updateByUserId" parameterClass="AuthToken">
+        <![CDATA[ 
+           update casinoGod_authToken set authToken=#authToken#
+           where userId=#userId#
+          ]]>
+    </update>
+
+</sqlMap>

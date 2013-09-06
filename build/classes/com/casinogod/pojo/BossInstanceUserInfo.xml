@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bossInstanceUserInfo">
+   
+    <typeAlias alias="BossInstanceUserInfo" type="com.casinogod.pojo.BossInstanceUserInfo"/>
+    
+    <resultMap id="bossInstanceUserInfo" class="BossInstanceUserInfo"> 
+        <result property="userId" column="userId"/>
+        <result property="bossInstance" column="bossInstance"/>
+         <result property="result" column="result"/>
+    </resultMap>
+   
+    <insert id="insertBossInstanceUserInfo" parameterClass="BossInstanceUserInfo">
+       <![CDATA[
+        insert into casinoGod_bossUser(userId,bossInstance,
+        result)values (#userId#,#bossInstance#,#result#);
+       ]]> 
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="bossInstanceUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUser
+          ]]>
+    </select>
+    
+    <select id="findByInstance" parameterClass="int"  resultMap="bossInstanceUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUser where  bossInstance=#bossInstance#
+          ]]>
+    </select>
+    
+    <select id="findByUserId" parameterClass="java.lang.Long"  resultMap="bossInstanceUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUser where userId=#userId#
+          ]]>
+    </select>
+    
+    <select id="findByUserIdInstance" parameterClass="java.util.Map"  resultMap="bossInstanceUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUser where userId=#userId# and bossInstance=#bossInstance#
+          ]]>
+    </select>
+    
+   
+     <update id="updateResult" parameterClass="BossInstanceUserInfo">
+       <![CDATA[ 
+           update casinoGod_bossUser 
+           set result=#result#
+           where userId=#userId# and bossInstance=#bossInstance#
+          ]]>
+     </update>
+    
+    
+     
+</sqlMap>

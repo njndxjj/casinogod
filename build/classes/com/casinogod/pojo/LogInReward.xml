@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="logInReward">
+    
+    <typeAlias alias="LogInReward" type="com.casinogod.pojo.LogInReward" /> 
+   
+    <resultMap id="logInReward" class="LogInReward"> 
+       
+        <result property="id" column="id" /> 
+        <result property="userId" column="userId" />  
+        <result property="logInTime" column="logInTime" />
+        <result property="lastTimes" column="lastTimes"/>    
+    </resultMap>
+    
+    <insert id="insertLogIn"  parameterClass="LogInReward">
+        <![CDATA[ 
+           insert into casinoGod_logInReward(userId,logInTime,lastTimes)
+           values(#userId#,#logInTime#,#lastTimes#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <update id="updateLogIn"  parameterClass="LogInReward">  
+        <![CDATA[ 
+           update casinoGod_logInReward set logInTime=#logInTime#,lastTimes=#lastTimes#
+           where userId=#userId#;
+          ]]>
+    </update>
+    
+    <select id="queryAll" parameterClass="java.lang.String" resultMap="logInReward">
+        <![CDATA[ 
+           select * from casinoGod_logInReward;
+          ]]>
+     </select>
+     
+     <select id="queryForUser" parameterClass="java.lang.String" resultClass="java.lang.Long">
+        <![CDATA[ 
+           select userId from casinoGod_logInReward order by logInTime desc limit 10;
+          ]]>
+     </select>
+     
+    <select id="queryById" parameterClass="java.lang.Long" resultMap="logInReward">
+        <![CDATA[ 
+           select * from casinoGod_logInReward where userId=#userId#;
+          ]]>
+     </select>
+     
+     <select id="queryByDate" parameterClass="java.util.Map" resultClass="java.lang.Long">
+        <![CDATA[ 
+           select userId from casinoGod_logInReward where logInTime<=#endTime# and logInTime>=#createTime# 
+           order by logInTime desc limit 10;
+          ]]>
+     </select>
+
+</sqlMap>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bossUserInfo">
+   
+    <typeAlias alias="BossUserInfo" type="com.casinogod.pojo.BossUserInfo"/>
+    
+    <resultMap id="bossUserInfo" class="BossUserInfo"> 
+        <result property="id" column="id"/>
+        <result property="bossType" column="bossType"/> 
+        <result property="battleId" column="battleId"/>
+        <result property="userId" column="userId"/>
+        <result property="bossInstance" column="bossInstance"/>
+         <result property="result" column="result"/>
+    </resultMap>
+   
+    <insert id="insertBossUserInfo" parameterClass="BossUserInfo">
+       <![CDATA[
+        insert into casinoGod_bossUserInfo(bossType,battleId,userId,bossInstance,
+        result)values (#bossType#,#battleId#,#userId#,#bossInstance#,
+        #result#);
+       ]]> 
+       <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo
+          ]]>
+    </select>
+    
+    <select id="findByBattle" parameterClass="java.lang.String"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo where  battleId=#battleId#
+          ]]>
+    </select>
+    
+    <select id="findByInstance" parameterClass="int"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo where bossInstance=#bossInstance#
+          ]]>
+    </select>
+    
+     <select id="findByUserId" parameterClass="java.lang.Long"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo where userId=#userId#
+          ]]>
+    </select>
+    
+    <select id="findByUserIdBattleId" parameterClass="java.util.Map"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo where userId=#userId# and battleId=#battleId#
+          ]]>
+    </select>
+    
+    <select id="findByInstanceIdBattleId" parameterClass="java.util.Map"  resultMap="bossUserInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossUserInfo where bossInstance=#bossInstance# and battleId=#battleId#
+          ]]>
+    </select>
+    
+     <update id="updateResult" parameterClass="BossUserInfo">
+       <![CDATA[ 
+           update casinoGod_bossUserInfo 
+           set result=#result#
+           where battleId=#battleId# and bossInstance=#bossInstance#
+          ]]>
+     </update>
+    
+    
+     
+</sqlMap>

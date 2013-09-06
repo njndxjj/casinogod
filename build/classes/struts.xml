@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   
+    <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+     <!-- 指定使用国际化资源struts2 -->
+	 <constant name="struts.custom.i18n.resources" value="leave"></constant>
+	 <!-- 指定浏览器是否缓存静态内容 -->
+	<constant name="struts.serve.static.browserCache" value="false"></constant>
+	<!-- 指定struts配置文件修改后是否自动重新加载文件 -->
+	<constant name="struts.configuration.xml.reload" value="true"></constant>
+	<!-- 与spring集成，指定由spring负责action的创建 -->
+	<!--<constant name="struts.objectFactory" value="spring"></constant> -->
+	<!-- 上传文件的大小限制 -->
+	<constant name="struts.multipart.maxSize" value="5048576"></constant>
+	<!-- 启动静态方法的访问 -->
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+    <!-- 产生对象从spring 配置 文件中读取   -->
+    <constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
+     
+    <constant name="struts.action.extension" value="action" />
+    <!-- 开发模式下使用可以打印出详细的错误信息 -->
+     <constant name="struts.devMode" value="true" />
+     
+    <package name="casinoGod" namespace="/" extends="struts-default">
+        
+      <interceptors>
+        <interceptor name="authority" class="authority"/>
+        <interceptor-stack name="myStack">
+            <interceptor-ref name="defaultStack" />  
+            <interceptor-ref name="authority">
+               <param name="excludeMethods">logInSuccess,registerPage,register,userAuth,logOut</param>
+            </interceptor-ref>          
+        </interceptor-stack>
+       </interceptors>
+       
+       <default-interceptor-ref name="myStack"/>  
+      
+       <global-results>
+          <result name="login">index.jsp</result>  
+       </global-results>
+        
+      <action name="login" class="login" method="logInSuccess">
+        <result name="admin">/logIn/loginSuccess.jsp</result>
+        <result name="success">/logIn/userLoginSuccess.jsp</result>  
+        <result name="error">/logIn/loginFail.jsp</result>  
+        <result name="freeze">/logIn/loginFreeze.jsp</result>
+      </action>
+     
+      <action name="logout" class="login" method="logOut"><!-- 同一个实例的不同方法 -->  
+            <result name="success">index.jsp</result>  
+      </action>  
+      
+      <action name="logAgain" class="login" method="logAgain"><!-- 同一个实例的不同方法 -->  
+        <result name="admin">/logIn/loginSuccess.jsp</result>
+        <result name="success">/logIn/userLoginSuccess.jsp</result>  
+        <result name="error">/logIn/loginFail.jsp</result>  
+      </action>
+      <action name="rewardInfo" class="login" method="queryReward">  
+            <result name="success">/configPage/rewardInfo.jsp</result>  
+      </action>
+      <action name="accountInfo" class="login" method="queryAllAccount">  
+            <result name="success">/configPage/accountInfo.jsp</result>  
+      </action>
+      <action name="updatePassword" class="login" method="updatePassword">  
+             <result  type="redirectAction" name="success">
+                <param name="actionName">accountInfo.action</param>
+                <param name="namespace">/</param>
+            </result>
+      </action>
+      
+      <action name="userRegister" class="userProfile" method="register">
+          <!-- UserManager是Spring注入的UserManagerAction实例 -->  
+            <result name="success">index.jsp</result>  
+            <result name="error">/userProfile/register.jsp</result>  
+        </action>  
+        <action name="queryall" class="userProfile" method="queryall">  
+            <result name="success">/userProfile/manage.jsp</result>  
+        </action>  
+        <action name="updateGold" class="userProfile" method="updateUserGold">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">queryall.action</param>
+                <param name="namespace">/</param>
+            </result>    
+        </action>  
+        <action name="updateExp" class="userProfile" method="updateUserExp">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">queryall.action</param>
+                <param name="namespace">/</param>
+            </result>    
+        </action>  
+        <action name="deleteUserInfo" class="userProfile" method="deleteUserInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">queryall.action</param>
+                <param name="namespace">/</param>
+            </result>  
+        </action>
+        <action name="queryBattleHistory" class="startBattle" method="queryAll">
+            <result name="success">/battleHistory/battleHistory.jsp</result>  
+            <result name="error">index.jsp</result> 
+        </action> 
+        <action name="userInfo" class="userProfile" method="queryUserById">  
+            <result name="success">/userProfile/userProfile.jsp</result>  
+        </action> 
+        
+        <action name="friendRequest" class="userProfile" method="queryallunFriend">  
+            <result name="success">/configPage/friendRequest.jsp</result>  
+        </action>
+        
+        <action name="acceptRequest" class="userProfile" method="acceptRequest">  
+            <result name="success">/configPage/accaptSuccess.jsp</result>  
+            <result name="error">/configPage/accaptError.jsp</result>
+        </action>
+        
+        <action name="showFriend" class="userProfile" method="showFriends">  
+            <result name="success">/configPage/friendsPro.jsp</result>  
+            <result name="error">/configPage/friendsError.jsp</result>
+        </action>
+        
+        <action name="addRoom" class="roomProfile" method="addRoomInfo">  
+           <result  type="redirectAction" name="success">
+                <param name="actionName">roomAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="updateRoom" class="roomProfile" method="updateRoom">  
+           <result  type="redirectAction" name="success">
+                <param name="actionName">roomAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">roomAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="deleteRoom" class="roomProfile" method="deleteRoom">  
+           <result  type="redirectAction" name="success">
+                <param name="actionName">roomAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">roomAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+           
+        <action name="roomAll" class="roomProfile" method="queryAll">  
+            <result name="success">/configPage/roomProfile.jsp</result>  
+        </action>
+        
+        <action name="configItem" class="itemConfig" method="addItemInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="updateItem" class="itemConfig" method="updateItem">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+             <result  type="redirectAction" name="error">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="deleteItem" class="itemConfig" method="deleteItemById">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="configItem" class="itemConfig" method="addItemInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">itemAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="updateTask" class="taskAction" method="updateTask">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">taskAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+             <result  type="redirectAction" name="error">
+                <param name="actionName">taskAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="findTaskByType" class="taskAction" method="findTaskByType">  
+            <result name="success">/configPage/updateTask.jsp</result>  
+        </action>
+        
+        <action name="deleteTask" class="taskAction" method="delete">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">taskAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">taskAll.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="taskAll" class="taskAction" method="queryAll">  
+            <result name="success">/configPage/taskProfile.jsp</result>  
+        </action>
+        
+         <action name="addTask" class="taskAction" method="addTask">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">taskAll.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="addEvent" class="eventAction" method="addEventInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryEvent.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="updateEvent" class="eventAction" method="updateEvent">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryEvent.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="deleteEvent" class="eventAction" method="deleteById">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryEvent.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+       
+        
+         <action name="querryEvent" class="eventAction" method="queryAll">  
+            <result name="success">/configPage/eventPro.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+         <action name="addRank" class="rankTypeAction" method="addRank">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryRank.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="updateRank" class="rankTypeAction" method="updateRank">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryRank.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="deleteRank" class="rankTypeAction" method="deleteRankById">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryRank.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="queryRankById" class="rankTypeAction" method="findById">  
+            <result name="success">/configPage/updateRank.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+        <action name="querryRank" class="rankTypeAction" method="queryAll">  
+            <result name="success">/configPage/rankPro.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+        
+         <action name="addChatLimit" class="chatLimitAction" method="add">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryChatLimit.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="deleteChatLimit" class="chatLimitAction" method="delete">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryChatLimit.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="updateChatLimit" class="chatLimitAction" method="update">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryChatLimit.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="queryChatLimitById" class="chatLimitAction" method="querryByUserId">  
+            <result name="success">/configPage/updateChatLimit.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+        <action name="querryChatLimit" class="chatLimitAction" method="querryAll">  
+            <result name="success">/configPage/chatLimitPro.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+        
+         <action name="addChatRoom" class="chatRoomAction" method="add">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryChatRoom.action</param>
+                <param name="namespace">/</param>
+            </result> 
+             <result name="error">/configPage/chatError.jsp</result>  
+        </action>
+               
+        <action name="querryChatRoom" class="chatRoomAction" method="querryAll">  
+            <result name="success">/configPage/chatRoomPro.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
+        <action name="itemAll" class="itemConfig" method="queryAll">  
+            <result name="success">/configPage/ItemProfile.jsp</result>  
+             <result name="adminPage">/userProfile/adminItems.jsp</result>
+        </action>
+        
+        <action name="findItemById" class="itemConfig" method="findItemById">  
+            <result name="success">/userProfile/buyItem.jsp</result>  
+        </action>
+        
+        <action name="addBossConfig" class="bossInfoAction" method="addBossConfig">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">bossProfile.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+         <action name="updateBossInfo" class="bossInfoAction" method="updateBossInfo">  
+           <result  type="redirectAction" name="success">
+                <param name="actionName">bossProfile.action</param>
+                <param name="namespace">/</param>
+            </result>    
+        </action>
+        
+        <action name="deletebossConfig" class="bossInfoAction" method="deleteBossById">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">bossProfile.action</param>
+                <param name="namespace">/</param>
+            </result>   
+        </action>
+        
+        <action name="bossProfile" class="bossInfoAction" method="queryAll">  
+            <result name="success">/configPage/bossConfigProfile.jsp</result>             
+        </action>
+        
+        <action name="itemPurchase" class="itemPurchase" method="buyitems">  
+            <result name="buyFail">/configPage/buyFail.jsp</result>
+            <result name="success">/userProfile/userItems.jsp</result>
+            <result name="error">/index.jsp</result>
+        </action>
+        
+        <action name="purchase" class="itemPurchase" method="purchase">  
+            <result name="UserError">/userProfile/giftError.jsp</result>
+            <result name="success">/userProfile/userItems.jsp</result>
+            <result name="error">/configPage/buyFail.jsp</result>
+        </action>
+        
+        <action name="giftItems" class="itemPurchase" method="giftItems">  
+            <result name="UserError">/userProfile/giftError.jsp</result>
+            <result name="success">/userProfile/userItems.jsp</result>
+            <result name="error">/configPage/buyFail.jsp</result>
+        </action>
+        
+        <action name="itemUser" class="itemAction" method="queryItemUser">  
+            <result name="success">/userProfile/userItems.jsp</result>
+            <result name="error">/userProfile/userItemsError.jsp</result>
+        </action>
+        
+        <action name="itemHistoryUser" class="itemAction" method="queryItemHistory">  
+            <result name="success">/userProfile/userItemHistorys.jsp</result>
+            <result name="error">/userProfile/userItemHistorysError.jsp</result>
+        </action>
+        
+        <action name="rewardConfig" class="rewardConfig" method="addRewardInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result name="error">/configPage/configReward.jsp</result>
+        </action>
+        
+        <action name="querryReward" class="rewardConfig" method="queryAll">  
+            <result name="success">/configPage/rewardProfile.jsp</result>
+            <result name="error">/configPage/configReward.jsp</result>
+        </action>
+        
+        <action name="deleteReward" class="rewardConfig" method="delete">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryReward.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result name="error">/configPage/configReward.jsp</result>
+        </action>
+         
+        <action name="updateReward" class="rewardConfig" method="update">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryReward.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result name="error">/configPage/configReward.jsp</result>
+        </action>
+        
+        <action name="querryLottery" class="lotteryConfig" method="queryAll">  
+            <result name="success">/configPage/adminlotteryProfile.jsp</result>
+             <result name="error">/configPage/adminlotteryError.jsp</result>
+        </action>
+        
+        <action name="lotteryHistory" class="lotteryAction" method="queryAll">  
+            <result name="success">/configPage/lotteryHistory.jsp</result>
+             <result name="error">/configPage/lotteryError.jsp</result>
+        </action>
+        
+        <action name="querryUserLottery" class="lotteryConfig" method="queryByUserId">  
+            <result name="success">/configPage/lotteryProfile.jsp</result>
+            <result name="error">/configPage/lotteryError.jsp</result>
+        </action>
+        
+        <action name="lotteryConfig" class="lotteryConfig" method="addLotteryInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result name="error">/configPage/configLottery.jsp</result>
+        </action>
+        
+        <action name="addlotteryHistory" class="lotteryAction" method="addLotteryInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result name="error">/configPage/configLotteryHistory.jsp</result>
+        </action>
+        
+        <action name="updateLottery" class="lotteryAction" method="updateLottery">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">lotteryHistory.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">lotteryHistory.action</param>
+                <param name="namespace">/</param>
+            </result> 
+        </action>
+        
+        <action name="deleteLottery" class="lotteryAction" method="deleteLottery">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">lotteryHistory.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result  type="redirectAction" name="error">
+                <param name="actionName">lotteryHistory.action</param>
+                <param name="namespace">/</param>
+            </result> 
+        </action>
+        
+         <action name="showConfiguration" class="systemSettingAction" method="queryAll">  
+            <result name="success">/configPage/configuration.jsp</result>
+            <result name="error">/configPage/lotteryError.jsp</result>
+        </action>
+        
+         <action name="addconfiguration" class="systemSettingAction" method="addConfigInfo">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">showConfiguration.action</param>
+                <param name="namespace">/</param>
+            </result>   
+            <result name="error">/configPage/configLotteryHistory.jsp</result>
+        </action>
+        
+        <action name="updateConfig" class="systemSettingAction" method="updateConfig">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">showConfiguration.action</param>
+                <param name="namespace">/</param>
+            </result>   
+
+        </action>
+        
+        <action name="showConfigById" class="systemSettingAction" method="findById">  
+            <result name="success">/configPage/updateConfiguration.jsp</result>
+        </action>
+            
+        <action name="sendRequest" class="requestConfig" method="sendRequest">   
+            <result name="success">/configPage/requestSuccess.jsp</result>
+        </action>
+        
+        <action name="querryRequest" class="requestConfig" method="querryRequest">   
+            <result name="success">/configPage/requestPro.jsp</result>
+            <result name="error">/configPage/requestProError.jsp</result>
+        </action>
+        
+        <action name="configBoard" class="configBoardCast" method="addBoardCastInfo">   
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryBoardCast.action</param>
+                <param name="namespace">/</param>
+            </result> 
+             <result  type="redirectAction" name="error">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result> 
+        </action>        
+        <action name="querryBoardCast" class="configBoardCast" method="queryAll">   
+            <result name="success">/configPage/boardCastProfile.jsp</result>
+             <result name="error">/configPage/boardError.jsp</result>
+        </action>
+        
+         <action name="querryBoardCastTime" class="configBoardCast" method="queryBetween">   
+            <result name="success">/configPage/boardCastProfile.jsp</result>
+             <result name="error">/configPage/boardError.jsp</result>
+        </action>
+        
+         <action name="registerDevice" class="pnservice" method="addDeviceInfo">   
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result name="error">/configPage/DeviceError.jsp</result>
+        </action>
+        
+         <action name="findDevice" class="pnservice" method="findAllDevice">   
+            <result name="success">/configPage/deviceInfo.jsp</result>
+            <result name="error">/configPage/DeviceError.jsp</result>
+        </action>
+        
+         <action name="updateDevice" class="pnservice" method="updateDeviceInfo">   
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result name="error">/configPage/DeviceError.jsp</result>
+        </action>
+        
+         <action name="deleteDevice" class="pnservice" method="deleteDeviceInfo">   
+           <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result name="error">/configPage/DeviceError.jsp</result>
+        </action>
+        
+         <action name="pushNotification" class="pnservice" method="pushNotification">   
+            <result  type="redirectAction" name="success">
+                <param name="actionName">logAgain.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="addProduct" class="productAction" method="addProduct">  
+            <result name="success">/configPage/accaptSuccess.jsp</result>
+            <result name="error">/configPage/accaptError.jsp</result>
+        </action>
+        
+        <action name="updateProduct" class="productAction" method="updateProduct">  
+           <result  type="redirectAction" name="success">
+                <param name="actionName">querryProduct.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result  type="redirectAction" name="error">
+                <param name="actionName">querryProduct.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="deleteProduct" class="productAction" method="deleteProduct">  
+            <result  type="redirectAction" name="success">
+                <param name="actionName">querryProduct.action</param>
+                <param name="namespace">/</param>
+            </result>
+            <result  type="redirectAction" name="error">
+                <param name="actionName">querryProduct.action</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        
+        <action name="addProduct" class="productAction" method="addProduct">  
+            <result name="success">/configPage/accaptSuccess.jsp</result>
+            <result name="error">/configPage/accaptError.jsp</result>
+        </action>
+        
+         <action name="querryProduct" class="productAction" method="querryProduct">  
+            <result name="success">/configPage/productProfile.jsp</result>
+            <result name="error">/configPage/accaptError.jsp</result>
+        </action>
+        
+        <action name="iapLogInfo" class="iapLog" method="showIAPLog"> 
+            <result name="success">/configPage/iapLogProfile.jsp</result>
+            <result name="error">/configPage/iapLogError.jsp</result> 
+        </action>
+ 
+              
+        <!-- config page -->
+         <action name="configRoom" class="configAction" method="configRoom">   
+           <result name="success">/configPage/configRoom.jsp</result>
+        </action> 
+        
+        <action name="configItemInfo" class="configAction" method="configItem">   
+           <result name="success">/configPage/configItem.jsp</result>
+        </action>
+        
+        <action name="configReward" class="configAction" method="configReward">   
+            <result name="success">configPage/configReward.jsp</result>
+        </action>
+        <action name="configLottery" class="configAction" method="configLottery">   
+            <result name="success">/configPage/configLottery.jsp</result>
+        </action>  
+        <action name="configBoardCast" class="configAction" method="configBoardCast">   
+            <result name="success">/configPage/configBoardCast.jsp</result>
+        </action>   
+        <action name="searchBoardCast" class="configAction" method="searchBoardCast">   
+            <result name="success">/configPage/searchBoardCast.jsp</result>
+        </action>  
+         <action name="giftItem" class="configAction" method="giftItem">   
+            <result name="success">userProfile/giftItem.jsp</result>
+        </action>
+        <action name="purchaseItem" class="configAction" method="purchaseItem">   
+            <result name="success">userProfile/purchaseItem.jsp</result>
+        </action>
+        <action name="configBattle" class="configAction" method="startBattle">   
+            <result name="success">userProfile/startBattle.jsp</result>
+        </action>
+        <action name="configDevice" class="configAction" method="registerDevice">   
+            <result name="success">configPage/registerDevice.jsp</result>
+        </action>
+        <action name="register" class="configAction" method="registerPage">   
+            <result name="success">userProfile/register.jsp</result>
+        </action>
+        <action name="configPush" class="configAction" method="configPush">   
+            <result name="success">configPage/sendPush.jsp</result>
+        </action>
+         <action name="configLotteryHistory" class="configAction" method="configLotterHistory">   
+            <result name="success">configPage/configLotteryHistory.jsp</result>
+        </action>
+        <action name="configProduct" class="configAction" method="configProduct">   
+            <result name="success">configPage/configProduct.jsp</result>
+        </action>
+         <action name="configGold" class="configAction" method="configGold">   
+            <result name="success">configPage/updateUserGold.jsp</result>
+        </action>
+        <action name="configExp" class="configAction" method="configExp">   
+            <result name="success">configPage/updateUserExp.jsp</result>
+        </action>
+        <action name="configBossAll" class="configAction" method="configBoss">   
+            <result name="success">configPage/configBoss.jsp</result>
+        </action>
+        <action name="configUpdateBoss" class="configAction" method="configUpdateBoss">   
+            <result name="success">configPage/updateBossConfig.jsp</result>
+        </action>
+        <action name="configUpdateDevice" class="configAction" method="configUpdateDevice">   
+            <result name="success">configPage/updateDeviceInfo.jsp</result>
+        </action>
+        <action name="configupdateEvent" class="configAction" method="configUpdateEvent">   
+            <result name="success">configPage/updateEvent.jsp</result>
+        </action>
+        <action name="configaddEvent" class="configAction" method="configAddEvent">   
+            <result name="success">configPage/configEvent.jsp</result>
+        </action>
+        
+        <action name="configaddRank" class="configAction" method="configAddRank">   
+            <result name="success">configPage/configRankType.jsp</result>
+        </action>
+        
+         <action name="configChatLimit" class="configAction" method="configChatLimit">   
+            <result name="success">configPage/configChatLimit.jsp</result>
+        </action>
+        
+        <action name="configChatRoom" class="configAction" method="configChatRoom">   
+            <result name="success">configPage/configChatRoom.jsp</result>
+        </action>
+        
+        <action name="configTask" class="configAction" method="configTask">   
+            <result name="success">configPage/configTask.jsp</result>
+        </action>
+        
+        <action name="configSetting" class="configAction" method="configSetting">   
+            <result name="success">configPage/addConfiguration.jsp</result>
+        </action>
+        
+        <action name="goChat" class="chatSetting" method="chatSetting">
+        </action>
+        
+        <!-- web interface for client just return json  -->
+       
+        <action name="userAuth" class="userAuth" method="userAuth">
+        </action>
+        <action name="updateUserProfile" class="updateUserProfile" method="updateUserProfile">
+        </action>
+        <action name="userProfile" class="updateUserProfile" method="userProfile">
+        </action>
+        <action name="gameUserInfo" class="updateUserProfile" method="gameUserInfo">
+        </action>
+        <action name="updateDiamond" class="updateUserProfile" method="updateDiamond">  
+        </action>
+        <action name="registerDevice" class="registerDevice" method="registerDevice">
+        </action>
+        <action name="startBattle" class="startBattle" method="startBattle">
+        </action> 
+        <action name="endBattle" class="startBattle" method="endBattle">
+        </action>
+        <action name="rankTimes" class="startBattle" method="rankTimes">
+        </action>
+        <action name="showRoom" class="showRoom" method="queryAll">  
+        </action>
+        <action name="showItem" class="itemInfo" method="queryAll">  
+        </action>
+        <action name="buyItem" class="purchaseItem" method="buyitems">  
+        </action>
+        <action name="giftItem" class="purchaseItem" method="giftItems">  
+        </action>
+        <action name="consumeItem" class="purchaseItem" method="consumeItem">  
+        </action>
+        <action name="lotteryResultHistory" class="lotteryResultHistory" method="queryAll">  
+        </action>
+        <action name="detailLottery" class="detailLottery" method="addLotteryInfo">  
+        </action>
+        <action name="productInfo" class="productInfo" method="queryAll">  
+        </action>
+        <action name="broadCastInfo" class="boardCastPro" method="queryAll">  
+        </action>
+        <action name="iapPurchase" class="iapPurchase" method="iapPurchase">  
+        </action>
+        <action name="iapLog" class="iapLog" method="addIAPInfo">  
+        </action>
+        <action name="shareBoss" class="shareBoss" method="shareBoss">  
+        </action>
+        <action name="showUserBoss" class="showBoss" method="showBoss">  
+        </action>
+        <action name="showEvent" class="showEvent" method="showEvent">  
+        </action>
+        <action name="showBlackJackRank" class="showRank" method="showBlackJack">  
+        </action>
+        <action name="showResultBattle" class="showRank" method="showUserBattle">  
+        </action>
+        <action name="showResultGame" class="showRank" method="showUserGameType">  
+        </action>
+        <action name="showTotalTimes" class="showRank" method="showTotalNum">  
+        </action>
+       <!--  
+        <action name="updateResult" class="showRank" method="update">  
+        </action>
+      -->
+        <action name="showChatLimit" class="chatLimitInfo" method="queryAll">  
+        </action>
+        <action name="showChatLimitById" class="chatLimitInfo" method="queryById">  
+        </action>
+        
+        <action name="showChatContent" class="chatRoomInfo" method="queryAll">  
+        </action>
+        <action name="addChatContent" class="chatRoomInfo" method="add">  
+        </action>
+        
+        <action name="showNoFriend" class="friendRequestAction" method="queryallunFriend">  
+        </action>
+        
+        <action name="showFriends" class="friendRequestAction" method="showFriends">  
+        </action>
+        
+        <action name="sendRequestFriend" class="friendRequestAction" method="sendRequest">  
+        </action>
+        
+        <action name="acceptRequestFriend" class="friendRequestAction" method="acceptRequest">  
+        </action>
+        
+        <action name="querryRequestFriend" class="friendRequestAction" method="querryRequest">  
+        </action>
+        
+        <action name="cancelRequestFriend" class="friendRequestAction" method="cancelRequest">  
+        </action>
+        
+        <action name="sendRequstMail" class="friendRequestAction" method="sendRequstMail">  
+        </action>
+        
+        <action name="removeFriends" class="friendRequestAction" method="removeFriends">  
+        </action>
+        
+        <action name="createCode" class="inviteFriend" method="createCode">  
+        </action>
+        
+        <action name="showCode" class="inviteFriend" method="showCode">  
+        </action>
+        
+        <action name="accessCode" class="inviteFriend" method="accessCode">  
+        </action>
+        <action name="inviteNum" class="inviteFriend" method="totalInvite">  
+        </action>
+        
+        <action name="taskComplete" class="taskInterFace" method="taskComplete">  
+        </action>
+        
+        <action name="taskInfo" class="taskInterFace" method="taskList">  
+        </action>
+        
+        <action name="addLottery" class="detailLottery" method="addLotteryInfo">  
+        </action>
+        
+        <action name="getLottery" class="detailLottery" method="getUserLotteryHistory">  
+        </action>
+        
+        <action name="checkLottery" class="detailLottery" method="checkLottery">  
+        </action>
+        
+    </package>
+   
+</struts>   
+    

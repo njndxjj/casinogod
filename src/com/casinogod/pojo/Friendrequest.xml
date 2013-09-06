@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="friendRequest">
+    
+    <typeAlias alias="FriendRequest" type="com.casinogod.pojo.FriendRequest" /> 
+   
+    <resultMap id="requestInfor" class="FriendRequest"> 
+       
+        <result property="id" column="id" /> 
+        <result property="owenId" column="owenId" />  
+        <result property="userId" column="userId" />
+        <result property="requestDate" column="requestDate"/>
+        <result property="statue" column="statue"/>
+   
+    </resultMap>
+    
+    <insert id="insertRequest"  parameterClass="FriendRequest">
+        <![CDATA[ 
+           insert into casinoGod_friendRequest(owenId,userId,requestDate,statue)
+           values(#owenId#,#userId#,#requestDate#,#statue#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllRequest" parameterClass="java.lang.String"  resultMap="requestInfor">
+        <![CDATA[ 
+           select *  from casinoGod_friendRequest 
+          ]]>
+    </select>
+    
+    <select id="findRequestByOwen" parameterClass="java.lang.Long"  resultMap="requestInfor">
+        <![CDATA[ 
+           select *  from casinoGod_friendRequest  where owenId=#owenId# and statue=0
+          ]]>
+    </select>
+    
+    <select id="findRequestByUser" parameterClass="java.lang.Long"  resultMap="requestInfor">
+        <![CDATA[ 
+           select *  from casinoGod_friendRequest  where userId=#userId# and statue=0
+          ]]>
+    </select>
+    
+    <select id="findRequestByStatue" parameterClass="FriendRequest"  resultClass="java.lang.String">
+        <![CDATA[ 
+           select userId  from casinoGod_friendRequest  where statue=#statue# and owenId=#owenId#
+          ]]>
+    </select>
+    
+    <update id="updateStatue" parameterClass="FriendRequest">
+         <![CDATA[ 
+           update  casinoGod_friendRequest set statue=#statue# 
+          ]]>
+          <dynamic prepend="WHERE">
+            <isNotNull property="owenId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="owenId" compareValue="0">
+                  owenId = #owenId#
+                </isGreaterThan>
+            </isNotNull>
+            <isNotNull property="userId">
+                <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->
+                <isGreaterThan prepend=" and " property="userId" compareValue="0">
+                  userId = #userId#
+                </isGreaterThan>
+            </isNotNull>
+        </dynamic>
+    </update>
+    
+   <delete id="deleteRequest" parameterClass="java.util.Map">
+        <![CDATA[ delete from casinoGod_friendRequest
+        where owenId=#owenId# and userId=#userId#
+        ]]>
+    </delete>
+
+</sqlMap>

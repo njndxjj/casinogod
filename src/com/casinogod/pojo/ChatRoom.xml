@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="chatRoom">
+    
+    <typeAlias alias="ChatRoom" type="com.casinogod.pojo.ChatRoom" /> 
+   
+    <resultMap id="chatRoomInfo" class="ChatRoom"> 
+       
+        <result property="id" column="id" /> 
+        <result property="userId" column="userId" />  
+        <result property="content" column="content" />
+        <result property="updateTime" column="updateTime"/>
+        
+    </resultMap>
+    
+    <insert id="insertChat"  parameterClass="ChatRoom">
+        <![CDATA[ 
+           insert into casinoGod_chatRoom(userId,content,updateTime)
+           values(#userId#,#content#,#updateTime#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+       
+    <select id="findAllByTime" parameterClass="java.lang.String"  resultMap="chatRoomInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatRoom where updateTime>=#updateTime# order by updateTime desc
+           limit 20
+          ]]>
+    </select>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="chatRoomInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatRoom order by updateTime desc limit 100
+          ]]>
+    </select>
+    
+    <select id="findById" parameterClass="int"  resultMap="chatRoomInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatRoom  where id=#id#
+          ]]>
+    </select>
+    
+    <select id="findByUserId" parameterClass="int"  resultMap="chatRoomInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatRoom  where userId=#userId#
+          ]]>
+    </select>
+    
+    
+    
+    
+
+</sqlMap>

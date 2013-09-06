@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bossBattleInfo">
+   
+    <typeAlias alias="BossBattleInfo" type="com.casinogod.pojo.BossBattleInfo"/>
+    
+    <resultMap id="bossBattleInfo" class="BossBattleInfo"> 
+        <result property="bossType" column="bossType"/> 
+        <result property="maxHP" column="maxHP" />
+        <result property="startTime" column="startTime"/>
+        <result property="status" column="status" />
+        <result property="battleTime" column="battleTime" />
+        <result property="currentHP" column="currentHP"/>
+        <result property="bossInstance" column="bossInstance"/>
+        <result property="bossName" column="bossName"/>
+        <result property="bossImage" column="bossImage"/>
+    </resultMap>
+   
+    <insert id="insertBossBattleInfo" parameterClass="BossBattleInfo">
+       <![CDATA[
+        insert into casinoGod_bossBattleInfo(bossType,maxHP,startTime,status,
+        battleTime,currentHP,bossName,bossImage)values (#bossType#,#maxHP#,#startTime#,
+        #status#,#battleTime#,#currentHP#,#bossName#,#bossImage#);
+       ]]> 
+       <selectKey keyProperty="bossInstance" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="bossBattleInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossBattleInfo
+          ]]>
+    </select>
+    
+    <select id="findByBattle" parameterClass="java.util.Map"  resultMap="bossBattleInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossBattleInfo where bossType=#bossType# and bossInstance=#bossInstance# 
+           order by startTime desc
+          ]]>
+    </select>
+    
+    <select id="findByBossInstance" parameterClass="int"  resultMap="bossBattleInfo">
+        <![CDATA[ 
+           select *  from casinoGod_bossBattleInfo where  bossInstance=#bossInstance#
+          ]]>
+    </select>
+    
+    <update id="updateStatue" parameterClass="BossBattleInfo">
+       <![CDATA[ 
+           update casinoGod_bossBattleInfo 
+           set status=#status#,currentHP=#currentHP#
+           where bossInstance=#bossInstance#
+          ]]>
+    </update>
+     
+</sqlMap>

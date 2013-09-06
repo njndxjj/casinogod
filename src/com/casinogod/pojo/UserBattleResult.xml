@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userBattleResult">
+   
+    <typeAlias alias="UserBattleResult" type="com.casinogod.pojo.UserBattleResult"/>
+    
+    <resultMap id="userBattleResult" class="UserBattleResult"> 
+        <result property="userId" column="userId"/> 
+        <result property="gameType" column="gameType" />
+        <result property="battleType" column="battleType"/>
+        <result property="winTotal" column="winTotal"/>
+        <result property="loseTotal" column="loseTotal" />
+        <result property="totalResult" column="totalResult"/>
+    </resultMap>
+   
+    <insert id="insertUserBattle" parameterClass="userBattleResult">
+       <![CDATA[
+        insert into casinoGod_userBattleResult(userId,gameType,battleType,winTotal,loseTotal,
+        totalResult)values (#userId#,#gameType#,#battleType#,#winTotal#,#loseTotal#,#totalResult#);
+       ]]> 
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="userBattleResult">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleResult 
+          ]]>
+    </select>
+    
+    
+    <select id="findUserAndBattleType" parameterClass="java.util.Map"  resultMap="userBattleResult">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleResult where userId=#userId# and battleType=#battleType#
+          ]]>
+    </select>
+    
+    <select id="findUserAndGameType" parameterClass="java.util.Map"  resultMap="userBattleResult">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleResult where userId=#userId# and gameType=#gameType#
+          ]]>
+    </select>
+    
+    <select id="findUserAndGameTypeAndBattle" parameterClass="java.util.Map"  resultMap="userBattleResult">
+        <![CDATA[ 
+           select *  from casinoGod_userBattleResult where userId=#userId# and gameType=#gameType# and battleType
+           =#battleType#
+          ]]>
+    </select>
+    
+    <update id="updateResult" parameterClass="UserBattleResult" >
+         <![CDATA[ 
+           update  casinoGod_userBattleResult 
+           set totalResult=#totalResult#,loseTotal=#loseTotal#,winTotal=#winTotal#
+           where userId=#userId# and gameType=#gameType# and battleType=#battleType#
+          ]]>
+    </update>
+     
+</sqlMap>

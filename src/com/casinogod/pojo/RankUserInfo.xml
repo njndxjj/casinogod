@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="rankUserInfor">
+    
+    <typeAlias alias="RankUserInfo" type="com.casinogod.pojo.RankUserInfo" /> 
+   
+    <resultMap id="rankUserInfor" class="RankUserInfo"> 
+       
+        <result property="userId" column="userId" /> 
+        <result property="typeId" column="typeId" />  
+        <result property="rankValue" column="rankValue" />
+        <result property="updateTime" column="updateTime"/>
+        <result property="winTime" column="winTime"/>
+        <result property="loseTime" column="loseTime"/>
+        <result property="drawTime" column="drawTime"/>
+        <result property="totalMoney" column="totalMoney"/>
+        <result property="winMoney" column="winMoney"/>
+        <result property="loseMoney" column="loseMoney"/>
+        
+    </resultMap>
+    
+    <insert id="insertRankUser"  parameterClass="RankUserInfo">
+        <![CDATA[ 
+           insert into casinoGod_userRankInfo(userId,typeId,rankValue,updateTime,winTime,loseTime,drawTime,totalMoney,winMoney,loseMoney)
+           values(#userId#,#typeId#,#rankValue#,#updateTime#,#winTime#,#loseTime#,#drawTime#,#totalMoney#,#winMoney#,#loseMoney#);
+          ]]>
+    </insert>
+       
+    <select id="findType" parameterClass="int"  resultMap="rankUserInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userRankInfo where typeId=#typeId# order by winMoney
+           desc 
+          ]]>
+    </select>
+    
+     <select id="findTypeandUser" parameterClass="java.util.Map"  resultMap="rankUserInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userRankInfo where typeId=#typeId# and userId=#userId#
+          ]]>
+    </select>
+    
+    <update id="updateRankUser"  parameterClass="RankUserInfo">  
+        <![CDATA[ 
+           update casinoGod_userRankInfo 
+           set rankValue=#rankValue#,updateTime=#updateTime#,winTime=#winTime#,
+           loseTime=#loseTime#,drawTime=#drawTime#,totalMoney=#totalMoney#,winMoney=#winMoney#,loseMoney=#loseMoney#
+           where typeId=#typeId# and userId=#userId#
+          ]]>
+    </update>
+    
+    <delete id="deleteRank" parameterClass="int">
+        <![CDATA[ delete from casinoGod_rankType
+        where rankId=#rankId#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userAccout">
+   
+    <typeAlias alias="UserAccount" type="com.casinogod.pojo.UserAccount"/>
+    
+    <resultMap id="userAccount" class="UserAccount"> 
+        <result property="account" column="account"/> 
+        <result property="password" column="password" />
+        <result property="freeze" column="freeze" nullValue="0"/>
+        <result property="userType" column="userType"/>
+        <result property="snsId" column="snsId"/>
+        <result property="snsToken" column="snsToken"/>
+        <!-- 一对一设置 n+1 select 延时加载 通过 id得到-->
+        <result property="user" column="account" select="user.getUserInfo"/>  
+    </resultMap>
+    
+    <select id="getAccount" parameterClass="java.lang.Long"  resultMap="userAccount">
+        <![CDATA[ 
+           select *  from casinoGod_account  where account=#account#
+        ]]>
+        
+    </select>   
+    
+    <select id="getSNSAccount" parameterClass="java.util.HashMap"  resultMap="userAccount">
+        <![CDATA[ 
+           select *  from casinoGod_account 
+        ]]>
+           <dynamic prepend="WHERE">
+            <isNotEmpty prepend="and " property="userType">
+             userType = #userType#
+            </isNotEmpty>
+            <isNotEmpty prepend="and " property="snsId">
+             snsId = #snsId#
+            </isNotEmpty>
+        </dynamic>        
+    </select>
+    
+    <select id="findAllAccount" parameterClass="java.lang.String"  resultMap="userAccount">
+        <![CDATA[ 
+           select *  from casinoGod_account  
+          ]]>
+    </select>
+    
+    <insert id="insertAccount" parameterClass="UserAccount">
+       <![CDATA[
+        insert into casinoGod_account(password,freeze,userType,snsId,snsToken) values (#password#,#freeze#,#userType#,#snsId#,#snsToken#)
+       ]]> 
+        <selectKey keyProperty="account" resultClass="java.lang.Long">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <update id="updatepassword" parameterClass="UserAccount">
+       <![CDATA[  
+        update casinoGod_account
+        set    password = #password#
+        where  account = #account#
+         ]]>
+    </update>
+     
+</sqlMap>

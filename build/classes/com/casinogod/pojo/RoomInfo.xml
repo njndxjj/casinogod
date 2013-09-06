@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="roomInfo">
+   
+    <typeAlias alias="RoomInfo" type="com.casinogod.pojo.RoomInfo"/>
+    
+    <resultMap id="roomInfo" class="RoomInfo"> 
+        <result property="id" column="id"/> 
+        <result property="gameType" column="gameType" />
+        <result property="roomLevel" column="roomLevel"/>
+        <result property="levelScore" column="levelScore"/>
+        <result property="minHand" column="minHand" nullValue="0"/>
+        <result property="maxHand" column="maxHand" nullValue="0"/>
+        <result property="otherNotes" column="otherNotes"/>
+        <result property="beginTime" column="beginTime"/>
+        <result property="endTime" column="endTime"/>
+    </resultMap>
+   
+    <insert id="insertRoomInfo" parameterClass="RoomInfo">
+       <![CDATA[
+        insert into casinoGod_roomInfo(gameType,roomLevel,levelScore,minHand,maxHand,otherNotes,beginTime,endTime)values 
+        (#gameType#,#roomLevel#,#levelScore#,#minHand#,#maxHand#,#otherNotes#,#beginTime#,#endTime#);
+       ]]> 
+        <selectKey keyProperty="id" resultClass="int">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="roomInfo">
+        <![CDATA[ 
+           select *  from casinoGod_roomInfo 
+          ]]>
+    </select>
+    
+     <update id="updateRoom"  parameterClass="RoomInfo">  
+        <![CDATA[ 
+           update casinoGod_roomInfo set levelScore=#levelScore#,minHand=#minHand#,maxHand=#maxHand#,
+           beginTime=#beginTime#,endTime=#endTime#,otherNotes=#otherNotes#
+           where id=#id#;
+          ]]>
+    </update>
+    
+    <delete id="deleteRooom" parameterClass="int">
+        <![CDATA[ delete from casinoGod_roomInfo
+        where id=#id#
+        ]]>
+    </delete>
+     
+</sqlMap>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="product">
+    
+    <typeAlias alias="Product" type="com.casinogod.pojo.Product" /> 
+   
+    <resultMap id="productInfor" class="Product"> 
+       
+        <result property="id" column="id" /> 
+        <result property="productId" column="productId" />  
+        <result property="productName" column="productName" />
+        <result property="diamond" column="diamond"/>
+        <result property="unit" column="unit"/>
+        
+    </resultMap>
+    
+    <insert id="insertProduct"  parameterClass="Product">
+        <![CDATA[ 
+           insert into casinoGod_production(productId,productName,diamond,unit)
+           values(#productId#,#productName#,#diamond#,#unit#);
+          ]]>
+          <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllProduct" parameterClass="java.lang.String"  resultMap="productInfor">
+        <![CDATA[ 
+           select *  from casinoGod_production 
+          ]]>
+    </select>
+    
+    <select id="findProductById" parameterClass="java.lang.String"  resultMap="productInfor">
+        <![CDATA[ 
+           select *  from casinoGod_production  where productId=#productId#
+          ]]>
+    </select>
+    
+     <update id="updateProduct"  parameterClass="Product">  
+        <![CDATA[ 
+           update casinoGod_production set productId=#productId#,productName=#productName#,
+           diamond=#diamond#,unit=#unit#
+           where id=#id#;
+          ]]>
+    </update>
+    
+    <delete id="deleteProudct" parameterClass="int">
+        <![CDATA[ delete from casinoGod_production
+        where id=#id#
+        ]]>
+    </delete>
+
+</sqlMap>

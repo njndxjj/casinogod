@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="configuration">
+    
+    <typeAlias alias="Configuration" type="com.casinogod.pojo.Configuration" /> 
+   
+    <resultMap id="configurationInfor" class="Configuration"> 
+        <result property="id" column="id" />
+        <result property="winTimes" column="winTimes" /> 
+        <result property="rankSize" column="rankSize" /> 
+        <result property="bossRewardNum" column="bossRewardNum" /> 
+        <result property="invitedReward" column="invitedReward" /> 
+        <result property="invitedItem" column="invitedItem" /> 
+    </resultMap>
+    
+    <insert id="insertConfiguration"  parameterClass="Configuration">
+        <![CDATA[ 
+           insert into casinoGod_configuration(winTimes,rankSize,bossRewardNum,invitedReward,invitedItem)
+           values(#winTimes#,#rankSize#,#bossRewardNum#,#invitedReward#,#invitedItem#);
+          ]]>
+         <selectKey keyProperty="id" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+         </selectKey> 
+    </insert>
+       
+    <select id="findAllConfig" parameterClass="java.lang.String"  resultMap="configurationInfor">
+        <![CDATA[ 
+           select *  from casinoGod_configuration 
+          ]]>
+    </select>
+    
+    <select id="findConfigById" parameterClass="int"  resultMap="configurationInfor">
+        <![CDATA[ 
+           select *  from casinoGod_configuration  where id=#id#
+          ]]>
+    </select>
+    
+    <update id="updateConfig"  parameterClass="Configuration">  
+        <![CDATA[ 
+           update casinoGod_configuration 
+           set winTimes=#winTimes#,rankSize=#rankSize#,bossRewardNum=#bossRewardNum#,
+           invitedReward=#invitedReward#,invitedItem=#invitedItem#
+           where id=#id#;
+          ]]>
+    </update>
+    
+   
+    
+    
+
+</sqlMap>

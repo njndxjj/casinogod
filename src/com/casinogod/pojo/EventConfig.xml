@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="eventConfig">
+    
+    <typeAlias alias="EventConfig" type="com.casinogod.pojo.EventConfig" /> 
+   
+    <resultMap id="eventInfor" class="EventConfig"> 
+       
+        <result property="eventId" column="eventId" /> 
+        <result property="eventType" column="eventType" />  
+        <result property="startTime" column="startTime" />
+        <result property="endTime" column="endTime"/>
+        <result property="description" column="description"/>
+        <result property="title" column="title"/>
+        <result property="imageUrl" column="imageUrl"/>
+        <result property="frequency" column="frequency"/>
+        <result property="detailData" column="detailData"/>
+         <result property="enable" column="enable"/>
+    </resultMap>
+    
+    <insert id="insertEvent"  parameterClass="EventConfig">
+        <![CDATA[ 
+           insert into casinoGod_eventConfig(eventType,startTime,endTime,description,title,imageUrl,frequency,detailData,enable)
+           values(#eventType#,#startTime#,#endTime#,#description#,#title#,#imageUrl#,#frequency#,#detailData#,#enable#);
+          ]]>
+          <selectKey keyProperty="eventId" resultClass="int">  
+            SELECT LAST_INSERT_ID()  
+            </selectKey> 
+    </insert>
+       
+    <select id="findAllEvent" parameterClass="java.lang.String"  resultMap="eventInfor">
+        <![CDATA[ 
+           select *  from casinoGod_eventConfig 
+          ]]>
+    </select>
+    
+    <select id="findEventById" parameterClass="int"  resultMap="eventInfor">
+        <![CDATA[ 
+           select *  from casinoGod_eventConfig  where eventId=#eventId#
+          ]]>
+    </select>
+    
+    <select id="findEventByType" parameterClass="int"  resultMap="eventInfor">
+        <![CDATA[ 
+           select *  from casinoGod_eventConfig  where eventType=#eventType#
+          ]]>
+    </select>
+    
+    <select id="findEventByEnable" parameterClass="int"  resultMap="eventInfor">
+        <![CDATA[ 
+           select *  from casinoGod_eventConfig  where enable=#enable#
+          ]]>
+    </select>
+    
+    <update id="updateEvent"  parameterClass="EventConfig">  
+        <![CDATA[ 
+           update casinoGod_eventConfig set startTime=#startTime#,
+           endTime=#endTime#,description=#description#,title=#title#,enable=#enable#,
+           imageUrl=#imageUrl#,frequency=#frequency#,detailData=#detailData#
+           where eventId=#eventId#;
+          ]]>
+    </update>
+    
+    <delete id="deleteEvent" parameterClass="int">
+        <![CDATA[ delete from casinoGod_eventConfig
+        where eventId=#eventId#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>

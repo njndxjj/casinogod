@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="friendInvite">
+    
+    <typeAlias alias="FriendInvite" type="com.casinogod.pojo.FriendInvite" /> 
+   
+    <resultMap id="friendInviteInfo" class="FriendInvite"> 
+       
+        <result property="userId" column="userId" /> 
+        <result property="inviteCode" column="inviteCode" />  
+        <result property="createTime" column="createTime" />
+        <result property="friendCount" column="friendCount"/>
+        
+    </resultMap>
+    
+    <insert id="insertCode"  parameterClass="FriendInvite">
+        <![CDATA[ 
+           insert into casinoGod_friendInvite(userId,inviteCode,createTime,friendCount)
+           values(#userId#,#inviteCode#,#createTime#,#friendCount#);
+          ]]>
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="friendInviteInfo">
+        <![CDATA[ 
+           select *  from casinoGod_friendInvite 
+          ]]>
+    </select>
+    
+    <select id="findById" parameterClass="int"  resultMap="friendInviteInfo">
+        <![CDATA[ 
+           select *  from casinoGod_friendInvite  where userId=#userId#
+          ]]>
+    </select>
+    
+     <select id="findByCode" parameterClass="java.lang.String"  resultMap="friendInviteInfo">
+        <![CDATA[ 
+           select *  from casinoGod_friendInvite  where inviteCode=#inviteCode#
+          ]]>
+    </select>
+    
+    <update id="updateCount" parameterClass="FriendInvite"  >
+        <![CDATA[ 
+           update casinoGod_friendInvite set friendCount=#friendCount#    where userId=#userId#
+          ]]>
+    </update>
+      
+
+</sqlMap>

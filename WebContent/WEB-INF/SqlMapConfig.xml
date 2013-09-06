@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings lazyLoadingEnabled="true" useStatementNamespaces="true"/>
+	<sqlMap resource="com/casinogod/pojo/UserTask.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Configuration.xml"/>
+	<sqlMap resource="com/casinogod/pojo/UserBattleResult.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Task.xml"/>
+	<sqlMap resource="com/casinogod/pojo/InviteTable.xml"/>
+	<sqlMap resource="com/casinogod/pojo/FriendInvite.xml"/>
+	<sqlMap resource="com/casinogod/pojo/ChatRoom.xml"/>
+	<sqlMap resource="com/casinogod/pojo/ChatLimit.xml"/>
+	<sqlMap resource="com/casinogod/pojo/RankUserInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/RankType.xml"/>
+	<sqlMap resource="com/casinogod/pojo/EventConfig.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BossInstanceUserInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/IAPlog.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BossUserInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BossBattleInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BossConfig.xml"/>
+	<sqlMap resource="com/casinogod/pojo/AuthToken.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Product.xml"/>
+	<sqlMap resource="com/casinogod/pojo/UserBattleHistory.xml"/>
+    <sqlMap resource="com/casinogod/pojo/LotteryHistory.xml"/>
+	<sqlMap resource="com/casinogod/pojo/UserDevice.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BoardCastInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Friendrequest.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Lottery.xml"/>
+	<sqlMap resource="com/casinogod/pojo/LogInReward.xml"/> 
+	<sqlMap resource="com/casinogod/pojo/LogInRewardConfig.xml"/> 
+	<sqlMap resource="com/casinogod/pojo/User.xml"/>  
+	<sqlMap resource="com/casinogod/pojo/ItemHistory.xml"/>
+	<sqlMap resource="com/casinogod/pojo/ItemUser.xml"/>
+	<sqlMap resource="com/casinogod/pojo/Item.xml"/>
+	<sqlMap resource="com/casinogod/pojo/RoomInfo.xml"/>
+	<sqlMap resource="com/casinogod/pojo/BattleHistory.xml"/> 
+	<sqlMap resource="com/casinogod/pojo/UserAccount.xml"/>
+	  
+</sqlMapConfig>

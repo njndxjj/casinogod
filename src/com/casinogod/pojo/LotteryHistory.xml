@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lotteryHistory">
+    
+    <typeAlias alias="LotteryHistory" type="com.casinogod.pojo.LotteryHistory" /> 
+   
+    <resultMap id="lotteryHistory" class="LotteryHistory"> 
+       
+        <result property="lotteryId" column="lotteryId" /> 
+        <result property="lotteryType" column="lotteryType" />  
+        <result property="openDateTime" column="openDateTime" />
+        <result property="result" column="result"/>
+        
+    </resultMap>
+    
+    <insert id="insertlottery"  parameterClass="LotteryHistory">
+        <![CDATA[ 
+           insert into casinoGod_lotteryHistory(lotteryId,lotteryType,openDateTime,result)
+           values(#lotteryId#,#lotteryType#,#openDateTime#,#result#);
+          ]]> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="lotteryHistory">
+        <![CDATA[ 
+           select * from casinoGod_lotteryHistory 
+          ]]>
+    </select>
+       
+     <select id="findlotteryById" parameterClass="int"  resultMap="lotteryHistory">
+        <![CDATA[ 
+           select *  from casinoGod_lotteryHistory  where lotteryId=#lotteryId#
+          ]]>
+    </select>
+    
+    <update id="updateLottery"  parameterClass="LotteryHistory">  
+        <![CDATA[ 
+           update casinoGod_lotteryHistory set result=#result#,openDateTime=#openDateTime#
+           where lotteryId=#lotteryId#
+          ]]>
+    </update>
+    
+    <delete id="deleteLottery" parameterClass="int">
+        <![CDATA[ delete from casinoGod_lotteryHistory
+        where lotteryId=#lotteryId#
+        ]]>
+    </delete>
+
+</sqlMap>

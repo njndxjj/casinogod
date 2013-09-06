@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lottery">
+    
+    <typeAlias alias="Lottery" type="com.casinogod.pojo.Lottery" /> 
+   
+    <resultMap id="lotteryInfor" class="Lottery"> 
+       
+        <result property="userId" column="userId" />  
+        <result property="lotteryId" column="lotteryId" />  
+        <result property="lotteryValue" column="lotteryValue" />
+        <result property="betAmount" column="betAmount"/>
+        <result property="result" column="result" nullValue="0"/>
+        <result property="level" column="level" nullValue="0"/>
+        <result property="num" column="num" nullValue="0"/>
+        <result property="betDateTime" column="betDateTime"/>
+        
+    </resultMap>
+    
+    <insert id="insertlottery"  parameterClass="Lottery">
+        <![CDATA[ 
+           insert into casinoGod_userLottery(userId,lotteryId,lotteryType,lotteryValue,betAmount,result,level,num,betDateTime)
+           values(#userId#,#lotteryId#,#lotteryType#,#lotteryValue#,#betAmount#,#result#,#level#,#num#,#betDateTime#);
+          ]]> 
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="lotteryInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userLottery 
+          ]]>
+    </select>
+       
+     <select id="findlotteryByUserId" parameterClass="java.lang.Long"  resultMap="lotteryInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userLottery  where userId=#userId#
+          ]]>
+    </select>
+    
+    <select id="findlotteryById" parameterClass="int"  resultMap="lotteryInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userLottery  where lotteryId=#lotteryId#
+          ]]>
+    </select>
+    
+     <select id="findlotteryByUserIdAndLottery" parameterClass="java.util.Map"  resultMap="lotteryInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userLottery  where userId=#userId# and lotteryId=#lotteryId#
+          ]]>
+    </select>
+    
+     <select id="findlotteryByIdAndLevel" parameterClass="java.util.Map"  resultMap="lotteryInfor">
+        <![CDATA[ 
+           select *  from casinoGod_userLottery  where lotteryId=#lotteryId# and level=#level#
+          ]]>
+    </select>
+    
+    <update id="updateResult" parameterClass="Lottery"  >
+        <![CDATA[ 
+           update casinoGod_userLottery set 
+           level=#level#,result=#result#
+           where userId=#userId# and lotteryId=#lotteryId#
+          ]]>
+    </update>
+    
+     
+
+</sqlMap>

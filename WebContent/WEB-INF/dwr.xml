@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+ <dwr> 
+ 
+	 <allow> 
+	 	<!-- 显示异常 -->
+		<convert converter="bean" match="java.lang.StackTraceElement" />
+  		<convert converter="exception" match="java.lang.Exception" />
+  	
+		 <create creator="new" javascript="Chat" scope="session"> 
+		 	<param name="class" value="com.casinogod.action.Chat" /> 
+		 	<include method="send"/>
+		 	<include method="updateUserList"/>
+		 	<include method="userExit"/>
+		 	<include method="sendTo"/>
+		 </create>
+	 </allow> 
+ </dwr>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="chatLimit">
+    
+    <typeAlias alias="ChatLimit" type="com.casinogod.pojo.ChatLimit" /> 
+   
+    <resultMap id="chatLimitInfo" class="ChatLimit"> 
+       
+        <result property="userId" column="userId" />  
+        <result property="startTime" column="startTime" />
+        <result property="endTime" column="endTime"/>
+        
+    </resultMap>
+    
+    <insert id="insertLimit"  parameterClass="ChatLimit">
+        <![CDATA[ 
+           insert into casinoGod_chatLimit(userId,startTime,endTime)
+           values(#userId#,#startTime#,#endTime#);
+          ]]>
+    </insert>
+       
+    <select id="findAll" parameterClass="java.lang.String"  resultMap="chatLimitInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatLimit
+          ]]>
+    </select>
+    
+    <select id="findById" parameterClass="int"  resultMap="chatLimitInfo">
+        <![CDATA[ 
+           select *  from casinoGod_chatLimit  where userId=#userId#
+          ]]>
+    </select>
+    
+    <update id="updateLimit"  parameterClass="ChatLimit">  
+        <![CDATA[ 
+           update casinoGod_chatLimit set startTime=#startTime#,endTime=#endTime#
+           where userId=#userId#;
+          ]]>
+    </update>
+    
+    <delete id="deleteLimit" parameterClass="int">
+        <![CDATA[ delete from casinoGod_chatLimit
+        where userId=#userId#
+        ]]>
+    </delete>
+    
+    
+
+</sqlMap>
