@@ -1,5 +1,7 @@
 package com.casinogod.utility;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,6 +12,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 public class Utility {	
@@ -283,4 +287,38 @@ public class Utility {
 		
 		return flag;
 	}
+	
+	public static String postdata (HttpServletRequest request) throws IOException
+	{
+		  System.out.println("getContentType===="+request.getContentType());
+		  
+		  //获取HTTP请求的输入流
+	      //已HTTP请求输入流建立一个BufferedReader对象
+	      
+		  BufferedReader br =  request.getReader();
+	      String buffer = null;
+	      StringBuffer buff = new StringBuffer();
+	      while ((buffer = br.readLine()) != null) {
+	              buff.append(buffer+"\n");
+	      }
+	      br.close();
+	      System.out.println("接收post发送数据:\n"+buff.toString());
+	      return buff.toString().trim();
+
+	}
+	
+	public static String splitString(String str,String temp){ 
+		String result = null; 
+		if (str.indexOf(temp) != -1) { 
+		if (str.substring(str.indexOf(temp)).indexOf("&") != -1) { 
+		result = str.substring(str.indexOf(temp)).substring(str.substring(str.indexOf(temp)).indexOf("=")+1, str.substring(str.indexOf(temp)).indexOf("&")); 
+		} else { 
+		result = str.substring(str.indexOf(temp)).substring(str.substring(str.indexOf(temp)).indexOf("=")+1); 
+		} 
+		} 
+		
+		return result; 
+
+		} 
+
 }

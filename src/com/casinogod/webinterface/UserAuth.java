@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -7,11 +8,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.casinogod.battle.UserType;
@@ -37,7 +40,7 @@ import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class UserAuth extends ActionSupport implements ServletResponseAware {
+public class UserAuth extends ActionSupport implements ServletResponseAware,ServletRequestAware {
     /**
 	 * 
 	 */
@@ -76,6 +79,14 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 	
 	private HttpServletResponse response;
 	
+	private HttpServletRequest request;
+	
+
+	public void setServletRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub		
+		this.request=request;		
+	}
+	
 
 	public void setFriendInvitedService(FriendInvitedService friendInvitedService) {
 		this.friendInvitedService = friendInvitedService;
@@ -90,6 +101,18 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
     User user=null ;  
     
     boolean flag=false;
+    
+    String postdata="";
+    
+    try {
+		postdata=Utility.postdata(this.request);
+    	System.out.println("postdata-->"+postdata);
+    	System.out.println("decode--->"+CustomBase64.decode(postdata));
+	
+    } catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
     
     List <Configuration> listConfig=configurationDAO.querAll();
     
@@ -345,6 +368,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 		this.response=response;
 	}
 
+
 	public void setSnsId(String snsId) {
 		this.snsId = snsId;
 	}
@@ -385,6 +409,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 	public void setConfigurationDAO(ConfigurationDAOImpl configurationDAO) {
 		this.configurationDAO = configurationDAO;
 	}
+
+	
+	
+	
 	
 	
 	
