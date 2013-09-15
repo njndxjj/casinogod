@@ -2,6 +2,7 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,6 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 import net.sf.json.JSONObject;
 
@@ -43,11 +43,6 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String account;
-	
-    private String bossInstance;
-    
-    private String env;
 	
 	private HttpServletResponse response;
 	
@@ -72,9 +67,7 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 	private final static String password="GodCasino201#";
 
 
-	public void setAccount(String account) {
-		this.account = account;
-	}
+	
 
 	public void setServletResponse(HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -86,9 +79,6 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 		this.resquest=request;
 	}
 	
-	public void setBossInstance(String bossInstance) {
-		this.bossInstance = bossInstance;
-	}
 	
 	
 
@@ -101,9 +91,6 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 		this.logInRewardService = logInRewardService;
 	}
 	
-	public void setEnv(String env) {
-		this.env = env;
-	}
 	
 
 	public void setUserDeviceService(UserDeviceService userDeviceService) {
@@ -132,14 +119,33 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 	public void shareBoss()
 	
 	{
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String bossInstance=Utility.splitString(decode, "bossInstance");
+	    String env=Utility.splitString(decode, "env");
 			
 		long userID=0;
 		int battleTypePara=0;
 		
-		if(CustomBase64.decode(this.account)!=null)
-			userID = Long.parseLong(CustomBase64.decode(this.account));
+		if(account!=null)
+			userID = Long.parseLong(account);
 		String responseJSON  = "";
-		if(CustomBase64.decode(this.account)!=null&&Integer.valueOf(CustomBase64.decode(this.bossInstance))>0)
+		if(account!=null&&Integer.valueOf(bossInstance)>0)
 		{
 			//share raidboss 
 			
@@ -226,7 +232,7 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 	    //invoke push method
 	    PushNotificationThread pn=new PushNotificationThread();
 	     
-	    boolean production=EnvType.values()[Integer.valueOf(CustomBase64.decode(env))].toString().equalsIgnoreCase(("Production"));
+	    boolean production=EnvType.values()[Integer.valueOf(env)].toString().equalsIgnoreCase(("Production"));
 	    
 	    List <SimpleUser> simpleUserList=new ArrayList<SimpleUser>();
 	    
@@ -324,7 +330,7 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 		}
 		finally
 		{
-			pn.sendPush(keystore, password, production, tokens, true, 2,"øÏ¿¥º”»ÎraidBoss’Ω∂∑∞…!!");
+			pn.sendPush(keystore, password, production, tokens, true, 2,"Âø´Êù•Âä†ÂÖ•raidBossÊàòÊñóÂêß!!");
 		}
 	
   }

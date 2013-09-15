@@ -2,6 +2,7 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,10 +55,7 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 	
 	
 
-	public void setAccount(String account) {
-		this.account = account;
-	}
-
+	
 	public void setServletResponse(HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		this.response = response;
@@ -82,9 +80,7 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 	}
 	
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+
 
 	private static Logger log = Logger.getLogger(ShowBoss.class); 
 
@@ -93,13 +89,32 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 	{
 		
 		String responseJSON  = "";
-		if(this.account!=null)
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String status=Utility.splitString(decode, "status");
+		
+	    if(account!=null)
 		{
 			//share raidboss 
 		
 		//response
 		
-		List <BossInstanceUserInfo> allInstanceUser=bossInstanceService.queryByUserId(Long.valueOf(CustomBase64.decode(this.account)));
+		List <BossInstanceUserInfo> allInstanceUser=bossInstanceService.queryByUserId(Long.valueOf(account));
 		
 		
 		

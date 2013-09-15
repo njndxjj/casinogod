@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -7,11 +8,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.casinogod.battle.UserType;
@@ -37,23 +40,13 @@ import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class UserAuth extends ActionSupport implements ServletResponseAware {
+public class UserAuth extends ActionSupport implements ServletResponseAware,ServletRequestAware {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-    private String account;
-	
-	private String password;
-	
-	private String userType;
-	
-	private String snsId;
-		
-	private String snsToken;
-	
-	private String deviceToken;
+   
     
 	private UserLogIn userLogInService;
 	
@@ -76,6 +69,14 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 	
 	private HttpServletResponse response;
 	
+	private HttpServletRequest request;
+	
+
+	public void setServletRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub		
+		this.request=request;		
+	}
+	
 
 	public void setFriendInvitedService(FriendInvitedService friendInvitedService) {
 		this.friendInvitedService = friendInvitedService;
@@ -91,6 +92,27 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
     
     boolean flag=false;
     
+    String postdata="";
+    String decode="";
+    
+    try {
+		postdata=Utility.postdata(this.request);
+		decode=CustomBase64.decode(postdata);
+    	System.out.println("postdata-->"+postdata);
+    	System.out.println("decode--->"+CustomBase64.decode(postdata));
+	
+    } catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    
+    String account=Utility.splitString(decode, "account");
+    String pw=Utility.splitString(decode, "password");
+    String userType=Utility.splitString(decode, "userType");
+    String snsId=Utility.splitString(decode, "snsId");
+    String sToken=Utility.splitString(decode, "snsToken");
+    String deviceToken=Utility.splitString(decode, "deviceToken");
+    
     List <Configuration> listConfig=configurationDAO.querAll();
     
     if(listConfig.size()>0)
@@ -104,21 +126,21 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
     }
     log.info("winTimes--->"+(Integer) DataStore.setting.get("winTimes"));
     
-    if(CustomBase64.decode(this.password)!=null)
+    if(pw!=null)
     {
     
-    	String password=MD5Util.string2MD5(CustomBase64.decode(this.password));
+    	String password=MD5Util.string2MD5(pw);
    
-    	user = userLogInService.login(Integer.valueOf(CustomBase64.decode(this.account)), password); 
+    	user = userLogInService.login(Integer.valueOf(account), password); 
     
-    	flag = userLogInService.isFreeze(Integer.valueOf(CustomBase64.decode(this.account)));
+    	flag = userLogInService.isFreeze(Integer.valueOf(account));
     }
     
-    if(Integer.valueOf(CustomBase64.decode(this.userType))>=0&&CustomBase64.decode(this.snsId)!=null)
+    if(Integer.valueOf(userType)>=0&&snsId!=null)
     {
-    	String snsToken=MD5Util.string2MD5(CustomBase64.decode(this.snsToken));
+    	String snsToken=MD5Util.string2MD5(sToken);
     	
-    	user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(CustomBase64.decode(this.userType))].toString(), CustomBase64.decode(this.snsId)); 
+    	user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(userType)].toString(), snsId); 
     	
     	if(user==null)
     	{
@@ -134,9 +156,9 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
     		}
     		String nickName=Utility.randomString();
     		String password=MD5Util.string2MD5("111111");
-    		gender=userProfileService.addUserSNA(nickName, password, gender?"f":"m", "test@test.com", "123456", UserType.values()[Integer.valueOf(CustomBase64.decode(this.userType))].toString(), snsId, snsToken);
+    		gender=userProfileService.addUserSNA(nickName, password, gender?"f":"m", "test@test.com", "123456", UserType.values()[Integer.valueOf(userType)].toString(), snsId, snsToken);
     		DataStore.registerSex.put("gender", gender);
-    		user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(CustomBase64.decode(this.userType))].toString(), this.snsId); 
+    		user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(userType)].toString(), snsId); 
     		
         }
     	
@@ -246,12 +268,12 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
         		}
         		
         		//update device token
-        		if(this.deviceToken!=null)
+        		if(deviceToken!=null)
         		{
         			List <String> listDevice=userDeviceService.queryById(user.getUserId());
         			if(listDevice.size()<=0)
         			{
-        				String []token=this.deviceToken.substring(1, this.deviceToken.length()-1).split(" ");
+        				String []token=deviceToken.substring(1, deviceToken.length()-1).split(" ");
         				StringBuffer device =new StringBuffer();
         				for(String test:token)
         					device.append(test);
@@ -262,10 +284,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
         		
         	}
         }
-       String snsId=userLogInService.getAccount(user.getUserId()).getSnsId();
+       String snsid=userLogInService.getAccount(user.getUserId()).getSnsId();
         UserAuthResponse uaResponse = new UserAuthResponse();
 	    uaResponse.setUserinfo(user);
-	    uaResponse.setSnsId(snsId);
+	    uaResponse.setSnsId(snsid);
 	    String tokenString=Utility.randomString(16);
 	    uaResponse.setToken(tokenString);//Need real code	    
 	    uaResponse.setGameServerUrl(GameServerFactory.getGameServer(user.getUserId()));	    
@@ -303,7 +325,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 	else
 	{
 		ErrorResponse errorResponse = new ErrorResponse();
-		errorResponse.setErrorMessage("Cannot find the User: " + this.account + ", " + this.password);
+		errorResponse.setErrorMessage("Cannot find the User: " + account + ", " + pw);
 		errorResponse.setErrorAction("");
 		errorResponse.setErrorCode(ErrorCode.UserAuth_AccountFreeze);
 			
@@ -327,12 +349,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
                
     }
     
-    public void setAccount(String account) {
-		this.account = account;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+   
 
 	public void setUserLogInService(UserLogIn userLogInService) {
 		
@@ -345,17 +362,8 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 		this.response=response;
 	}
 
-	public void setSnsId(String snsId) {
-		this.snsId = snsId;
-	}
 
-	public void setSnsToken(String snsToken) {
-		this.snsToken = snsToken;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
+	
 
 	public void setUserProfileService(UserProfile userProfileService) {
 		this.userProfileService = userProfileService;
@@ -370,10 +378,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 		this.logInRewardConfigService = logInRewardConfigService;
 	}
 
-	public void setDeviceToken(String deviceToken) {
-		this.deviceToken = deviceToken;
-	}
-
+	
 	public void setUserDeviceService(UserDeviceService userDeviceService) {
 		this.userDeviceService = userDeviceService;
 	}
@@ -385,6 +390,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware {
 	public void setConfigurationDAO(ConfigurationDAOImpl configurationDAO) {
 		this.configurationDAO = configurationDAO;
 	}
+
+	
+	
+	
 	
 	
 	

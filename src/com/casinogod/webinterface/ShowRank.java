@@ -2,6 +2,7 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import com.casinogod.service.UserResultService;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.DataStore;
 import com.casinogod.utility.ErrorCode;
+import com.casinogod.utility.Utility;
+import com.mysql.jdbc.Util;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class ShowRank extends ActionSupport implements ServletResponseAware,ServletRequestAware {
@@ -40,19 +43,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String account;
-	
-	private String battleType;
-	
-	private String gameType;
-	
-	private String totalResult;
-	
-	private String winTotal;
-	
-	private String loseTotal;
-	
-	private String typeId;
+
 	
 	private HttpServletResponse response;
 	
@@ -71,13 +62,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 	
 	
   
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
-	}
+	
 
 	public void setServletResponse(HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -109,28 +94,8 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 	}
 	
 	
-	public void setBattleType(String battleType) {
-		this.battleType = battleType;
-	}
 
-	public void setGameType(String gameType) {
-		this.gameType = gameType;
-	}
-	
-	
 
-	public void setTotalResult(String totalResult) {
-		this.totalResult = totalResult;
-	}
-
-	public void setWinTotal(String winTotal) {
-		this.winTotal = winTotal;
-	}
-
-	public void setLoseTotal(String loseTotal) {
-		this.loseTotal = loseTotal;
-	}
-	
 
 	public void setUserLogInService(UserLogIn userLogInService) {
 		this.userLogInService = userLogInService;
@@ -144,11 +109,28 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		
 		String responseJSON  = "";
 		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+		
 		int rank=0;
 		
 		int i=1;
 		
-		if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+		if(Integer.valueOf(account)>0)
 		{
 			List <RankType> rankTypeList=rankTypeService.queryById(1);
 			
@@ -179,7 +161,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					userList.add(simpleUser);
 					snsIds.add(snsId);
 					
-					if(rankUser.getUserId()==Integer.valueOf(CustomBase64.decode(this.account)))
+					if(rankUser.getUserId()==Integer.valueOf(account))
 						rank=i;
 					i++;
 				}
@@ -265,13 +247,31 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		
 		String responseJSON  = "";
 		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String typeId=Utility.splitString(decode, "typeId");
+		
 		int rank=0;
 		
 		int i=1;
 		
-		if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+		if(Integer.valueOf(account)>0)
 		{
-			List <RankType> rankTypeList=rankTypeService.queryById(Integer.valueOf(CustomBase64.decode(this.typeId)));
+			List <RankType> rankTypeList=rankTypeService.queryById(Integer.valueOf(typeId));
 		
 			
 			if(rankTypeList.size()>0)
@@ -304,7 +304,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					
 					snsIds.add(snsId);
 					
-					if(rankUser.getUserId()==Integer.valueOf(CustomBase64.decode(this.account)))
+					if(rankUser.getUserId()==Integer.valueOf(account))
 						rank=i;
 					i++;
 				}
@@ -363,17 +363,34 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 	{
 		
 		String responseJSON  = "";
+		String postdata="";
+		String decode="";
+	    
+	    try {
 		
-		if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String battleType=Utility.splitString(decode, "battleType");
+		
+		if(Integer.valueOf(account)>0)
 		{
-			List <UserBattleResult> resultList=userResultService.userBattleResult(Integer.valueOf(CustomBase64.decode(this.account)), 
-					Integer.valueOf(CustomBase64.decode(this.battleType)));
+			List <UserBattleResult> resultList=userResultService.userBattleResult(Integer.valueOf(account), 
+					Integer.valueOf(battleType));
 		
 			
 			SimpleUser simpleUser=new SimpleUser();
 			User user=new User();
 				
-			user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
+			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 			
 			
 			simpleUser.setGold(user.getGold());
@@ -384,7 +401,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			simpleUser.setNickName(user.getNickName());
 			simpleUser.setUserId(user.getUserId());
 			
-			String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 			
 				
 			Map <Object,Object> rankInfor=new HashMap<Object, Object>();
@@ -432,16 +449,35 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		
 		String responseJSON  = "";
 		
-		if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String gameType=Utility.splitString(decode, "gameType");
+	    
+		
+		if(Integer.valueOf(account)>0)
 		{
-			List <UserBattleResult> resultList=userResultService.userBattleResult(Integer.valueOf(CustomBase64.decode(this.account)), 
-					Integer.valueOf(CustomBase64.decode(this.gameType)));
+			List <UserBattleResult> resultList=userResultService.userBattleResult(Integer.valueOf(account), 
+					Integer.valueOf(gameType));
 			
 			SimpleUser simpleUser=new SimpleUser();
 			User user=new User();
 				
-			user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
-			String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
+			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());
@@ -495,17 +531,39 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		
 		String responseJSON  = "";
 		
-		if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String battleType=Utility.splitString(decode, "battleType");
+	    String gameType=Utility.splitString(decode, "gameType");
+	    String totalResult=Utility.splitString(decode, "totalResult");
+	    String winTotal=Utility.splitString(decode, "winTotal");
+	    String loseTotal=Utility.splitString(decode, "loseTotal");
+		
+		if(Integer.valueOf(account)>0)
 		{
-			userResultService.updateResult(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.battleType)), 
-					Integer.valueOf(CustomBase64.decode(this.gameType)),Integer.valueOf(CustomBase64.decode(this.totalResult))
-					, Integer.valueOf(CustomBase64.decode(this.winTotal)),Integer.valueOf(CustomBase64.decode(this.loseTotal)) );
+			userResultService.updateResult(Integer.valueOf(account), Integer.valueOf(battleType), 
+					Integer.valueOf(gameType),Integer.valueOf(totalResult)
+					, Integer.valueOf(winTotal),Integer.valueOf(loseTotal) );
 			
 			SimpleUser simpleUser=new SimpleUser();
 			User user=new User();
 				
-			user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
-			String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
+			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());
@@ -518,8 +576,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 			Map <Object,Object> rankInfor=new HashMap<Object, Object>();
 			
-			List <UserBattleResult> lists=userResultService.userBattleResult(Integer.valueOf(CustomBase64.decode(this.account)), 
-					Integer.valueOf(CustomBase64.decode(this.battleType)));
+			List <UserBattleResult> lists=userResultService.userBattleResult(Integer.valueOf(account), Integer.valueOf(battleType));
 				
 			rankInfor.put("userResult", lists);
 			rankInfor.put("simpleUser", simpleUser);	
