@@ -2,12 +2,15 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,21 +27,12 @@ import com.casinogod.utility.ErrorCode;
 import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class IAPPurchase extends ActionSupport implements ServletResponseAware {
+public class IAPPurchase extends ActionSupport implements ServletResponseAware,ServletRequestAware {
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-    private String account;
-    
-    private String receipt;
-    
-    private String productId;
-    
-    private String quantity;
-    
-    private String sandbox;
     
     
 	private UserProfileService userProfileService;
@@ -56,7 +50,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 	private static String production="https://buy.itunes.apple.com/verifyReceipt";
 	
 	
-	
+	private HttpServletRequest resquest;
     
    public void setProductService(ProductService productService) {
 		this.productService = productService;
@@ -68,20 +62,40 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 
 	public void iapPurchase()
     {
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String receiptde=Utility.splitString(decode, "receipt");
+	    String sandbox=Utility.splitString(decode, "sandbox");
+	    String account=Utility.splitString(decode, "account");
+	    String productId=Utility.splitString(decode, "productId");
+	    String quantity=Utility.splitString(decode, "quantity");
 	  
-		log.info("receiptToken -->" + CustomBase64.decode(this.receipt));
+		log.info("receiptToken -->" + receiptde);
 				
-		log.info("before base 64 "+ CustomBase64.decode(this.receipt));
 						
 		String success = null;
 		
 		CreateJson receiptJson=new CreateJson();
 		
-		receiptJson.add("receipt-data",  CustomBase64.decode(this.receipt));
+		receiptJson.add("receipt-data",  receiptde);
 		
 		String receipt=receiptJson.toString(true);
 		
-//		String receipt="{\"receipt-data\" : \""+ receiptBase + "\"}";
+///		String receipt="{\"receipt-data\" : \""+ receiptBase + "\"}";
 		
 		log.info("receipt ->"+receipt);
 				   
@@ -89,7 +103,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 	        
 	    try {
 	    	   	
-	     success=ConnectUtiltiy.send(receipt,Boolean.valueOf(this.sandbox)?sandBox:production);
+	     success=ConnectUtiltiy.send(receipt,Boolean.valueOf(sandbox)?sandBox:production);
 	     	
 	     Thread.sleep(100);
 			
@@ -127,11 +141,11 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 			   log.info("app product:"+ appProductId);
 			   log.info("app quantity :"+appQuantity);
 			   
-			   if(this.productId.equals(appProductId)&&appQuantity==Integer.valueOf(this.quantity))
+			   if(productId.equals(appProductId)&&appQuantity==Integer.valueOf(quantity))
 			   {
 				   // add diamond
 				   
-				   List <User> list=userProfileService.queryUserById(Long.valueOf(this.account));
+				   List <User> list=userProfileService.queryUserById(Long.valueOf(account));
 				   
 				   //add to iapLog
 				   
@@ -146,7 +160,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 				 
 				   if(list.size()>0)
 				   {
-					   iAPLogService.addIAPLog(Integer.valueOf(CustomBase64.decode(this.account)), appProductId,
+					   iAPLogService.addIAPLog(Integer.valueOf(account), appProductId,
 							   diamond, money, 1, Utility.getNowString());
 					   
 					   User user=list.get(0);
@@ -169,7 +183,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 				   }
 				   else
 				   {
-					   iAPLogService.addIAPLog(Integer.valueOf(CustomBase64.decode(this.account)), appProductId, appQuantity, money, -1, Utility.getNowString()); 
+					   iAPLogService.addIAPLog(Integer.valueOf(account), appProductId, appQuantity, money, -1, Utility.getNowString()); 
 					      
 					   ErrorResponse errorResponse = new ErrorResponse();
 					   errorResponse.setErrorMessage("error useraccount");
@@ -187,7 +201,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 			   else
 			   {
 				   
-				   iAPLogService.addIAPLog(Integer.valueOf(CustomBase64.decode(this.account)), appProductId, appQuantity, 0, -2, Utility.getNowString());
+				   iAPLogService.addIAPLog(Integer.valueOf(account), appProductId, appQuantity, 0, -2, Utility.getNowString());
 				   
 				   CreateJson prodcut=new CreateJson();
 				   prodcut.add("statue", -1);
@@ -202,7 +216,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 		   }
 		   else
 		   {
-			   iAPLogService.addIAPLog(Integer.valueOf(CustomBase64.decode(this.account)), this.productId, Integer.valueOf(this.quantity), 0, -3, Utility.getNowString());
+			   iAPLogService.addIAPLog(Integer.valueOf(account), productId, Integer.valueOf(quantity), 0, -3, Utility.getNowString());
 			   //invalid receipt
 			   ErrorResponse errorResponse = new ErrorResponse();
 			   errorResponse.setErrorMessage("inval receipt-data");
@@ -241,9 +255,7 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 	   	   
    }
 
-    public void setAccount(String account) {
-		this.account = account;
-	}
+  
 	
 	public void setServletResponse(HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -253,33 +265,24 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware {
 	public void setUserProfileService(UserProfileService userProfileService) {
 		this.userProfileService = userProfileService;
 	}
-
-
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
-
-	public void setSandbox(String sandbox) {
-		this.sandbox = sandbox;
-	}
+	
 
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
 	}
 
-	public void setReceipt(String receipt) {
-		this.receipt = receipt;
-	}
 
 
-	public static void setProduction(String production) {
-		IAPPurchase.production = production;
+	public void setServletRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		this.resquest=request;
 	}
+
+	public void setResquest(HttpServletRequest resquest) {
+		this.resquest = resquest;
+	}
+	
+	
 	
 	
 

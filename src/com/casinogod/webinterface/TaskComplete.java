@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,17 +51,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 	
 	private HttpServletRequest resquest;
 	
-	
-	private String taskId;
-	
-	private String account;
-	
-	private String battleType;
-	
-	private String gameType;
-	
-	private String taskType;
-	
+		
 	private BattleProfileService battleProfileService;
 	
 	
@@ -97,11 +88,6 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		this.response=response;
 	}
 	
-
-	public void setAccount(String account) {
-		this.account = account;
-	}
-
 	
 	public void setBattleProfileService(BattleProfileService battleProfileService) {
 		this.battleProfileService = battleProfileService;
@@ -126,23 +112,6 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		this.itemUserConfigService = itemUserConfigService;
 	}
 	
-
-	
-	public void setBattleType(String battleType) {
-		this.battleType = battleType;
-	}
-	
-	
-	public void setGameType(String gameType) {
-		this.gameType = gameType;
-	}
-	
-
-	public void setTaskType(String taskType) {
-		this.taskType = taskType;
-	}
-	
-	
 	public void setInvitedTableService(InvitedTableService invitedTableService) {
 		this.invitedTableService = invitedTableService;
 	}
@@ -152,27 +121,40 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		this.userTaskService = userTaskService;
 	}
 	
-	
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
 
 	public void taskComplete()
 	{	
 			
-			List <User> users=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(account)));
+			String postdata="";
+			String decode="";
+		    
+		    try {
 			
-			List <Task> taskList=taskService.queryById(Integer.valueOf(CustomBase64.decode(this.taskId)));
+		    	postdata=Utility.postdata(resquest);
+		    	decode=CustomBase64.decode(postdata);
+		    	System.out.println("addLotteryInfo-->"+postdata);
+		    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+			
+		    } catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		    
+		    String account=Utility.splitString(decode, "account");
+		    String taskId=Utility.splitString(decode,"taskId");
+		
+			List <User> users=userProfileService.queryUserById(Long.valueOf(account));
+			
+			List <Task> taskList=taskService.queryById(Integer.valueOf(taskId));
 			
 			Task task=taskList.get(0);
 			
 			List <UserTask>  userTask=userTaskService.queryByStatus
-					(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 
+					(Integer.valueOf(account), Integer.valueOf(taskId), 
 							Utility.getDateString(),1);
 			
-			List <UserTask>  userTaskFriend=userTaskService.queryByIdAndNoTime(Integer.valueOf(CustomBase64.decode(this.account)), 
-					Integer.valueOf(CustomBase64.decode(this.taskId)), 1);
+			List <UserTask>  userTaskFriend=userTaskService.queryByIdAndNoTime(Integer.valueOf(account), 
+					Integer.valueOf(taskId), 1);
 		
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 			Calendar day=Calendar.getInstance();
@@ -208,24 +190,24 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		    	  if(list.size()>0)
 		    	  {
 		    		  List <UserTask>  userTaskStatus=userTaskService.queryByStatus
-	    						(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString(),0);
+	    						(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString(),0);
 		    		  if(list.size()>=task.getTaskRate())
 		    		  {
 		    			  if(userTaskStatus.size()<=0)
 		    			  {
 		    				  //add 
-		    				  userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+		    				  userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 		    			  }
 		    			  else
 		    			  {
-		    				  userTaskService.updateType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+		    				  userTaskService.updateType(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 		    			  }
 		    			  temp=1;
 		    		  }
 		    		  else
 		    		  {
 		    			  if(userTaskStatus.size()<=0)
-		    				  userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 0, Utility.getNowString());
+		    				  userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 0, Utility.getNowString());
 		    		  }
 		    		  
 		    	  }
@@ -251,7 +233,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 						  }
 						  else
 						  {
-							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),item.getItemName(),item.getGameType());
+							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
 									  
 							  //update itemUser
 							  ItemUser itemUser=itemUsers.get(0);
@@ -264,11 +246,11 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		    	   }
 		       }
 		    	   
-		       users=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(account)));
+		       users=userProfileService.queryUserById(Long.valueOf(account));
 		    	   
 		       user=users.get(0);
 		       
-		       List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString());
+		       List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString());
 		    	  
 		       Map<Object, Object> map=new HashMap<Object, Object>();	
 		       
@@ -278,9 +260,9 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		       {
 		    	   
 		    	   tempTask.setStatus(0);
-		    	   tempTask.setTaskId(Integer.valueOf(CustomBase64.decode(this.taskId)));
+		    	   tempTask.setTaskId(Integer.valueOf(taskId));
 		    	   tempTask.setUpdateTime(Utility.getNowString());
-		    	   tempTask.setUserId(Integer.valueOf(CustomBase64.decode(this.account)));
+		    	   tempTask.setUserId(Integer.valueOf(account));
 		       }
 		       
 		       
@@ -337,24 +319,24 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		    	   if(total>0)
 			    	  {
 			    		  List <UserTask>  userTaskStatus=userTaskService.queryByStatus
-		    						(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString(),0);
+		    						(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString(),0);
 			    		  if(total>=task.getTaskRate())
 			    		  {
 			    			  if(userTaskStatus.size()<=0)
 			    			  {
 			    				  //add 
-			    				  userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+			    				  userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 			    			  }
 			    			  else
 			    			  {
-			    				  userTaskService.updateType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+			    				  userTaskService.updateType(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 			    			  }
 			    			  temp=1;
 			    		  }
 			    		  else
 			    		  {
 			    			  if(userTaskStatus.size()<=0)
-			    				  userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 0, Utility.getNowString());
+			    				  userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 0, Utility.getNowString());
 			    		  }
 			    		 
 		    				   
@@ -381,7 +363,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 						  }
 						  else
 						  {
-							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),item.getItemName(),item.getGameType());
+							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
 									  
 							  //update itemUser
 							  ItemUser itemUser=itemUsers.get(0);
@@ -397,7 +379,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		    	   
 		       
 		       
-		    List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString());
+		    List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString());
 		    	  
 		    Map<Object, Object> map=new HashMap<Object, Object>();		    		  
 		       
@@ -407,9 +389,9 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		     {
 		    	   
 		    	   tempTask.setStatus(0);
-		    	   tempTask.setTaskId(Integer.valueOf(CustomBase64.decode(this.taskId)));
+		    	   tempTask.setTaskId(Integer.valueOf(taskId));
 		    	   tempTask.setUpdateTime(Utility.getNowString());
-		    	   tempTask.setUserId(Integer.valueOf(this.account));
+		    	   tempTask.setUserId(Integer.valueOf(account));
 		       }
 		       
 		       
@@ -452,7 +434,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 	else if(task.getTaskType()==3)
 	{
 		
-		List <InviteTable> list=invitedTableService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account)));	
+		List <InviteTable> list=invitedTableService.queryByUserId(Integer.valueOf(account));	
 		
 		user=users.get(0);
 		   
@@ -473,25 +455,25 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 	    		   
 	    		   
 			    	List <UserTask>  userTaskStatus=userTaskService.queryByStatus
-		    						(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString(),0);
+		    						(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString(),0);
 			    	
 			    	if(list.size()>=task.getTaskRate())
 			    	{
 			    		if(userTaskStatus.size()<=0)
 			    		{
 			    			//add 
-			    			userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+			    			userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 			    		}
 			    		else
 			    		{
-			    			userTaskService.updateType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 1, Utility.getNowString());
+			    			userTaskService.updateType(Integer.valueOf(account), Integer.valueOf(taskId), 1, Utility.getNowString());
 			    		}
 			    		temp=1;
 			    	}
 			    	else
 			    	{
 			    		if(userTaskStatus.size()<=0)
-			    			userTaskService.insertUserTask(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), 0, Utility.getNowString());
+			    			userTaskService.insertUserTask(Integer.valueOf(account), Integer.valueOf(taskId), 0, Utility.getNowString());
 			    	}
 			    	
 		    				   
@@ -520,7 +502,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 							}
 							else
 							{
-								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(this.account),item.getItemName(),item.getGameType());
+								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
 								  
 								//update itemUser
 								ItemUser itemUser=itemUsers.get(0);
@@ -534,7 +516,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 	    	  }
 	       }
 	    	   
-	       List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(CustomBase64.decode(this.account)), Integer.valueOf(CustomBase64.decode(this.taskId)), Utility.getDateString());
+	       List <UserTask>  userTaskFinish=userTaskService.queryByIdAndType(Integer.valueOf(account), Integer.valueOf(taskId), Utility.getDateString());
 	    	  
 		    Map<Object, Object> map=new HashMap<Object, Object>();		    		  
 		       
@@ -544,9 +526,9 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 		    {
 		    	   
 		    	   tempTask.setStatus(0);
-		    	   tempTask.setTaskId(Integer.valueOf(CustomBase64.decode(this.taskId)));
+		    	   tempTask.setTaskId(Integer.valueOf(taskId));
 		    	   tempTask.setUpdateTime(Utility.getNowString());
-		    	   tempTask.setUserId(Integer.valueOf(CustomBase64.decode(this.account)));
+		    	   tempTask.setUserId(Integer.valueOf(account));
 		     }
 		    
 		    map.put("userInfo", user);
@@ -608,10 +590,26 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 	public void taskList()
 	{
 
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
 		
 		List <Task> tasklist= taskService.queryallStatus();
 		
-		List <UserTask> userTaskList=userTaskService.queryById(Integer.valueOf(CustomBase64.decode(this.account)));
+		List <UserTask> userTaskList=userTaskService.queryById(Integer.valueOf(account));
 		
 		String responseJSON="";
 		   

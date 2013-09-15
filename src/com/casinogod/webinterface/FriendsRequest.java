@@ -2,16 +2,19 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import cn.org.rapid_framework.util.CalendarUtils;
@@ -30,15 +33,12 @@ import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class FriendsRequest extends ActionSupport implements ServletResponseAware {
+public class FriendsRequest extends ActionSupport implements ServletResponseAware,ServletRequestAware{
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-    private String account;
-    
-    private String userId;
         	
 	private UserProfileService userProfileService;
 	
@@ -49,13 +49,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 	
 	private HttpServletResponse response;
 	
-	private static Logger log = Logger.getLogger(FriendsRequest.class); 
-    
-  //  private HttpServletRequest request=ServletActionContext.getRequest();
+	private HttpServletRequest resquest;
 	
-	public void setAccount(String account) {
-		this.account = account;
-	}
+	private static Logger log = Logger.getLogger(FriendsRequest.class); 
+ 
 
 	public void setUserProfileService(UserProfileService userProfileService) {
 		this.userProfileService = userProfileService;
@@ -65,9 +62,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		this.requestConfigService = requestConfigService;
 	}
 	
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setResquest(HttpServletRequest resquest) {
+		this.resquest = resquest;
 	}
+	
 	
 
 	public void setUserLogInService(UserLogIn userLogInService) {
@@ -80,6 +78,23 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 	}
 	
 	public void queryallunFriend()  {
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
     	
     	String responseJSON="";
         
@@ -92,7 +107,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			userList.add(i, String.valueOf(list.get(i+1).getUserId()));
 		}
 		
-		List <User> users=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account)));
+		List <User> users=userProfileService.queryUserById(Long.valueOf(account));
 		
 		if(users.get(0).getFriendList()!=null)
 		{
@@ -107,7 +122,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 				
 		FriendRequest friendRequest=new FriendRequest();
 		
-		friendRequest.setOwenId(Long.valueOf(CustomBase64.decode(this.account)));
+		friendRequest.setOwenId(Long.valueOf(account));
 		
 		friendRequest.setStatue(0);
 		
@@ -194,14 +209,31 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	
     	String responseJSON="";
     	
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String userId=Utility.splitString(decode, "userId");
+    	
     	boolean flag=false;
 
-    	long owenId=Long.valueOf(CustomBase64.decode(this.account));
+    	long owenId=Long.valueOf(account);
 		
 		String dateTime=Utility.getNowString();
 		
-		flag=requestConfigService.addFriendRequest(owenId, Long.valueOf(CustomBase64.
-				decode(this.userId)), dateTime,0);
+		flag=requestConfigService.addFriendRequest(owenId, Long.valueOf(userId), dateTime,0);
 		
 		List <String> snsIds=new ArrayList<String>();
 		
@@ -218,10 +250,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			{
 			    if(users.get(0).getFriendList()!=null)  
 			    {
-			    	for(String account:users.get(0).getFriendList().split("#"))
+			    	for(String account1:users.get(0).getFriendList().split("#"))
 			    	{
-			    		if(account!=null)
-			    			friends.add(account);
+			    		if(account1!=null)
+			    			friends.add(account1);
 			    	}
 				}
 
@@ -232,12 +264,12 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			if(friends.size()>0)
 			{
 
-				for(String userId:friends)
+				for(String userid:friends)
 				{
-					User user=userProfileService.queryUserById(Long.valueOf(userId)).get(0);
+					User user=userProfileService.queryUserById(Long.valueOf(userid)).get(0);
 					SimpleUser simpleUser=new SimpleUser();
 					
-					String snsId=userLogInService.getAccount(Long.valueOf(userId)).getSnsId();
+					String snsId=userLogInService.getAccount(Long.valueOf(userid)).getSnsId();
 					
 					snsIds.add(snsId);
 					
@@ -295,10 +327,27 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     public void showFriends()  {
     	
     	String responseJSON="";
+    	
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
         
     	boolean flag=false;
 		
-    	long owenId=Long.valueOf(CustomBase64.decode(this.account));
+    	long owenId=Long.valueOf(account);
 		
 		log.info("owenId -->"+owenId);
 	
@@ -310,10 +359,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		{
 		    if(users.get(0).getFriendList()!=null)  
 		    {
-		    	for(String account:users.get(0).getFriendList().split("#"))
+		    	for(String account1:users.get(0).getFriendList().split("#"))
 		    	{
-		    		if(account!=null)
-		    			friends.add(account);
+		    		if(account1!=null)
+		    			friends.add(account1);
 		    	}
 		    	
 		    	flag=true;
@@ -392,8 +441,26 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	
     	
     	String responseJSON="";
+    	
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String userid=Utility.splitString(decode, "userId");
 
-    	long owenId=Long.valueOf(CustomBase64.decode(this.account));
+    	long owenId=Long.valueOf(account);
 	
     	log.info("owenId -->"+owenId);
 	
@@ -404,7 +471,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	//update request
     
 		FriendRequest friendRequest=new FriendRequest();
-		long userId=Long.valueOf(CustomBase64.decode(this.userId));
+		long userId=Long.valueOf(userid);
 		log.info("userId-->"+userId);
 		friendRequest.setOwenId(userId);
 		friendRequest.setUserId(owenId);
@@ -445,10 +512,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		{
 		    if(users.get(0).getFriendList()!=null)  
 		    {
-		    	for(String account:users.get(0).getFriendList().split("#"))
+		    	for(String account1:users.get(0).getFriendList().split("#"))
 		    	{
-		    		if(account!=null)
-		    			friends.add(account);
+		    		if(account1!=null)
+		    			friends.add(account1);
 		    	}
 		    	
 		    	flag=true;
@@ -522,12 +589,30 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	
     	
     	String responseJSON="";
+    	
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String userid=Utility.splitString(decode, "userId");
 
-    	long userId=Long.valueOf(CustomBase64.decode(this.account));
+    	long userId=Long.valueOf(account);
 	
     	log.info("owenId -->"+userId);
     	
-    	long owenId=Long.valueOf(CustomBase64.decode(this.userId));
+    	long owenId=Long.valueOf(userid);
 	
     	boolean flag=false;
     	
@@ -592,8 +677,25 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	
     	
     	String responseJSON="";
+    	
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
 
-    	long userId=Long.valueOf(CustomBase64.decode(this.account));
+    	long userId=Long.valueOf(account);
 		
 		List <FriendRequest> requests=requestConfigService.queryUserId(userId);
 		
@@ -674,10 +776,28 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	
     	
     	String responseJSON="";
-
-    	long owenId=Long.valueOf(CustomBase64.decode(this.account));
     	
-		long userId=Long.valueOf(CustomBase64.decode(this.userId));
+    	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String userid=Utility.splitString(decode, "userId");
+
+    	long owenId=Long.valueOf(account);
+    	
+		long userId=Long.valueOf(userid);
 	
     	log.info("owenId -->"+owenId);
 	
@@ -688,7 +808,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	String friendsOwen="";
     	
    	
-    	if(users.get(0).getFriendList().contains(String.valueOf(CustomBase64.decode(this.userId))))
+    	if(users.get(0).getFriendList().contains(userid))
     	{	
     		if(users.size()>0)
     		{
@@ -696,17 +816,17 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     		    {
     		    	if(users.get(0).getFriendList().split("#").length>1)
     		    	{
-    		    		for(String account:users.get(0).getFriendList().split("#"))
+    		    		for(String account1:users.get(0).getFriendList().split("#"))
     		    		{
-        		    		if(!"".equals(account)&&!account.equals(String.valueOf(CustomBase64.decode(this.userId)))&&null!=account) {
-    							 friendsOwen+=(account+"#");
+        		    		if(!"".equals(account1)&&!account1.equals(userid)&&null!=account1) {
+    							 friendsOwen+=(account1+"#");
     						}
         		    	}	
     		    	}
     		    	else
     		    	{
-    		    	    String account=users.get(0).getFriendList().split("#")[0];
-    		    	    if(account.equals(String.valueOf(this.userId)))
+    		    	    String account1=users.get(0).getFriendList().split("#")[0];
+    		    	    if(account1.equals(userid))
     		    	    	friendsOwen=null;
     		    	    else
     		    	    	friendsOwen=users.get(0).getFriendList();
@@ -727,7 +847,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     	String friendsUser="";
     	
        	
-    	if(userNews.get(0).getFriendList().contains(String.valueOf(CustomBase64.decode(this.account))))
+    	if(userNews.get(0).getFriendList().contains(String.valueOf(account)))
     	{	
     		if(userNews.size()>0)
     		{
@@ -735,18 +855,18 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
     		    {
     		    	if(userNews.get(0).getFriendList().split("#").length>1)
     		    	{
-    		    		for(String account:userNews.get(0).getFriendList().split("#"))
+    		    		for(String account1:userNews.get(0).getFriendList().split("#"))
     		    		{
-        		    		if(!"".equals(account)&&!account.equals(String.valueOf(CustomBase64.decode(this.account)))&&
-        		    				null!=account) {
-        		    			friendsUser+=(account+"#");
+        		    		if(!"".equals(account1)&&!account1.equals(String.valueOf(account))&&
+        		    				null!=account1) {
+        		    			friendsUser+=(account1+"#");
     						}
         		    	}	
     		    	}
     		    	else
     		    	{
-    		    		String account=userNews.get(0).getFriendList().split("#")[0];
-    		    	    if(account.equals(String.valueOf(CustomBase64.decode(this.account))))
+    		    		String account1=userNews.get(0).getFriendList().split("#")[0];
+    		    	    if(account1.equals(String.valueOf(account)))
     		    	    	friendsUser=null;
     		    	    else
     		    	    	friendsUser=userNews.get(0).getFriendList();	
@@ -770,10 +890,10 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		{
 		    if(users.get(0).getFriendList()!=null)  
 		    {
-		    	for(String account:users.get(0).getFriendList().split("#"))
+		    	for(String account1:users.get(0).getFriendList().split("#"))
 		    	{
-		    		if(account!=null)
-		    			friendList.add(account);
+		    		if(account1!=null)
+		    			friendList.add(account1);
 		    	}
 		    	
 		    	flag=true;
@@ -848,9 +968,26 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
   	
 	  	String responseJSON="";
 	  	
+	  	String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	  	
 	  	boolean flag=false;
 	
-	  	long owenId=Long.valueOf(CustomBase64.decode(this.account));
+	  	long owenId=Long.valueOf(account);
 	  	
 	  	List <User> users=userProfileService.queryUserById(owenId);
 			
@@ -932,6 +1069,13 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
              
   
   }
+  
+  public void setServletRequest(HttpServletRequest request) {
+	// TODO Auto-generated method stub
+	this.resquest=request;
+  }
+
+
     
     
     

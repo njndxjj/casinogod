@@ -28,10 +28,12 @@ public class Testjson {
 //		}
 		
 		
-			 String configName = "lottery-config";
-			 GameConfig config = new GameConfig(configName);
+		//	 String configName = "lottery-config";
+		//	 GameConfig config = new GameConfig(configName);
+		
+		String test="userType=2&snsId=2605248414";
 			
-			System.out.println(config.getConfigValue("g1","rate"));
+			System.out.println("testdata-->"+Utility.splitString(test, "snsId"));
 		
 		
 		

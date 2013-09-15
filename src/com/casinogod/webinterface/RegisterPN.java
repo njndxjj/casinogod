@@ -1,12 +1,15 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.casinogod.pojo.UserDevice;
@@ -16,33 +19,22 @@ import com.casinogod.utility.ErrorCode;
 import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class RegisterPN extends ActionSupport implements ServletResponseAware {
+public class RegisterPN extends ActionSupport implements ServletResponseAware,ServletRequestAware {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String userAccount;
-	
-	private String deviceToken;
-	
-	private String notes;
-	
 	
 	private HttpServletResponse response;
+	
+	private HttpServletRequest resquest;
 	
 	
 	private UserDeviceService userDeviceService;
 
    
-	public void setUserAccount(String userAccount) {
-		this.userAccount = userAccount;
-	}
-
-	public void setDeviceToken(String deviceToken) {
-		this.deviceToken = deviceToken;
-	}
 
 	public void setUserDeviceService(UserDeviceService userDeviceService) {
 		this.userDeviceService = userDeviceService;
@@ -55,26 +47,42 @@ public class RegisterPN extends ActionSupport implements ServletResponseAware {
 		this.response=response;
 	}
 	
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
 	
 	
 	public void registerDevice()
 	{
 		boolean flag=false;
 		
-		if(CustomBase64.decode(this.deviceToken)!=null&&Long.valueOf(CustomBase64.decode(this.userAccount))>0)
-			flag=userDeviceService.addDevice(Long.valueOf(CustomBase64.decode(this.userAccount)), CustomBase64.decode(this.deviceToken),
-					Utility.getNowString(), this.notes);
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String deviceToken=Utility.splitString(decode, "deviceToken");
+	    String notes=Utility.splitString(decode, "notes");
+		
+		if(deviceToken!=null&&Long.valueOf(account)>0)
+			flag=userDeviceService.addDevice(Long.valueOf(account), deviceToken,
+					Utility.getNowString(), notes);
 		
 		String responseJSON= "";    
 		   
 	    if(flag)  
 	    {  
-	    	System.out.println("register device success: "+this.deviceToken);     	
+	    	System.out.println("register device success: "+deviceToken);     	
 			HashMap deviceTokeMap=new HashMap();
-			deviceTokeMap.put("deviceToke", this.deviceToken);
+			deviceTokeMap.put("deviceToke", deviceToken);
 			responseJSON=Utility.getJSONFromHash(deviceTokeMap);
 			response.setStatus(200);	
 	    }
@@ -102,6 +110,15 @@ public class RegisterPN extends ActionSupport implements ServletResponseAware {
 		  e.printStackTrace();
 		}
 		
+	}
+
+	public void setServletRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		this.resquest=request;
+	}
+	
+	public void setResquest(HttpServletRequest resquest) {
+		this.resquest = resquest;
 	}
 	
 	
