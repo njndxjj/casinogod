@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,21 +41,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String itemId;
-	
-	private String account;
-	
-	private String giftUserId;
-	
-	private String itemName;
-	
-	private String itemNum;
-	
-	private String gameType;
-	
-	private String comment;
-	
-	private String gamePrice;
+
 	
 	private HttpServletResponse response;
 	
@@ -80,37 +67,8 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 	}
 	
 
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
-	}
-	
-	public void setAccount(String account) {
-		this.account = account;
-	}
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
 
-	public void setItemNum(String itemNum) {
-		this.itemNum = itemNum;
-	}
-
-	public void setGameType(String gameType) {
-		this.gameType = gameType;
-	}
-	
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
-	public void setGiftUserId(String giftUserId) {
-		this.giftUserId = giftUserId;
-	}
-
-	public void setGamePrice(String gamePrice) {
-		this.gamePrice = gamePrice;
-	}
 
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
@@ -163,7 +121,27 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 	public void buyitems() 
 	
 	{
-		long itemAccount=Long.valueOf(CustomBase64.decode(this.account));
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String itemId=Utility.splitString(decode, "itemId");
+	    String itemNum=Utility.splitString(decode, "itemNum");
+	
+		
+		long itemAccount=Long.valueOf(account);
 		
 		List <User> list=userProfileService.queryUserById(itemAccount);
 		
@@ -175,8 +153,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 		{
 			User user=list.get(0);
 			
-			List <Item> items=itemConfigService.queryById(Integer.valueOf(
-					CustomBase64.decode(this.itemId)));
+			List <Item> items=itemConfigService.queryById(Integer.valueOf(itemId));
 			
 			Item item=items.get(0);
 			
@@ -187,7 +164,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				
 				int diamond = 0,gold = 0;
 				
-				if(user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum))>0&&user.getDiamond()>0)
+				if(user.getDiamond()-Integer.valueOf(itemNum)>0&&user.getDiamond()>0)
 			
 				{
 					List <EventConfig> listEvent=eventService.queryByType(1);
@@ -219,13 +196,13 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 						{
 							if(currentTime.compareTo(startTime)>=0&&currentTime.compareTo(endTime)<=0)
 							{
-								diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
-								gold=user.getGold()+(Integer.valueOf(CustomBase64.decode(this.itemNum))*(item.getItemPrice()*(1+discount)));
+								diamond=user.getDiamond()-Integer.valueOf(itemNum);
+								gold=user.getGold()+(Integer.valueOf(itemNum))*(item.getItemPrice()*(1+discount));
 							}
 							else
 							{
-								diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
-								gold=user.getGold()+(Integer.valueOf(CustomBase64.decode(this.itemNum))*item.getItemPrice());
+								diamond=user.getDiamond()-Integer.valueOf(itemNum);
+								gold=user.getGold()+(Integer.valueOf(itemNum)*item.getItemPrice());
 							}
 						}
 						else
@@ -249,13 +226,13 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 								
 								if(currentDate.compareTo(beginDate)>=0&&currentDate.compareTo(endDate)<=0)
 								{
-									diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
-									gold=user.getGold()+(Integer.valueOf(CustomBase64.decode(this.itemNum))*(item.getItemPrice()*(1+discount)));
+									diamond=user.getDiamond()-Integer.valueOf(itemNum);
+									gold=user.getGold()+(Integer.valueOf(itemNum)*(item.getItemPrice()*(1+discount)));
 								}
 								else
 								{
-									diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
-									gold=user.getGold()+(Integer.valueOf(CustomBase64.decode(this.itemNum))*item.getItemPrice());
+									diamond=user.getDiamond()-Integer.valueOf(itemNum);
+									gold=user.getGold()+(Integer.valueOf(itemNum)*item.getItemPrice());
 								}
 								
 								
@@ -268,8 +245,8 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					}
 					else
 					{
-						diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
-						gold=user.getGold()+(Integer.valueOf(CustomBase64.decode(this.itemNum))*item.getItemPrice());
+						diamond=user.getDiamond()-Integer.valueOf(itemNum);
+						gold=user.getGold()+(Integer.valueOf(itemNum)*item.getItemPrice());
 					}
 					user.setGold(gold);
 					user.setDiamond(diamond);
@@ -280,13 +257,13 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				    String purchaseTime=Utility.getNowString();
 				   
 				    //add itemHistory
-				    itemHistoryConfigService.addItemUser(item.getGameType(),Integer.valueOf(CustomBase64.decode(this.account)),0,item.getItemName(),
-				    		Integer.valueOf(CustomBase64.decode(this.itemNum)),
+				    itemHistoryConfigService.addItemUser(item.getGameType(),Integer.valueOf(account),0,item.getItemName(),
+				    		Integer.valueOf(itemNum),
 				    0, purchaseTime, item.getComment());
 				    
-				    List <User> listUser=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account)));
+				    List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 				    
-				    String snsId=userLogInService.getAccount(Long.valueOf(this.account)).getSnsId();
+				    String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 				    
 				    map.put("userInfo", listUser.get(0));
 				    map.put("snsId", snsId);
@@ -325,10 +302,10 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			else
 			
 			{
-				if(user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum))>0&&user.getDiamond()>0)
+				if(user.getDiamond()-Integer.valueOf(itemNum)>0&&user.getDiamond()>0)
 				
 				{
-					int diamond=user.getDiamond()-Integer.valueOf(CustomBase64.decode(this.itemNum));
+					int diamond=user.getDiamond()-Integer.valueOf(itemNum);
 					user.setGold(user.getGold());
 					user.setDiamond(diamond);
 			  
@@ -338,29 +315,29 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					String purchaseTime=Utility.getNowString();
 			   
 					//add or update itemUser;
-					List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),item.getItemName(),item.getGameType());
+					List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
 			  
 					if(itemUsers.size()>0)
 					{
 						//update itemUser
 						ItemUser itemUser=itemUsers.get(0);
-						itemUser.setItemNum(itemUser.getItemNum()+(item.getItemPrice()*Integer.valueOf(CustomBase64.decode(this.itemNum))));
+						itemUser.setItemNum(itemUser.getItemNum()+(item.getItemPrice()*Integer.valueOf(itemNum)));
 						itemUserConfigService.updateItemUser(itemUser.getUserId(), itemUser.getItemName(),itemUser.getGameType(),
 			    		itemUser.getItemNum());
 			    	
 					}else
 					{
-						itemUserConfigService.addItemUser(Integer.valueOf(CustomBase64.decode(this.itemId)),Integer.valueOf(CustomBase64.decode(this.account)),
-								item.getItemName(), Integer.valueOf(CustomBase64.decode(this.itemNum)),
+						itemUserConfigService.addItemUser(Integer.valueOf(itemId),Integer.valueOf(account),
+								item.getItemName(), Integer.valueOf(itemNum),
 			    		item.getGameType(),item.getComment());
 					}
 					//add itemHistory
-					itemHistoryConfigService.addItemUser(item.getGameType(),Integer.valueOf(CustomBase64.decode(this.account)),
-							0,item.getItemName(),Integer.valueOf(CustomBase64.decode(this.itemNum)),0, purchaseTime, item.getComment());
+					itemHistoryConfigService.addItemUser(item.getGameType(),Integer.valueOf(account),
+							0,item.getItemName(),Integer.valueOf(itemNum),0, purchaseTime, item.getComment());
 			    
-					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account)));
+					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 					
-					String snsId=userLogInService.getAccount(Long.valueOf(this.account)).getSnsId();
+					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 					    
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);
@@ -400,10 +377,30 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 
 	public void giftItems()
 	{
+		String postdata="";
+		String decode="";
 	    
-	    List <User> list=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account)));
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	    
-	    List <User> giftList=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.giftUserId)));
+	    String account=Utility.splitString(decode, "account");
+	    String itemId=Utility.splitString(decode, "itemId");
+	    String itemNum=Utility.splitString(decode, "itemNum");
+	    String giftUserId=Utility.splitString(decode, "giftUserId");
+	    
+	    
+	    List <User> list=userProfileService.queryUserById(Integer.valueOf(account));
+	    
+	    List <User> giftList=userProfileService.queryUserById(Integer.valueOf(giftUserId));
 	    
 	    boolean flag=false;
 	    
@@ -420,41 +417,41 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			
 			for(ItemUser itemUser :itemUsers)
 			{
-				if(itemUser.getItemId()==Integer.valueOf(CustomBase64.decode(this.itemId)))
+				if(itemUser.getItemId()==Integer.valueOf(itemId))
 				{
 					itemUserTemp=itemUser;
 					 break;
 				}
 			}
 			
-			if(itemUserTemp.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum))>0)
+			if(itemUserTemp.getItemNum()-Integer.valueOf(itemNum)>0)
 			{
 			
 			  //update itemUser;
-			  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),
+			  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
 					  itemUserTemp.getItemName(),itemUserTemp.getGameType());
 			  
 			  //update itemUser
 			  ItemUser itemUser=itemUsersBuy.get(0);
 			 
-			  itemUser.setItemNum(itemUser.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum)));
+			  itemUser.setItemNum(itemUser.getItemNum()-Integer.valueOf(itemNum));
 			  
 			  itemUserConfigService.updateItemUser(itemUser.getUserId(), itemUser.getItemName(),itemUser.getGameType(),
 			    			itemUser.getItemNum());
 			  
 			   //add itemHistory
-			  itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(CustomBase64.decode(this.account)),2,
-					  itemUserTemp.getItemName(),Integer.valueOf(CustomBase64.decode(this.itemNum)),
-					  Integer.valueOf(CustomBase64.decode(this.giftUserId)), Utility.getNowString(), itemUserTemp.getComment());
+			  itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(account),2,
+					  itemUserTemp.getItemName(),Integer.valueOf(itemNum),
+					  Integer.valueOf(giftUserId), Utility.getNowString(), itemUserTemp.getComment());
 			  
 			  flag=true;
 			
 			}
-			else if(itemUserTemp.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum))==0)
+			else if(itemUserTemp.getItemNum()-Integer.valueOf(itemNum)==0)
 			{
 				
 				// update itemUser;
-				List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),
+				List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
 						itemUserTemp.getItemName(),itemUserTemp.getGameType());
 				  
 				//update itemUser
@@ -462,9 +459,9 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				
 				itemUserConfigService.deleteItemUser(itemUser.getId());			
 				  //add itemHistory
-				 itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(CustomBase64.decode(this.account)),
-						 2,itemUserTemp.getItemName(),Integer.valueOf(CustomBase64.decode(this.itemNum)),
-						 Integer.valueOf(CustomBase64.decode(this.giftUserId)), Utility.getNowString(), itemUserTemp.getComment());
+				 itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(account),
+						 2,itemUserTemp.getItemName(),Integer.valueOf(itemNum),
+						 Integer.valueOf(giftUserId), Utility.getNowString(), itemUserTemp.getComment());
 				 
 				 flag=true;
 				
@@ -479,7 +476,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 	{
 		//update or add gift item
 		
-		List <ItemUser> itemUsersGift=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.giftUserId)),
+		List <ItemUser> itemUsersGift=itemUserConfigService.getItem(Integer.valueOf(giftUserId),
 				itemUserTemp.getItemName(),itemUserTemp.getGameType());		
 	
 		if(itemUsersGift.size()>0)
@@ -488,15 +485,15 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			//update itemUser
 			ItemUser itemUser=itemUsersGift.get(0);
 		 
-			itemUser.setItemNum(itemUser.getItemNum()+Integer.valueOf(CustomBase64.decode(this.itemNum)));
+			itemUser.setItemNum(itemUser.getItemNum()+Integer.valueOf(itemNum));
 		  
 			itemUserConfigService.updateItemUser(itemUser.getUserId(), itemUser.getItemName(),itemUser.getGameType(),
 		    			itemUser.getItemNum()); 
 		}
 		else
 		{
-			itemUserConfigService.addItemUser(Integer.valueOf(CustomBase64.decode(this.itemId)),Integer.valueOf(CustomBase64.decode(this.giftUserId)),
-					itemUserTemp.getItemName(), Integer.valueOf(CustomBase64.decode(this.itemNum)),
+			itemUserConfigService.addItemUser(Integer.valueOf(itemId),Integer.valueOf(giftUserId),
+					itemUserTemp.getItemName(), Integer.valueOf(itemNum),
 				itemUserTemp.getGameType(),itemUserTemp.getComment());
 		}
 	 
@@ -508,10 +505,10 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 	 
 	 
 		Map<String,Object> map=new HashMap<String, Object>();
-		List <User> listUser=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account)));
+		List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 			 
 	       
-		String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+		String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 	    
 		map.put("userInfo", listUser.get(0));
 		map.put("snsId", snsId);
@@ -556,15 +553,35 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			e.printStackTrace();
 	}
 	
-}
+	}
 		
 		
 	public void consumeItem()
 	
 	{
 		  boolean flag=false;
+		  
+		  String postdata="";
+			String decode="";
 		    
-		  List <User> list=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account)));
+		    try {
+			
+		    	postdata=Utility.postdata(resquest);
+		    	decode=CustomBase64.decode(postdata);
+		    	System.out.println("addLotteryInfo-->"+postdata);
+		    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+			
+		    } catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		    
+		    String account=Utility.splitString(decode, "account");
+		    String itemId=Utility.splitString(decode, "itemId");
+		    String itemNum=Utility.splitString(decode, "itemNum");
+		    String giftUserId=Utility.splitString(decode, "giftUserId");
+		    
+		  List <User> list=userProfileService.queryUserById(Long.valueOf(account));
 		  
 		  String responseJSON="";
 			
@@ -580,41 +597,41 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 
 				for(ItemUser itemUser :itemUsers)
 				{
-					if(itemUser.getItemId()==Integer.valueOf(CustomBase64.decode(this.itemId)))
+					if(itemUser.getItemId()==Integer.valueOf(itemId))
 					{
 						itemUserTemp=itemUser;
 						 break;
 					}
 				}
 				
-				if(itemUserTemp.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum))>0)
+				if(itemUserTemp.getItemNum()-Integer.valueOf(itemNum)>0)
 				{
 				
 				  //update itemUser;
-				  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),
+				  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
 						  itemUserTemp.getItemName(),itemUserTemp.getGameType());
 				  
 				  //update itemUser
 				  ItemUser itemUser=itemUsersBuy.get(0);
 				 
-				  itemUser.setItemNum(itemUser.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum)));
+				  itemUser.setItemNum(itemUser.getItemNum()-Integer.valueOf(itemNum));
 				  
 				  itemUserConfigService.updateItemUser(itemUser.getUserId(), itemUser.getItemName(),itemUser.getGameType(),
 				    			itemUser.getItemNum());
 				  //add itemHistory
 				 itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),
-						 Integer.valueOf(CustomBase64.decode(this.account)),1,itemUserTemp.getItemName(),Integer.valueOf(CustomBase64.decode(this.itemNum)),
+						 Integer.valueOf(account),1,itemUserTemp.getItemName(),Integer.valueOf(itemNum),
 				    0, Utility.getNowString(), itemUserTemp.getComment());
 				
 				 
 				 flag=true;
 				
 				}
-				else if(itemUserTemp.getItemNum()-Integer.valueOf(CustomBase64.decode(this.itemNum))==0)
+				else if(itemUserTemp.getItemNum()-Integer.valueOf(itemNum)==0)
 				{
 					
 					// update itemUser;
-					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),itemUserTemp.getItemName(),
+					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),itemUserTemp.getItemName(),
 							itemUserTemp.getGameType());
 					  
 					//update itemUser
@@ -622,8 +639,8 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					
 					itemUserConfigService.deleteItemUser(itemUser.getId());			
 					  //add itemHistory
-					 itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(CustomBase64.decode(this.account)),1,
-							 itemUserTemp.getItemName(),Integer.valueOf(CustomBase64.decode(this.itemNum)),
+					 itemHistoryConfigService.addItemUser(itemUserTemp.getGameType(),Integer.valueOf(account),1,
+							 itemUserTemp.getItemName(),Integer.valueOf(itemNum),
 					 0, Utility.getNowString(), itemUserTemp.getComment());
 					 
 					 
@@ -639,10 +656,10 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				{
 					
 					Map<String,Object> map=new HashMap<String, Object>();
-					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account)));
+					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 						 
 				       
-					String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 				    
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);

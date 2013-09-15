@@ -151,27 +151,7 @@ public class ConfigRoomInfo extends ActionSupport implements ServletResponseAwar
 	               
 	 }
 		
-	public String addRoomInfo()
-	{
-		boolean flag=false;
-		
-		if(CustomBase64.decode(this.beginTime).equals("")
-				||CustomBase64.decode(this.endTime).equals(""))
-		{
-			this.beginTime=this.endTime="1000-01-01 01:01:01";
-		}
-		
-		flag=roomProfileService.addRoomProfile(Integer.valueOf(CustomBase64.decode(this.gameType)),
-				CustomBase64.decode(this.roomLevel),
-				Integer.valueOf(CustomBase64.decode(this.levelScore)),
-				Integer.valueOf(CustomBase64.decode(this.minHand)), 
-				Integer.valueOf(CustomBase64.decode(this.maxHand)),
-				CustomBase64.decode(this.beginTime),CustomBase64.decode(this.endTime),
-				CustomBase64.decode(this.otherNotes));
-		
-		
-		return flag?SUCCESS:ERROR;	
-	}
+
 
 	public void setServletRequest(HttpServletRequest resquest) {
 		// TODO Auto-generated method stub

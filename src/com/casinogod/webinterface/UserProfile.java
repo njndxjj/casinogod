@@ -2,15 +2,18 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.casinogod.pojo.SimpleUser;
@@ -20,29 +23,16 @@ import com.casinogod.service.UserLogIn;
 import com.casinogod.service.UserProfileService;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.ErrorCode;
+import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class UserProfile extends ActionSupport implements ServletResponseAware {
+public class UserProfile extends ActionSupport implements ServletResponseAware,ServletRequestAware{
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-    private String account;
-    
-    private String userId;
-    
-	private String nickName;
-    
-    private String gender;
-    
-    private String emailAddress;
-    
-    private String telephone;
-    
-    private String image;
-    
-    private String gold;
+  
     	
 	private UserProfileService userProfileService;
 	
@@ -50,19 +40,30 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
 	
 	private HttpServletResponse response;
 	
+	private HttpServletRequest request;
+	
 	private static Logger log = Logger.getLogger(UserProfile.class); 
     
   //  private HttpServletRequest request=ServletActionContext.getRequest();
 	
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	
 	
     public void setUserLogInService(UserLogIn userLogInService) {
 		this.userLogInService = userLogInService;
 	}
+    
+    public void setServletRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub		
+		this.request=request;		
+	}
+    
+    
 
+
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
 
 
 	public void updateUserProfile()  {
@@ -70,15 +71,37 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
     User user=null ;  
     
     boolean flag=false;
-    
     String snsId="";
     
-    if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+
+    String postdata="";
+    String decode="";
+
+    
+    try {
+		postdata=Utility.postdata(this.request);
+		decode=CustomBase64.decode(postdata);
+    	System.out.println("postdata-->"+postdata);
+    	System.out.println("decode--->"+CustomBase64.decode(postdata));
+	
+    } catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    
+    String account=Utility.splitString(decode, "account");
+    String nickName=Utility.splitString(decode, "nickName");
+    String gender=Utility.splitString(decode, "gender");
+    String emailAddress=Utility.splitString(decode, "emailAddress");
+    String image=Utility.splitString(decode, "image");
+    String telephone=Utility.splitString(decode, "telephone");
+    
+    if(Integer.valueOf(account)>0)
     {
-        user=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account))).get(0);  
+        user=userProfileService.queryUserById(Integer.valueOf(account)).get(0);  
         
-    	flag = userProfileService.updateProfile(Integer.valueOf(CustomBase64.decode(this.account)), CustomBase64.decode(this.nickName), 
-    			CustomBase64.decode(this.gender), CustomBase64.decode(this.emailAddress),CustomBase64.decode( this.telephone), CustomBase64.decode(this.image));
+    	flag = userProfileService.updateProfile(Integer.valueOf(account), nickName, 
+    			gender, emailAddress,telephone, image);
     	snsId=userLogInService.getAccount(user.getUserId()).getSnsId();
     
     }
@@ -124,9 +147,26 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
         
         User user=null ;  
         
-        if(Integer.valueOf(CustomBase64.decode(this.account))>0)
+        String postdata="";
+        String decode="";
+
+        
+        try {
+    		postdata=Utility.postdata(this.request);
+    		decode=CustomBase64.decode(postdata);
+        	System.out.println("postdata-->"+postdata);
+        	System.out.println("decode--->"+CustomBase64.decode(postdata));
+    	
+        } catch (IOException e1) {
+    		// TODO Auto-generated catch block
+    		e1.printStackTrace();
+    	}
+        
+        String account=Utility.splitString(decode, "account");
+        
+        if(Integer.valueOf(account)>0)
        
-            user=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account))).get(0);  
+            user=userProfileService.queryUserById(Integer.valueOf(account)).get(0);  
            
         String responseJSON= "";    
        
@@ -167,11 +207,28 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
         
         User user=null ;  
         
-        if(Long.valueOf(CustomBase64.decode(this.userId))>0)
-       
-            user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.userId))).get(0);  
+        String postdata="";
+        String decode="";
+
         
-        UserAccount userAccount=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.userId)));
+        try {
+    		postdata=Utility.postdata(this.request);
+    		decode=CustomBase64.decode(postdata);
+        	System.out.println("postdata-->"+postdata);
+        	System.out.println("decode--->"+CustomBase64.decode(postdata));
+    	
+        } catch (IOException e1) {
+    		// TODO Auto-generated catch block
+    		e1.printStackTrace();
+    	}
+        
+        String userId=Utility.splitString(decode, "userId");
+        
+        if(Long.valueOf(userId)>0)
+       
+            user=userProfileService.queryUserById(Long.valueOf(userId)).get(0);  
+        
+        UserAccount userAccount=userLogInService.getAccount(Long.valueOf(userId));
            
         String responseJSON= "";    
        
@@ -227,12 +284,30 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
         
         User user=null ;  
         
+        String postdata="";
+        String decode="";
+
+        
+        try {
+    		postdata=Utility.postdata(this.request);
+    		decode=CustomBase64.decode(postdata);
+        	System.out.println("postdata-->"+postdata);
+        	System.out.println("decode--->"+CustomBase64.decode(postdata));
+    	
+        } catch (IOException e1) {
+    		// TODO Auto-generated catch block
+    		e1.printStackTrace();
+    	}
+        
+        String account=Utility.splitString(decode, "account");
+        String gold=Utility.splitString(decode, "gold");
+        
         boolean flag=false;
         
-        if(Integer.valueOf(CustomBase64.decode(this.account))>0&&Integer.valueOf(CustomBase64.decode(this.gold))>0)
+        if(Integer.valueOf(account)>0&&Integer.valueOf(gold)>0)
         {
-            user=userProfileService.queryUserById(Integer.valueOf(CustomBase64.decode(this.account))).get(0); 
-            user.setGold(user.getGold()+Integer.valueOf(CustomBase64.decode(this.gold)));
+            user=userProfileService.queryUserById(Integer.valueOf(account)).get(0); 
+            user.setGold(user.getGold()+Integer.valueOf(gold));
             user.setDiamond(user.getDiamond());
         	flag = userProfileService.updateGold(user);
         
@@ -274,9 +349,7 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
     
     
     
-    public void setAccount(String account) {
-		this.account = account;
-	}
+   
 	
 
 	public void setServletResponse(HttpServletResponse response) {
@@ -288,29 +361,6 @@ public class UserProfile extends ActionSupport implements ServletResponseAware {
 		this.userProfileService = userProfileService;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public void setGold(String gold) {
-		this.gold = gold;
-	}
 
 	
 	

@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,12 +14,9 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.casinogod.pojo.BoardCastInfo;
-import com.casinogod.pojo.Item;
 import com.casinogod.service.BoardCastService;
-import com.casinogod.service.ItemConfigService;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.ErrorCode;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class BoardCastPro extends ActionSupport implements ServletResponseAware,ServletRequestAware {

@@ -10,6 +10,7 @@ public class CustomBase64 {
 	public static String encode(String str) throws UnsupportedEncodingException{
 		Base64Algo base = new Base64Algo();
 		String md5 = MD52Hex(str).toUpperCase();
+<<<<<<< HEAD
 		System.out.println("md5 sign-->"+md5);
 		String C1 = base.encode(str.getBytes("utf-8"));
 		System.out.println("base 64 sign-->"+C1);
@@ -22,12 +23,27 @@ public class CustomBase64 {
 		System.out.println("C3 vaule -->"+C3);
 		String K = base.encode(((r+9)+"").getBytes("utf-8")).replace("=", "");
 		System.out.println("K vaule -->"+K);
+=======
+	//	System.out.println("md5 sign-->"+md5);
+		String C1 = base.encode(str.getBytes("utf-8"));
+	//	System.out.println("base 64 sign-->"+C1);
+		StringBuffer C2 = new StringBuffer(C1.replace("=", "")).reverse();
+	//	System.out.println("base 64 replace == -->"+C2.toString());
+		int r = (int)(Math.random()*31);
+		r = (r%2 == 0)?(r+1):r;
+	//	System.out.println("random r -->"+r);
+		String C3 = md5.substring(0,r) + C2 + md5.substring(r);
+	//	System.out.println("C3 vaule -->"+C3);
+		String K = base.encode(((r+9)+"").getBytes("utf-8")).replace("=", "");
+	//	System.out.println("K vaule -->"+K);
+>>>>>>> casinogod
 		String C4 = C3 + K;
 		return C4;
 	}
 	public static String decode(String str){
 		Base64Algo base = new Base64Algo();
 		String K = str.substring(str.length()-3);
+<<<<<<< HEAD
 		System.out.println("K vaule -->"+K);
 		int r = Integer.valueOf(new String(base.decode(K+"="))) - 9;
 		System.out.println("random r -->"+r);
@@ -39,13 +55,30 @@ public class CustomBase64 {
 		System.out.println("C2-->"+C2.toString());
 		int t = (4 - C2.length()%4)%4;
 		System.out.println("t-->"+t);
+=======
+	//	System.out.println("K vaule -->"+K);
+		int r = Integer.valueOf(new String(base.decode(K+"="))) - 9;
+	//	System.out.println("random r -->"+r);
+		str = str.substring(0, str.length()-3);
+	//	System.out.println("sub str -->"+str);
+		String md5 = str.substring(0,r) + str.substring(str.length() - 32 + r);
+	//	System.out.println("md5 -->"+md5);
+		StringBuffer C2 = new StringBuffer(str.substring(r, str.length() - 32 + r)).reverse();
+	//	System.out.println("C2-->"+C2.toString());
+		int t = (4 - C2.length()%4)%4;
+	//	System.out.println("t-->"+t);
+>>>>>>> casinogod
 		for(int i=0;i<t;i++) {
 			C2.append("=");
 		}
 		String C1 = C2.toString();
 		String ret = new String(base.decode(C1));
 
+<<<<<<< HEAD
 		System.out.println("ret-->"+ret);
+=======
+	//	System.out.println("ret-->"+ret);
+>>>>>>> casinogod
 		
 //		System.out.println(md5);
 //		System.out.println(MD52Hex(ret).toUpperCase());

@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -31,19 +32,8 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private String lotteryId;
-	
-	private String userId;
-	
-	private String lotteryValue;
-	
-	private String betAmount;
-	
-	private String num;
-	
-	private String betDateTime;
-	
+
+
 	private HttpServletResponse response;
 	
 	private HttpServletRequest resquest;
@@ -57,24 +47,7 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 	private final String configName = "lottery-config";
 	private final  GameConfig config = new GameConfig(configName);
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
-
-	public void setLotteryValue(String lotteryValue) {
-		this.lotteryValue = lotteryValue;
-	}
-
-	public void setBetAmount(String betAmount) {
-		this.betAmount = betAmount;
-	}
-
-
-
-	public void setBetDateTime(String betDateTime) {
-		this.betDateTime = betDateTime;
-	}
 
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
@@ -84,9 +57,7 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 		this.resquest = resquest;
 	}
 	
-	public void setLotteryId(String lotteryId) {
-		this.lotteryId = lotteryId;
-	}
+
 
 	public void setLotteryConfigService(LotteryConfigService lotteryConfigService) {
 		this.lotteryConfigService = lotteryConfigService;
@@ -111,18 +82,35 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 		this.userProfileService = userProfileService;
 	}
 	
-	
-	public void setNum(String num) {
-		this.num = num;
-	}
 
 
 	public void addLotteryInfo()
 	{
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String lotteryId=Utility.splitString(decode, "lotteryId");
+	    String userId=Utility.splitString(decode, "userId");
+	    String lotteryValue=Utility.splitString(decode, "lotteryValue");
+	    String betAmount=Utility.splitString(decode, "betAmount");
+	    String num=Utility.splitString(decode, "num");
+		
 		boolean flag=false;
 		
         List <LotteryHistory> list=lotteryHistoryService.queryById(
-        		Integer.valueOf(CustomBase64.decode(this.lotteryId)));
+        		Integer.valueOf(lotteryId));
         
         String responseJSON="";
         
@@ -135,13 +123,13 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
         	{
         	//default level is 0
         	flag=lotteryConfigService.addLottery(
-        			Long.valueOf(CustomBase64.decode(this.userId)),
-        			Integer.valueOf(CustomBase64.decode(this.lotteryId)),
+        			Long.valueOf(userId),
+        			Integer.valueOf(lotteryId),
         			lhistory.getLotteryType(), 
-        			CustomBase64.decode(this.lotteryValue), 
-        			Integer.valueOf(CustomBase64.decode(this.betAmount)), 
+        			lotteryValue, 
+        			Integer.valueOf(betAmount), 
         			false,
-        			0,Integer.valueOf(CustomBase64.decode(this.num)),
+        			0,Integer.valueOf(num),
         			Utility.getNowString());	 
         	
         	
@@ -150,11 +138,9 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
         	{
         		//update the userProfile
         		
-        		User user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.userId)))
-        				.get(0);
+        		User user=userProfileService.queryUserById(Long.valueOf(userId)).get(0);
         		
-        		if(user.getGold()-Integer.valueOf(CustomBase64.
-    					decode(this.betAmount))*Integer.valueOf(CustomBase64.decode(this.num))<0)
+        		if(user.getGold()-Integer.valueOf(betAmount)*Integer.valueOf(num)<0)
         		{
         			ErrorResponse errorResponse = new ErrorResponse();
         			errorResponse.setErrorMessage("gold is enough");
@@ -168,15 +154,14 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
         		else
         		{
         		
-	        		user.setGold(user.getGold()-Integer.valueOf(CustomBase64.decode(this.betAmount)));
+	        		user.setGold(user.getGold()-Integer.valueOf(betAmount));
 	        		
 	        		
 	        		user.setDiamond(user.getDiamond());
 	        		
 	        		userProfileService.updateGold(user);
 	        		
-	        		List <Lottery> lotteryList=lotteryConfigService.queryByUserId(
-	        				Integer.valueOf(CustomBase64.decode(this.userId)));
+	        		List <Lottery> lotteryList=lotteryConfigService.queryByUserId(Integer.valueOf(userId));
 	        		
 	        		HashMap< String, Object> map = new HashMap<String, Object>();
 	    	    	
@@ -240,8 +225,25 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 	public void getLotteryHistory()
 	{
 		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String lotteryId=Utility.splitString(decode, "lotteryId");
+		
         List <LotteryHistory> list=lotteryHistoryService.queryById(
-        		Integer.valueOf(CustomBase64.decode(this.lotteryId)));
+        		Integer.valueOf(lotteryId));
         
         String responseJSON="";
         
@@ -284,9 +286,24 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 	
 	public void getUserLotteryHistory()
 	{
+		String postdata="";
+		String decode="";
+	    
+	    try {
 		
-        List <Lottery> list=lotteryConfigService.queryByUserId(
-        		Integer.valueOf(CustomBase64.decode(this.userId)));
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String userId=Utility.splitString(decode, "userId");
+		
+        List <Lottery> list=lotteryConfigService.queryByUserId(Integer.valueOf(userId));
         
         String responseJSON="";
         
@@ -329,15 +346,32 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 	
 	public void checkLottery()
 	{
-		List <Lottery> list=lotteryConfigService.queryByUserIdAndId(
-				Integer.valueOf(CustomBase64.decode(this.userId)),Integer.valueOf(CustomBase64.decode(this.lotteryId)));
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String userId=Utility.splitString(decode, "userId");
+	    String lotteryId=Utility.splitString(decode, "lotteryId");
+		
+		List <Lottery> list=lotteryConfigService.queryByUserIdAndId(Integer.valueOf(userId),Integer.valueOf(lotteryId));
 		
 		String  responseJSON="";
 		int rate=0;
 		int gold=0;
 		
-		User user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.userId)))
-				.get(0);
+		User user=userProfileService.queryUserById(Long.valueOf(userId)).get(0);
 		
 		if(list.size()>0)
 		{
@@ -345,7 +379,7 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 			Lottery lottery=list.get(0);
 			
 			List <LotteryHistory> lhistory=lotteryHistoryService.queryById(
-	        		Integer.valueOf(CustomBase64.decode(this.lotteryId)));
+	        		Integer.valueOf(lotteryId));
 			
 			LotteryHistory lotteryHistory=lhistory.get(0);
 			
@@ -465,11 +499,10 @@ public class DetailLottery extends ActionSupport implements ServletResponseAware
 						userProfileService.updateExp(user);
 						
 						Lottery listLottery=lotteryConfigService.queryByUserIdAndId(
-								Integer.valueOf(CustomBase64.decode(this.userId)),
-								Integer.valueOf(CustomBase64.decode(this.lotteryId))).get(0);
+								Integer.valueOf(userId),
+								Integer.valueOf(lotteryId)).get(0);
 						
-						User userUpdate=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.userId)))
-								.get(0);
+						User userUpdate=userProfileService.queryUserById(Long.valueOf(userId)).get(0);
 						Map <String,Object> map=new HashMap<String, Object>();
 						
 						map.put("user", userUpdate);

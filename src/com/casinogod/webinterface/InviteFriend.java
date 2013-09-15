@@ -1,5 +1,6 @@
 package com.casinogod.webinterface;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +46,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	
 	private HttpServletRequest resquest;
 	
-	private String account;
-	
-	private String inviteCode;
-	
+
 	private FriendInvitedService friendInvitedService;
 	
 	private InvitedTableService invitedTableService;
@@ -83,13 +81,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	}
 	
 
-	public void setAccount(String account) {
-		this.account = account;
-	}
 
-	public void setInviteCode(String inviteCode) {
-		this.inviteCode = inviteCode;
-	}
 
 	public void setFriendInvitedService(FriendInvitedService friendInvitedService) {
 		this.friendInvitedService = friendInvitedService;
@@ -126,7 +118,24 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	public void createCode()
 	{
 
-		List <FriendInvite> list=friendInvitedService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account)));		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+		
+		List <FriendInvite> list=friendInvitedService.queryByUserId(Integer.valueOf(account));		
 	
 		String responseJSON= "";  
 		
@@ -139,13 +148,13 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	       
 	       String code="";
 		//			code = CustomBase64.encode(this.account);
-		   code = CustomBase64.decode(this.account);
+		   code = account;
 	       
-	       flag=friendInvitedService.addFriendInvite(Integer.valueOf(CustomBase64.decode(this.account)), code, Utility.getNowString(),0);
+	       flag=friendInvitedService.addFriendInvite(Integer.valueOf(account), code, Utility.getNowString(),0);
 	       
 	       if(flag)
 	       { 
-	    	   friendInvite=friendInvitedService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account))).get(0);
+	    	   friendInvite=friendInvitedService.queryByUserId(Integer.valueOf(account)).get(0);
 	    	   responseJSON +=JSONObject.fromObject(friendInvite).toString();
 	    	   response.setStatus(200);	
 	       }
@@ -192,8 +201,25 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	
 	public void showCode()
 	{
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
 
-		List <FriendInvite> list=friendInvitedService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account)));		
+		List <FriendInvite> list=friendInvitedService.queryByUserId(Integer.valueOf(account));		
 	
 		String responseJSON= "";  
 		
@@ -238,8 +264,26 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	
 	public void accessCode()
 	{
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+	    String inviteCode=Utility.splitString(decode, "inviteCode");
 
-		List <FriendInvite> userCodeList=friendInvitedService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account)));
+		List <FriendInvite> userCodeList=friendInvitedService.queryByUserId(Integer.valueOf(account));
 		
 		String userCode=userCodeList.get(0).getInviteCode();
 	
@@ -249,7 +293,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	
 	    FriendInvite friendInvite;
 	     
-	     List <FriendInvite> listFriend=friendInvitedService.queryByCode(CustomBase64.decode(this.inviteCode));
+	     List <FriendInvite> listFriend=friendInvitedService.queryByCode(inviteCode);
 	       
 	     if(listFriend.size()>0)
 	     { 
@@ -260,11 +304,11 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    		   InvitedInfo info=new InvitedInfo();
 	    		   SimpleUser simpleUser=new SimpleUser();
 	    		   
-	    		   String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+	    		   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 	    		   
 	    		   
 	    		   info.setStatus(1);
-	    		   info.setRepDesc("不能输入自己的邀请码");
+	    		   info.setRepDesc("涓嶈兘杈撳叆鑷繁鐨勯個璇风爜");
 	    		   
 	    		   Map<Object,Object> map=new HashMap<Object, Object>();
 	    		   
@@ -282,7 +326,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    	
 	    	   {
 	    		   flag=invitedTableService.addInviteTable(Integer.valueOf(friendInvite.getInviteCode()),
-	    				   Integer.valueOf(CustomBase64.decode(this.account)),Utility.getNowString());
+	    				   Integer.valueOf(account),Utility.getNowString());
 	    	   
 	    		   if(flag)
 	    		   {
@@ -290,9 +334,9 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    			   
 	    			   friendInvitedService.updateCount(friendInvite);
 	    			   
-	    			   User user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
+	    			   User user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 	    			   
-	    			   String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+	    			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 				  
 	    			   SimpleUser simpleUser=new SimpleUser();
 					
@@ -307,7 +351,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    			   InvitedInfo info=new InvitedInfo();
 	    		  
 	    			   info.setStatus(0);
-		    		   info.setRepDesc("输入成功,谢谢使用邀请码");
+		    		   info.setRepDesc("杈撳叆鎴愬姛,璋㈣阿浣跨敤閭�璇风爜");
 		    		   
 		    		   //gift reward
 		    		   
@@ -341,7 +385,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 						    invitedUser.setDiamond(diamond);
 						    userProfileService.updateGold(invitedUser);
 									
-							List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),
+							List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),
 									item.getItemName(),item.getGameType());
 							
 							List <ItemUser> itemInviteUsers=itemUserConfigService.getItem(Integer.valueOf(friendInvite.getInviteCode()),item.getItemName(),item.getGameType());
@@ -356,7 +400,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 						    }
 							else
 							{
-								itemUserConfigService.addItemUser(item.getId(), Integer.valueOf(CustomBase64.decode(this.account)), 
+								itemUserConfigService.addItemUser(item.getId(), Integer.valueOf(account), 
 										item.getItemName(), num, item.getGameType(), item.getComment());
 							}
 							
@@ -390,7 +434,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    		   {
 	    			   InvitedInfo info=new InvitedInfo();
 	    			   
-	    			   User user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
+	    			   User user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 	 				  
 	    			   SimpleUser simpleUser=new SimpleUser();
 					
@@ -402,11 +446,11 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    			   simpleUser.setNickName(user.getNickName());
 	    			   simpleUser.setUserId(user.getUserId());
 	    			   
-	    			   String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+	    			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 		    		   
 		    		   
 		    		   info.setStatus(2);
-		    		   info.setRepDesc("已经使用过了邀请码");
+		    		   info.setRepDesc("宸茬粡浣跨敤杩囦簡閭�璇风爜");
 		    		   
 		    		   Map<Object,Object> map=new HashMap<Object, Object>();
 		    		   
@@ -424,7 +468,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 		   {
 			   InvitedInfo info=new InvitedInfo();
 			   
-			   User user=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account))).get(0);
+			   User user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 				  
 			   SimpleUser simpleUser=new SimpleUser();
 			
@@ -436,10 +480,10 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 			   simpleUser.setNickName(user.getNickName());
 			   simpleUser.setUserId(user.getUserId());
     		   
-			   String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
     		   
     		   info.setStatus(3);
-    		   info.setRepDesc("请输入正确邀请码");
+    		   info.setRepDesc("璇疯緭鍏ユ纭個璇风爜");
     		   
     		   Map<Object,Object> map=new HashMap<Object, Object>();
     		   
@@ -468,10 +512,27 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	
 	public void totalInvite()
 	{
-
-		List <InviteTable> list=invitedTableService.queryByUserId(Integer.valueOf(CustomBase64.decode(this.account)));	
 		
-		List <User> users=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account)));
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+
+		List <InviteTable> list=invitedTableService.queryByUserId(Integer.valueOf(account));	
+		
+		List <User> users=userProfileService.queryUserById(Long.valueOf(account));
 		
 		//int invitedItem=(Integer)DataStore.setting.get("invitedItem");
 	
@@ -537,7 +598,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 							}
 							else
 							{
-								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(CustomBase64.decode(this.account)),
+								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),
 										item.getItemName(),item.getGameType());
 								  
 								//update itemUser
@@ -552,9 +613,9 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    	  }
 	       }
 	    	   
-	       users=userProfileService.queryUserById(Long.valueOf(CustomBase64.decode(this.account)));
+	       users=userProfileService.queryUserById(Long.valueOf(account));
 	       
-	       String snsId=userLogInService.getAccount(Long.valueOf(CustomBase64.decode(this.account))).getSnsId();
+	       String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 	    	   
 	       user=users.get(0);
 	    	   

@@ -2,6 +2,7 @@ package com.casinogod.webinterface;
 
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,6 @@ public class ShowEvent extends ActionSupport implements ServletResponseAware,Ser
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String enable;
 	
 	private HttpServletResponse response;
 	
@@ -49,9 +49,7 @@ public class ShowEvent extends ActionSupport implements ServletResponseAware,Ser
 	private EventService eventService;
 	
 
-	public void setEnable(String enable) {
-		this.enable = enable;
-	}
+	
 
 	public void setServletResponse(HttpServletResponse response) {
 		// TODO Auto-generated method stub
@@ -75,13 +73,30 @@ public class ShowEvent extends ActionSupport implements ServletResponseAware,Ser
 	{
 		
 		String responseJSON  = "";
-		if(CustomBase64.decode(this.enable)!=null)
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("addLotteryInfo-->"+postdata);
+	    	System.out.println("addLotteryInfo--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String enable=Utility.splitString(decode, "enable");
+		
+	    if(enable!=null)
 		{
 			//share raidboss 
 		
 		//response
 		
-		List <EventConfig> allInstanceUser=eventService.queryByEnable(Integer.valueOf(CustomBase64.decode(this.enable)));
+		List <EventConfig> allInstanceUser=eventService.queryByEnable(Integer.valueOf(enable));
 		
 		if(allInstanceUser.size()>0)
 		{
