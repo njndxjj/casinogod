@@ -30,6 +30,7 @@ public class CustomBase64 {
 	public static String decode(String str){
 		Base64Algo base = new Base64Algo();
 		String K = str.substring(str.length()-3);
+
 	//	System.out.println("K vaule -->"+K);
 		int r = Integer.valueOf(new String(base.decode(K+"="))) - 9;
 	//	System.out.println("random r -->"+r);
@@ -50,6 +51,7 @@ public class CustomBase64 {
 
 
 		System.out.println("ret-->"+ret);
+
 
 //		System.out.println(md5);
 //		System.out.println(MD52Hex(ret).toUpperCase());
