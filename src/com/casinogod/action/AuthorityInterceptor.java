@@ -65,15 +65,11 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 		if(useraccount==null)
 			
 		{
-<<<<<<< HEAD
+
 			Map paramMap = actionInvocation.getInvocationContext().getParameters();
 			
-=======
-			log.info("====>"+"client call");
->>>>>>> origin/casinogod
-			
-			Map paramMap = actionInvocation.getInvocationContext().getParameters();
-						
+
+	
 		
 			String[] userTokens = (String[]) paramMap.get("authToken");
 			String userToken=userTokens[0];
@@ -81,7 +77,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 			String[] accounts = (String[]) paramMap.get("account");
 			String account=accounts[0];
 			
-<<<<<<< HEAD
+
 	/*		 String postdata="";
 			 String decode="";
 			    
@@ -98,24 +94,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 			    
 			String account=Utility.splitString(decode, "account");
 			String userToken=Utility.splitString(decode, "authToken");
-=======
-//			 String postdata="";
-//			 String decode="";
-//			    
-//			 try {
-//					postdata=Utility.postdata(this.request);
-//					decode=CustomBase64.decode(postdata);
-//			    	System.out.println("postdata-->"+postdata);
-//			    	System.out.println("decode--->"+CustomBase64.decode(postdata));
-//				
-//			    } catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//			    
-//			String account=Utility.splitString(decode, "account");
-//			String userToken=Utility.splitString(decode, "authToken");
->>>>>>> origin/casinogod
+
 			
 			log.info("userToken "+userToken);
 			log.info("userAccount "+account);
