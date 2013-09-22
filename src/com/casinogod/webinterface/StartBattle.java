@@ -626,9 +626,13 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 		}
 		
 		try {
+<<<<<<< HEAD
 			
 			
 			
+=======
+			responseJSON=CustomBase64.encode(responseJSON);
+>>>>>>> origin/casinogod
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();

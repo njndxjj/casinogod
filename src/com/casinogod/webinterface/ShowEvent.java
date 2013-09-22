@@ -123,7 +123,6 @@ public class ShowEvent extends ActionSupport implements ServletResponseAware,Ser
 		
 		try {
 			responseJSON=CustomBase64.encode(responseJSON);
-			responseJSON=CustomBase64.encode(responseJSON);
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();

@@ -26,7 +26,6 @@ import com.casinogod.pojo.BossBattleInfo;
 import com.casinogod.pojo.BossInstanceUserInfo;
 import com.casinogod.service.BossBattleService;
 import com.casinogod.service.BossInstanceUserService;
-import com.casinogod.service.BossUserService;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.ErrorCode;
 import com.casinogod.utility.Utility;
@@ -39,17 +38,11 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String account;
-	
-	private String status;
-	
 	private HttpServletResponse response;
 	
 	private HttpServletRequest resquest;
 		
 	private BossInstanceUserService bossInstanceService;
-	
-	private BossUserService bossUserService;
 	
 	private BossBattleService bossBattleService;
 	
@@ -70,18 +63,10 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 		this.bossInstanceService = bossInstanceService;
 	}
 
-
-	public void setBossUserService(BossUserService bossUserService) {
-		this.bossUserService = bossUserService;
-	}
-
 	public void setBossBattleService(BossBattleService bossBattleService) {
 		this.bossBattleService = bossBattleService;
 	}
 	
-
-
-
 	private static Logger log = Logger.getLogger(ShowBoss.class); 
 
 	public void showBoss()
@@ -161,7 +146,7 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 					}
 				}
 				
-				if(Integer.valueOf(CustomBase64.decode(this.status))==0)
+				if(Integer.valueOf(status)==0)
 				
 				{
 //					showBossUser.setBossInstance(bossUserInfo.getBossInstance());
@@ -174,7 +159,7 @@ public class ShowBoss extends ActionSupport implements ServletResponseAware,Serv
 					
 					list.add(bossBattleInfo);
 				}
-				else if(Integer.valueOf(CustomBase64.decode(this.status))==bossBattleInfo.getStatus())
+				else if(Integer.valueOf(status)==bossBattleInfo.getStatus())
 				{
 //					showBossUser.setBossInstance(bossUserInfo.getBossInstance());
 //					

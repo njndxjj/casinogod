@@ -309,6 +309,7 @@ public class Utility {
 
 	}
 	
+<<<<<<< HEAD
 	public static String splitString(String str,String temp){ 
 
 		String result = null; 
@@ -319,10 +320,26 @@ public class Utility {
 		result = str.substring(str.indexOf(temp)).substring(str.substring(str.indexOf(temp)).indexOf("=")+1); 
 		} 
 
+=======
+	public static String splitString(String str,String temp){ 	
+		
+		String result = null; 
+		
+		if (str.indexOf(temp) != -1) { 
+		
+			if (str.substring(str.indexOf(temp)).indexOf("&") != -1) { 
+				result = str.substring(str.indexOf(temp)).substring(str.substring(str.indexOf(temp)).indexOf("=")+1, str.substring(str.indexOf(temp)).indexOf("&")); 
+				} else { 
+			
+			result = str.substring(str.indexOf(temp)).substring(str.substring(str.indexOf(temp)).indexOf("=")+1); 
+		
+>>>>>>> origin/casinogod
 		} 
+	} 
 		
 		return result; 
-
-		} 
-
+		
+	}
 }
+
+

@@ -94,6 +94,11 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     
     String postdata="";
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/casinogod
     String decode="";
     
     try {
@@ -366,7 +371,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 		this.response=response;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/casinogod
 	public void setUserProfileService(UserProfile userProfileService) {
 		this.userProfileService = userProfileService;
 	}
