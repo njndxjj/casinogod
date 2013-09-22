@@ -626,6 +626,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 		}
 		
 		try {
+			responseJSON=CustomBase64.encode(responseJSON);
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();

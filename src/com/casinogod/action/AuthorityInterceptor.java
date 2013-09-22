@@ -60,32 +60,33 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 		if(useraccount==null)
 			
 		{
-			//Map paramMap = actionInvocation.getInvocationContext().getParameters();
+			log.info("====>"+"client call");
 			
-			
+			Map paramMap = actionInvocation.getInvocationContext().getParameters();
+						
 		
-	//		String[] userTokens = (String[]) paramMap.get("authToken");
-	//		String userToken=CustomBase64.decode(userTokens[0]);
+			String[] userTokens = (String[]) paramMap.get("authToken");
+			String userToken=userTokens[0];
 		
-	//		String[] accounts = (String[]) paramMap.get("account");
-	//		String account=CustomBase64.decode(accounts[0]);
+			String[] accounts = (String[]) paramMap.get("account");
+			String account=accounts[0];
 			
-			 String postdata="";
-			 String decode="";
-			    
-			 try {
-					postdata=Utility.postdata(this.request);
-					decode=CustomBase64.decode(postdata);
-			    	System.out.println("postdata-->"+postdata);
-			    	System.out.println("decode--->"+CustomBase64.decode(postdata));
-				
-			    } catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			    
-			String account=Utility.splitString(decode, "account");
-			String userToken=Utility.splitString(decode, "authToken");
+//			 String postdata="";
+//			 String decode="";
+//			    
+//			 try {
+//					postdata=Utility.postdata(this.request);
+//					decode=CustomBase64.decode(postdata);
+//			    	System.out.println("postdata-->"+postdata);
+//			    	System.out.println("decode--->"+CustomBase64.decode(postdata));
+//				
+//			    } catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			    
+//			String account=Utility.splitString(decode, "account");
+//			String userToken=Utility.splitString(decode, "authToken");
 			
 			log.info("userToken "+userToken);
 			log.info("userAccount "+account);
