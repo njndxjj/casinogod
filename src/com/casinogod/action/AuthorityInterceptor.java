@@ -40,6 +40,11 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 	
 	
 
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+
 	public void setAuthTokenService(AuthTokenService authTokenService) {
 		this.authTokenService = authTokenService;
 	}
@@ -60,17 +65,17 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 		if(useraccount==null)
 			
 		{
-			//Map paramMap = actionInvocation.getInvocationContext().getParameters();
+			Map paramMap = actionInvocation.getInvocationContext().getParameters();
 			
 			
 		
-	//		String[] userTokens = (String[]) paramMap.get("authToken");
-	//		String userToken=CustomBase64.decode(userTokens[0]);
+			String[] userTokens = (String[]) paramMap.get("authToken");
+			String userToken=userTokens[0];
 		
-	//		String[] accounts = (String[]) paramMap.get("account");
-	//		String account=CustomBase64.decode(accounts[0]);
+			String[] accounts = (String[]) paramMap.get("account");
+			String account=accounts[0];
 			
-			 String postdata="";
+	/*		 String postdata="";
 			 String decode="";
 			    
 			 try {
@@ -79,7 +84,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 			    	System.out.println("postdata-->"+postdata);
 			    	System.out.println("decode--->"+CustomBase64.decode(postdata));
 				
-			    } catch (IOException e1) {
+		    } catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -89,7 +94,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 			
 			log.info("userToken "+userToken);
 			log.info("userAccount "+account);
-			
+		*/	
 			List <AuthToken>list=authTokenService.queryByUserId(Long.valueOf(account));
 		
 			if(list.size()>0)

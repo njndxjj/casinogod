@@ -93,17 +93,13 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     boolean flag=false;
     
     String postdata="";
-<<<<<<< HEAD
-    
-    try {
-		postdata=Utility.postdata(this.request);
-=======
+
     String decode="";
     
     try {
 		postdata=Utility.postdata(this.request);
 		decode=CustomBase64.decode(postdata);
->>>>>>> casinogod
+
     	System.out.println("postdata-->"+postdata);
     	System.out.println("decode--->"+CustomBase64.decode(postdata));
 	
@@ -112,8 +108,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 		e1.printStackTrace();
 	}
     
-<<<<<<< HEAD
-=======
+
     String account=Utility.splitString(decode, "account");
     String pw=Utility.splitString(decode, "password");
     String userType=Utility.splitString(decode, "userType");
@@ -121,7 +116,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     String sToken=Utility.splitString(decode, "snsToken");
     String deviceToken=Utility.splitString(decode, "deviceToken");
     
->>>>>>> casinogod
+
     List <Configuration> listConfig=configurationDAO.querAll();
     
     if(listConfig.size()>0)
@@ -371,15 +366,6 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 		this.response=response;
 	}
 
-<<<<<<< HEAD
-
-	public void setSnsId(String snsId) {
-		this.snsId = snsId;
-	}
-=======
->>>>>>> casinogod
-
-	
 
 	public void setUserProfileService(UserProfile userProfileService) {
 		this.userProfileService = userProfileService;
