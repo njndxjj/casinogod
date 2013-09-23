@@ -118,11 +118,11 @@ public class ConfigProduct extends ActionSupport implements ServletResponseAware
 		
 	}
 	
-	String deleteProduct(int id)
+	public String productDelete()
 	{
 		boolean flag=false;
 		
-		flag=productService.deleteProduct(id);
+		flag=productService.deleteProduct(this.id);
 		
 		return flag?SUCCESS:ERROR;
 		

@@ -37,7 +37,7 @@ public class ProductDAOImpl extends SqlMapClientDaoSupport implements  ProductDA
 	public boolean deleteProduct(int id) {
 		// TODO Auto-generated method stub
 		int updateProduct;
-		updateProduct=this.getSqlMapClientTemplate().update("product.deleteProudct", id);
+		updateProduct=this.getSqlMapClientTemplate().delete("product.deleteProudct", id);
 		return updateProduct>0?true:false;
 	}
 
