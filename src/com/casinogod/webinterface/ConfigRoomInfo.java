@@ -29,21 +29,6 @@ public class ConfigRoomInfo extends ActionSupport implements ServletResponseAwar
 	 */
 	private static final long serialVersionUID = 1239037834014437137L;
 	
-	private String gameType;
-	
-	private String roomLevel;
-	
-	private String levelScore;
-	
-	private String minHand;
-
-	private String maxHand;
-	
-	private String otherNotes;
-	
-	private String beginTime;
-	
-	private String endTime;
 	
 	private HttpServletResponse response;
 	
@@ -51,40 +36,6 @@ public class ConfigRoomInfo extends ActionSupport implements ServletResponseAwar
 	
 	private RoomProfileService roomProfileService;
 	
-
-	
-
-	public void setGameType(String gameType) {
-		this.gameType = gameType;
-	}
-
-	public void setRoomLevel(String roomLevel) {
-		this.roomLevel = roomLevel;
-	}
-
-	public void setLevelScore(String levelScore) {
-		this.levelScore = levelScore;
-	}
-
-	public void setMinHand(String minHand) {
-		this.minHand = minHand;
-	}
-
-	public void setMaxHand(String maxHand) {
-		this.maxHand = maxHand;
-	}
-
-	public void setOtherNotes(String otherNotes) {
-		this.otherNotes = otherNotes;
-	}
-	
-	public void setBeginTime(String beginTime) {
-		this.beginTime = beginTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
 
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;

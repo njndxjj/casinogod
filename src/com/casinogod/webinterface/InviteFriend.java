@@ -186,7 +186,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 		}
 			
 		try {
-				
+			responseJSON=CustomBase64.encode(responseJSON);
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
@@ -249,7 +249,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 		}
 			
 		try {
-				
+			responseJSON=CustomBase64.encode(responseJSON);	
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
@@ -497,7 +497,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 		   }
 		
 		try {
-				
+			responseJSON=CustomBase64.encode(responseJSON);	
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
@@ -654,8 +654,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    	response.setStatus(401);
 	    }
 			
-		try {
-				
+		try {	
 			responseJSON=CustomBase64.encode(responseJSON);
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html");

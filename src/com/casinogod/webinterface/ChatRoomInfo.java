@@ -224,6 +224,14 @@ public class ChatRoomInfo extends ActionSupport implements ServletResponseAware,
 		 errorResponse.setErrorCode(ErrorCode.UserAuth_ChatLimit);
 				
 		 responseJSON = JSONObject.fromObject(errorResponse).toString();
+		 
+		 try {
+				responseJSON=CustomBase64.encode(responseJSON);
+			 } catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			 }
+		 
 		 response.setStatus(401);
 	}
 	else
