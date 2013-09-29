@@ -68,6 +68,13 @@
           ]]>
     </select>
     
+    <select id="findVidoSum" parameterClass="java.util.Map"  resultClass="int">
+        <![CDATA[ 
+           select COALESCE(sum(result),0) as total from casinoGod_battleHistory where battleStatue=#battleStatue# 
+           and battleType=#battleType# and createTime>=#createTime# and createTime<=#endTime# and gameType=#gameType#
+          ]]>
+    </select>
+    
     <select id="findIsSpecialWinNum" parameterClass="java.util.Map"  resultClass="int">
         <![CDATA[ 
            select count(id) as total from casinoGod_battleHistory where owenId=#owenId# and battleStatue=#battleStatue# 

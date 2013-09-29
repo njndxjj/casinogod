@@ -93,6 +93,34 @@ public class Utility {
     	return sdf.format(now);
 	}
 	
+	public static String getNextDateString()
+	{
+		
+		
+		
+		Calendar cal = Calendar.getInstance(); 
+        Date date = new Date(); 
+		
+    	
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ",Locale.CHINA);
+    	
+    	 try 
+         { 
+             cal.setTime(date); 
+             cal.add(cal.DATE, 1); 
+            
+             return  sdf.format(cal.getTime());
+         } 
+         catch (Exception e) 
+         { 
+             // TODO Auto-generated catch block 
+             e.printStackTrace(); 
+         } 
+    	 
+    	 return sdf.format(cal.getTime());
+    	
+	}
+	
 	public static String getNowHours()
 	{
 		Date now = new Date();

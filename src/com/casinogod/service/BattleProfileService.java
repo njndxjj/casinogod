@@ -281,6 +281,18 @@ public class BattleProfileService implements  BattleProfile {
 		return battleHistoryDao.userLoseNumWithDate(users);
 	}
 
+	public int vidoPokerSum(int battleStatue, int battleType,
+			String createTime, String endTime, int gameType) {
+		// TODO Auto-generated method stub
+		Map<Object,Object> users=new HashMap<Object, Object>();
+		users.put("battleStatue", battleStatue);
+		users.put("battleType", battleType);
+		users.put("createTime", createTime);
+		users.put("endTime", endTime);
+		users.put("gameType", GameType.values()[gameType].toString());
+		return battleHistoryDao.voidPokreResult(users);
+	}
+
 	
 	
 	

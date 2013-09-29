@@ -31,9 +31,9 @@ public class Testjson {
 		//	 String configName = "lottery-config";
 		//	 GameConfig config = new GameConfig(configName);
 		
-		String test="userType=2&snsId=2605248414";
+		//String test="userType=2&snsId=2605248414";
 			
-			System.out.println("testdata-->"+Utility.splitString(test, "snsId"));
+			System.out.println("testdata-->"+Utility.getNextDateString());
 		
 		
 		

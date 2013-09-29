@@ -795,6 +795,8 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 			  user.setGold(user.getGold()+Integer.valueOf(result)+prize);
 			  user.setDiamond(user.getDiamond());
 			  
+			  int vidoPokerSum=battleProfileService.vidoPokerSum(2, 1, Utility.getDateString(), Utility.getNextDateString(), 2);
+			  
 			  userProfileService.updateGold(user);
 			  
 			  List <User> listUpdate=userProfileService.queryUserById(Long.valueOf(account));
@@ -808,9 +810,16 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 			  map.put("userInfo", user);
 			  map.put("snsId", snsId);
 			  
+			  if("VideoPoker".equals(GameType.values()[Integer.valueOf(gameType)].toString()))
+				  
+				  map.put("videoPokerSum", vidoPokerSum);
+			  
+			 
 			  responseJSON = JSONObject.fromObject(map).toString();
 			  
 			  response.setStatus(200);
+			  
+			  
 			  
 			 
 			 //update rank information

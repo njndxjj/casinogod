@@ -25,6 +25,8 @@ public interface BattleProfile {
 	
 	public int isSpecialDrawNum(long ownId,int battleStatue,int battleType,String createTime,String endTime,int gameType);
 	
+	public int vidoPokerSum(int battleStatue,int battleType,String createTime,String endTime,int gameType);
+	
 	public int totalReuslt(long ownId,int battleStatue,int battleType);
 	
 	public int totalWinResult(long ownId,int battleStatue,int battleType);

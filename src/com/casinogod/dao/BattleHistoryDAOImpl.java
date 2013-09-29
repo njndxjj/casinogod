@@ -115,5 +115,10 @@ public  class BattleHistoryDAOImpl extends SqlMapClientDaoSupport implements Bat
 		return (Integer) this.getSqlMapClientTemplate().queryForObject("battleHistory.findUserLoseNumAllDate",ids);
 	}
 
+	public int voidPokreResult(Map<Object, Object> ids) {
+		// TODO Auto-generated method stub
+		return (Integer) this.getSqlMapClientTemplate().queryForObject("battleHistory.findVidoSum", ids);
+	}
+
 
 }

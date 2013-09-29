@@ -28,6 +28,8 @@ public interface BattleHistoryDAO {
 	
 	public int userTotalResult(Map<Object,Object> ids);
 	
+	public int voidPokreResult(Map<Object,Object> ids);
+	
 	public int userWinResult(Map<Object,Object> ids);
 	
 	public int userLoseResult(Map<Object,Object> ids);
