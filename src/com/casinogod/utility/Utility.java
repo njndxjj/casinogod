@@ -290,7 +290,7 @@ public class Utility {
 	
 	public static String postdata (HttpServletRequest request) throws IOException
 	{
-		  System.out.println("getContentType===="+request.getContentType());
+	//	  System.out.println("getContentType===="+request.getContentType());
 		  
 //		  //获取HTTP请求的输入流
 //	      //已HTTP请求输入流建立一个BufferedReader对象
@@ -305,7 +305,7 @@ public class Utility {
 		  
 		  String postData=request.getParameter("postdata");
 
-	      System.out.println("接收post发送数据:\n"+postData);
+//	      System.out.println("接收post发送数据:\n"+postData);
 
 	      return postData;
 

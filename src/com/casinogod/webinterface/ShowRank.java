@@ -137,7 +137,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			if(rankTypeList.size()>0)
 			{
 				
-				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId());
+				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winMoney");
 				
 				List <SimpleUser> userList=new ArrayList<SimpleUser>();
 				List <String> snsIds=new ArrayList<String>();
@@ -278,7 +278,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			if(rankTypeList.size()>0)
 			{
 				
-				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId());
+				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winTime");
 				
 				List <SimpleUser> userList=new ArrayList<SimpleUser>();
 				List <String> snsIds=new ArrayList<String>();

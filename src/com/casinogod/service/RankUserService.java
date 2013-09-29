@@ -37,9 +37,9 @@ public class RankUserService implements RankUserInterface {
 		return true;
 	}
 
-	public List<RankUserInfo> queryByType(int typeId) {
+	public List<RankUserInfo> queryByType(int typeId,String column) {
 		// TODO Auto-generated method stub
-		return userRankDAO.queryByType(typeId);
+		return userRankDAO.queryByType(typeId,column);
 	}
 
 	public boolean updateRankType(RankUserInfo rankUserInfo) {

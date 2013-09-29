@@ -10,7 +10,7 @@ public interface UserRankDAO {
 	
 	public void insertUserRank(RankUserInfo rankUserInfo);
 	
-	public List <RankUserInfo> queryByType(int typeId);
+	public List <RankUserInfo> queryByType(int typeId,String column);
 	
 	public List <RankUserInfo> queryByTypeUser(int typeId,int userId);
 		
