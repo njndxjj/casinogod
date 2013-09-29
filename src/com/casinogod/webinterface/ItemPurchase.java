@@ -264,7 +264,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				    List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 				    
 				    String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-				    
+				    if(snsId==null) snsId="";
 				    map.put("userInfo", listUser.get(0));
 				    map.put("snsId", snsId);
 				    				       
@@ -283,20 +283,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 						
 					responseJSON = JSONObject.fromObject(errorResponse).toString();
 					response.setStatus(401);
-				}
-					
-				try {
-					responseJSON=CustomBase64.encode(responseJSON);	
-					response.setCharacterEncoding("utf-8");
-					response.setContentType("text/html");
-					PrintWriter out = response.getWriter();
-					out.println(responseJSON);
-						
-				} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-				}
-					
+				}	
 			}
 			
 			else
@@ -338,7 +325,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 					
 					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-					    
+					if(snsId==null) snsId="";   
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);
 			    
@@ -358,18 +345,18 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					responseJSON = JSONObject.fromObject(errorResponse).toString();
 					response.setStatus(401);
 				}
+			}
+			
+			try {
+				responseJSON=CustomBase64.encode(responseJSON);	
+				response.setCharacterEncoding("utf-8");
+				response.setContentType("text/html");
+				PrintWriter out = response.getWriter();
+				out.println(responseJSON);
 					
-				try {
-						
-					response.setCharacterEncoding("utf-8");
-					response.setContentType("text/html");
-					PrintWriter out = response.getWriter();
-					out.println(responseJSON);
-						
-				} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-				}
+			} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 			}
 		}
 
@@ -509,7 +496,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			 
 	       
 		String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-	    
+		if(snsId==null) snsId="";
 		map.put("userInfo", listUser.get(0));
 		map.put("snsId", snsId);
     
@@ -660,7 +647,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 						 
 				       
 					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-				    
+					if(snsId==null) snsId="";
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);
 			    

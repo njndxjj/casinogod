@@ -58,7 +58,9 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 		
 		log.info("==>"+actionInvocation.getInvocationContext().getName());  
 		log.info("====>"+actionInvocation.getInvocationContext().getLocale());  
-		log.info("====>"+actionInvocation.getInvocationContext().getParameters());  
+		log.info("====>"+actionInvocation.getInvocationContext().getParameters());
+		
+		
 		
 		String useraccount=(String)ServletActionContext.getRequest().getSession().getAttribute("account");
 		
@@ -71,11 +73,14 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 
 	
 		
-			String[] userTokens = (String[]) paramMap.get("authToken");
-			String userToken=userTokens[0];
-		
-			String[] accounts = (String[]) paramMap.get("account");
-			String account=accounts[0];
+			String[] postDatas = (String[]) paramMap.get("postdata");
+			String postData=postDatas[0];
+			log.info("postDatas "+postData);
+			String postdata=CustomBase64.decode(postData);
+			log.info("postdata "+postdata);
+//			String[] accounts = (String[]) paramMap.get("account");
+			String account=Utility.splitString(postdata, "account");
+			String userToken=Utility.splitString(postdata, "authToken");
 			
 
 	/*		 String postdata="";
@@ -95,10 +100,10 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 			String account=Utility.splitString(decode, "account");
 			String userToken=Utility.splitString(decode, "authToken");
 
-			
+	*/		
 			log.info("userToken "+userToken);
 			log.info("userAccount "+account);
-		*/	
+			
 			List <AuthToken>list=authTokenService.queryByUserId(Long.valueOf(account));
 		
 			if(list.size()>0)

@@ -17,9 +17,12 @@ public class UserRankDAOImpl extends SqlMapClientDaoSupport implements UserRankD
 
 	}
 
-	public List<RankUserInfo> queryByType(int typeId) {
+	public List<RankUserInfo> queryByType(int typeId,String column) {
 		// TODO Auto-generated method stub
-		return this.getSqlMapClientTemplate().queryForList("rankUserInfor.findType", typeId);
+		Map <Object,Object > ids=new HashMap<Object, Object>();
+		ids.put("typeId", typeId);
+		ids.put("column", column);
+		return this.getSqlMapClientTemplate().queryForList("rankUserInfor.findType", ids);
 	}
 
 	public boolean updateRank(RankUserInfo rankUserInfo) {

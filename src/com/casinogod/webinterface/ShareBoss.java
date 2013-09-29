@@ -247,6 +247,7 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 			List <User> userList=userProfileService.queryUserById(id);
 			
 			String snsId=userLogInService.getAccount(id).getSnsId();
+			if(snsId==null) snsId="";
 
 			
 			if(allInstanceUser.size()>0)

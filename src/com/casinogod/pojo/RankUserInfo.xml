@@ -27,9 +27,9 @@
           ]]>
     </insert>
        
-    <select id="findType" parameterClass="int"  resultMap="rankUserInfor">
+    <select id="findType" parameterClass="java.util.Map"  resultMap="rankUserInfor">
         <![CDATA[ 
-           select *  from casinoGod_userRankInfo where typeId=#typeId# order by winMoney
+           select *  from casinoGod_userRankInfo where typeId=#typeId# order by $column$
            desc 
           ]]>
     </select>

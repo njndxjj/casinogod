@@ -669,8 +669,7 @@
         <property name="boardCastService" ref="boardCastService" />  
     </bean>
     
-    <bean name="showBoss" class="com.casinogod.webinterface.ShowBoss"> 
-        <property name="bossUserService" ref="bossUserService" />  
+    <bean name="showBoss" class="com.casinogod.webinterface.ShowBoss">  
         <property name="bossInstanceService" ref="bossInstanceService" />
          <property name="bossBattleService" ref="bossBattleService" />
     </bean>

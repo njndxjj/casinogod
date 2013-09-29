@@ -137,7 +137,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			if(rankTypeList.size()>0)
 			{
 				
-				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId());
+				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winMoney");
 				
 				List <SimpleUser> userList=new ArrayList<SimpleUser>();
 				List <String> snsIds=new ArrayList<String>();
@@ -159,6 +159,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					simpleUser.setUserId(user.getUserId());
 					
 					userList.add(simpleUser);
+					if(snsId==null) snsId="";
 					snsIds.add(snsId);
 					
 					if(rankUser.getUserId()==Integer.valueOf(account))
@@ -277,7 +278,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			if(rankTypeList.size()>0)
 			{
 				
-				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId());
+				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winTime");
 				
 				List <SimpleUser> userList=new ArrayList<SimpleUser>();
 				List <String> snsIds=new ArrayList<String>();
@@ -301,7 +302,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					simpleUser.setUserId(user.getUserId());
 					
 					userList.add(simpleUser);
-					
+					if(snsId==null) snsId="";
 					snsIds.add(snsId);
 					
 					if(rankUser.getUserId()==Integer.valueOf(account))
@@ -402,7 +403,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			simpleUser.setUserId(user.getUserId());
 			
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-			
+			 if(snsId==null) snsId="";
 				
 			Map <Object,Object> rankInfor=new HashMap<Object, Object>();
 				
@@ -478,6 +479,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+			if(snsId==null) snsId="";
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());
@@ -564,6 +566,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+		    if(snsId==null) snsId="";
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());
