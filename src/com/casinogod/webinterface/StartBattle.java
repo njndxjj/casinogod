@@ -802,7 +802,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 			  user=listUpdate.get(0);
 			  
 			  String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-			  
+			  if(snsId==null) snsId="";
 			  Map <String,Object> map=new HashMap<String, Object>();
 			  
 			  map.put("userInfo", user);

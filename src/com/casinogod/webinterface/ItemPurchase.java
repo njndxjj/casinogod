@@ -264,7 +264,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				    List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 				    
 				    String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-				    
+				    if(snsId==null) snsId="";
 				    map.put("userInfo", listUser.get(0));
 				    map.put("snsId", snsId);
 				    				       
@@ -325,7 +325,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					List <User> listUser=userProfileService.queryUserById(Integer.valueOf(account));
 					
 					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-					    
+					if(snsId==null) snsId="";   
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);
 			    
@@ -496,7 +496,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			 
 	       
 		String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-	    
+		if(snsId==null) snsId="";
 		map.put("userInfo", listUser.get(0));
 		map.put("snsId", snsId);
     
@@ -647,7 +647,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 						 
 				       
 					String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-				    
+					if(snsId==null) snsId="";
 					map.put("userInfo", listUser.get(0));
 					map.put("snsId", snsId);
 			    

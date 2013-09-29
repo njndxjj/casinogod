@@ -159,6 +159,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					simpleUser.setUserId(user.getUserId());
 					
 					userList.add(simpleUser);
+					if(snsId==null) snsId="";
 					snsIds.add(snsId);
 					
 					if(rankUser.getUserId()==Integer.valueOf(account))
@@ -301,7 +302,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 					simpleUser.setUserId(user.getUserId());
 					
 					userList.add(simpleUser);
-					
+					if(snsId==null) snsId="";
 					snsIds.add(snsId);
 					
 					if(rankUser.getUserId()==Integer.valueOf(account))
@@ -402,7 +403,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 			simpleUser.setUserId(user.getUserId());
 			
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-			
+			 if(snsId==null) snsId="";
 				
 			Map <Object,Object> rankInfor=new HashMap<Object, Object>();
 				
@@ -478,6 +479,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+			if(snsId==null) snsId="";
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());
@@ -564,6 +566,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 			user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 			String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+		    if(snsId==null) snsId="";
 			simpleUser.setGold(user.getGold());
 			simpleUser.setExp(user.getExp());
 			simpleUser.setGender(user.getGender());

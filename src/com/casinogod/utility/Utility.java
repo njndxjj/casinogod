@@ -292,20 +292,22 @@ public class Utility {
 	{
 		  System.out.println("getContentType===="+request.getContentType());
 		  
-		  //获取HTTP请求的输入流
-	      //已HTTP请求输入流建立一个BufferedReader对象
-	      
-		  BufferedReader br =  request.getReader();
-	      String buffer = null;
-	      StringBuffer buff = new StringBuffer();
-	      while ((buffer = br.readLine()) != null) {
-	              buff.append(buffer+"\n");
-	      }
-	      br.close();
+//		  //获取HTTP请求的输入流
+//	      //已HTTP请求输入流建立一个BufferedReader对象
+//	      
+//		  BufferedReader br =  request.getReader();
+//	      String buffer = null;
+//	      StringBuffer buff = new StringBuffer();
+//	      while ((buffer = br.readLine()) != null) {
+//	              buff.append(buffer+"\n");
+//	      }
+//	      br.close();
+		  
+		  String postData=request.getParameter("postdata");
 
-	    //  System.out.println("接收post发送数据:\n"+buff.toString());
+	      System.out.println("接收post发送数据:\n"+postData);
 
-	      return buff.toString().trim();
+	      return postData;
 
 	}
 	

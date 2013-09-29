@@ -306,6 +306,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    		   
 	    		   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
 	    		   
+	    		   if(snsId==null) snsId="";
 	    		   
 	    		   info.setStatus(1);
 	    		   info.setRepDesc("不能输入自己的邀请码");
@@ -337,6 +338,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    			   User user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 	    			   
 	    			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+	    			   if(snsId==null) snsId="";
 				  
 	    			   SimpleUser simpleUser=new SimpleUser();
 					
@@ -447,7 +449,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	    			   simpleUser.setUserId(user.getUserId());
 	    			   
 	    			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-		    		   
+	    			   if(snsId==null) snsId="";
 		    		   
 		    		   info.setStatus(2);
 		    		   info.setRepDesc("已经使用过了邀请码");
@@ -481,7 +483,8 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 			   simpleUser.setUserId(user.getUserId());
     		   
 			   String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-    		   
+			   if(snsId==null) snsId="";
+			   
     		   info.setStatus(3);
     		   info.setRepDesc("请输入正确邀请码");
     		   
@@ -616,6 +619,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 	       users=userProfileService.queryUserById(Long.valueOf(account));
 	       
 	       String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+	       if(snsId==null) snsId="";
 	    	   
 	       user=users.get(0);
 	    	   
