@@ -90,7 +90,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor implements Ser
 		    } catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+			}
 			    
 			String account=Utility.splitString(decode, "account");
 			String userToken=Utility.splitString(decode, "authToken");
