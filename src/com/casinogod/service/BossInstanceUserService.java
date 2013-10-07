@@ -13,8 +13,6 @@ public class BossInstanceUserService implements BossInstanceUser {
 	private BossInstanceUserInfoDAOImpl bossInstanceUserDAO;
 	
 
-	
-
 	public void setBossInstanceUserInfo(BossInstanceUserInfo bossInstanceUserInfo) {
 		this.bossInstanceUserInfo = bossInstanceUserInfo;
 	}
@@ -34,9 +32,10 @@ public class BossInstanceUserService implements BossInstanceUser {
 	public boolean addBossInstanceUserInfo(int bossInstance, long userId,int result) {
 		// TODO Auto-generated method stub
 		
+		bossInstanceUserInfo.setBossInstance(bossInstance);
 		bossInstanceUserInfo.setUserId(userId);
 		bossInstanceUserInfo.setResult(result);
-		bossInstanceUserInfo.setBossInstance(bossInstance);
+		
 		
 		bossInstanceUserDAO.insertBossInstanceUserInfo(bossInstanceUserInfo);
 		

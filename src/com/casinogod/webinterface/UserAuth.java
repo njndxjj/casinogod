@@ -130,6 +130,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     	DataStore.setting.put("invitedItem", configuration.getInvitedItem());
     }
     log.info("winTimes--->"+(Integer) DataStore.setting.get("winTimes"));
+    log.info("bossRewardNum--->"+(Integer) DataStore.setting.get("bossRewardNum"));
     
     if(pw!=null)
     {

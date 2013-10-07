@@ -605,6 +605,7 @@
         <property name="itemHistoryConfigService" ref="itemHistoryConfigService" />
         <property name="itemUserConfigService" ref="itemUserConfigService" /> 
         <property name="userLogInService" ref="userLogInService" />
+        <property name="configurationDAO" ref="configurationDAO" />
     </bean>
     
       <bean name="shareBoss" class="com.casinogod.webinterface.ShareBoss"> 

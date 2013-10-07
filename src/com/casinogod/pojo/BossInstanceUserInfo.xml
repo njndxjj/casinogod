@@ -13,8 +13,7 @@
    
     <insert id="insertBossInstanceUserInfo" parameterClass="BossInstanceUserInfo">
        <![CDATA[
-        insert into casinoGod_bossUser(userId,bossInstance,
-        result)values (#userId#,#bossInstance#,#result#);
+        insert into casinoGod_bossUser(userId,bossInstance,result)values (#userId#,#bossInstance#,#result#);
        ]]> 
     </insert>
     

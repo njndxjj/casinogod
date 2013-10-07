@@ -157,7 +157,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			
 			Item item=items.get(0);
 			
-			if(item.getItemName().equals("Gold"))
+			if(item.getItemName().equals("Gold")||item.getGameType()==100)
 			{
 				
 				//buy gold

@@ -58,7 +58,6 @@ public class BattleProfileService implements  BattleProfile {
 		users.put("battleStatue", battleStatue);
 		users.put("battleType", battleType);
 		users.put("createTime", createTime);
-		users.put("endTime", createTime);
 		users.put("gameType", GameType.values()[gameType].toString());
 		List <BattleHistory> list=battleHistoryDao.userRate(users);
 		

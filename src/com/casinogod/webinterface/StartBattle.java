@@ -26,11 +26,13 @@ import com.casinogod.battle.BattleFactory;
 import com.casinogod.battle.BattleInfo;
 import com.casinogod.battle.BattleType;
 import com.casinogod.battle.GameType;
+import com.casinogod.dao.ConfigurationDAOImpl;
 import com.casinogod.pojo.BattleHistory;
 import com.casinogod.pojo.BossBattleInfo;
 import com.casinogod.pojo.BossConfig;
 import com.casinogod.pojo.BossInstanceUserInfo;
 import com.casinogod.pojo.BossUserInfo;
+import com.casinogod.pojo.Configuration;
 import com.casinogod.pojo.EventConfig;
 import com.casinogod.pojo.Item;
 import com.casinogod.pojo.ItemUser;
@@ -104,6 +106,8 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 	
 	private  UserLogIn userLogInService;
 	
+	private ConfigurationDAOImpl configurationDAO;
+	
 
 	public void setUserBattleService(UserBattleService userBattleService) {
 		this.userBattleService = userBattleService;
@@ -141,12 +145,8 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 		this.bossUserService = bossUserService;
 	}
 	
-
-	
-	
-
 	public void setBossInstanceService(BossInstanceUserService bossInstanceService) {
-		bossInstanceService = bossInstanceService;
+		this.bossInstanceService = bossInstanceService;
 	}
 	
 
@@ -186,6 +186,14 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 			ItemHistoryConfigService itemHistoryConfigService) {
 		this.itemHistoryConfigService = itemHistoryConfigService;
 	}
+	
+	
+
+	public void setConfigurationDAO(ConfigurationDAOImpl configurationDAO) {
+		this.configurationDAO = configurationDAO;
+	}
+
+
 
 	private static Logger log = Logger.getLogger(StartBattle.class); 
 
@@ -211,7 +219,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 	    String battleType=Utility.splitString(decode, "battleType");
 	    String gameType=Utility.splitString(decode, "gameType");
 	    String battlePrize=Utility.splitString(decode, "battlePrize");
-	    String bossInstance=Utility.splitString(decode, "bossInstances");
+	    String bossInstance=Utility.splitString(decode, "bossInstance");
 	    String level=Utility.splitString(decode, "level");
 			
 		long userID=0;
@@ -448,7 +456,6 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 		{
 			
 			//share Boss
-			log.info("shareBoss-->");
 			log.info("binstance-->"+bInstance);
 			log.info("battleTypePara-->"+battleTypePara);
 				
@@ -555,7 +562,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 				    	if(batInfo.getBattleID()!=0)
 				    		battleProfileService.addBattleProfile(batInfo.getBattleID(), batInfo.getBattleOwnerUserID(), userList, 
 				    			1, Integer.parseInt(battleType),gameType.valueOf(batInfo.getGameType()).toString(),Utility.getNowString(),
-				    			null, null,Integer.valueOf(level),0);
+				    			null, null,level==null?0:Integer.valueOf(level),0);
 				    	
 				    	break;
 				    	
@@ -580,7 +587,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 				    	if(batInfo.getBattleID()!=0)
 				    		battleProfileService.addBattleProfile(batInfo.getBattleID(), batInfo.getBattleOwnerUserID(), userList, 
 				    			1, Integer.parseInt(battleType),gameType.valueOf(batInfo.getGameType()).toString(),Utility.getNowString(),
-				    			null, null,Integer.valueOf(level),0);
+				    			null, null,level==null?0:Integer.valueOf(level),0);
 				    	
 				    	break;
 				    	
@@ -665,7 +672,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 	    String battleType=Utility.splitString(decode, "battleType");
 	    String gameType=Utility.splitString(decode, "gameType");
 	    String battlePrize=Utility.splitString(decode, "battlePrize");
-	    String bossInstance=Utility.splitString(decode, "bossInstances");
+	    String bossInstance=Utility.splitString(decode, "bossInstance");
 	    String battleId=Utility.splitString(decode, "battleId");
 	    String level=Utility.splitString(decode, "level");
 	    String result=Utility.splitString(decode, "result");
@@ -687,464 +694,475 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 		  
 		  case SingleBattle:
 			  
-			  log.info(" end battle singleBattle ");
-			
-			  boolean flag=false;
-			  
-			  flag = battleProfileService.addBattleProfile(Long.valueOf(battleId),Long.valueOf(account), null, 
-		    			2, Integer.parseInt(battleType),GameType.values()[Integer.valueOf(gameType)].toString(),
-		    			Utility.getNowString(), result, null,Integer.valueOf(level),Integer.valueOf(isSpecialWin));
-			  
-			  List <User> list=userProfileService.queryUserById(Long.valueOf(account));
-			  
-			  User user=null;
-			  
-			  if(list.size()>0) user=list.get(0);
-			  
-			  if(flag)
-			  {
-			   
-				 //add or update userHistory
-				 log.info(" end battle add battleHistory");
-			     
-				 List <UserBattleHistory >  userBattle=userBattleService.queryUser(Long.valueOf(account), 
-					  GameType.values()[Integer.valueOf(gameType)].toString());
-			 
-			   if(userBattle.size()>0)
-			   
-			   {
-				  //update 
-				  if(Integer.valueOf(result)>0)
-				  {
-					  userBattle.get(0).setWinMoney(userBattle.get(0).getWinMoney()+Integer.valueOf(result));
-					  userBattle.get(0).setWinTimes( userBattle.get(0).getWinTimes()+1);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+Integer.valueOf(result)*0.02);
-					  log.info("exp-->"+tempExp);
-				
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
+					  log.info(" end battle singleBattle ");
+					
+					  boolean flag=false;
 					  
-				  }
-				  else if(Integer.valueOf(result)<0)
-				  {
-					  userBattle.get(0).setLostMoney(userBattle.get(0).getLostMoney()+(0-Integer.valueOf(result)));
-					  userBattle.get(0).setLostTime( userBattle.get(0).getLostTime()+1);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+(0-Integer.valueOf(result))*0.005);
-					  log.info("exp-->"+tempExp);
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
-				  }
-				  else
-				  {
-					  userBattle.get(0).setDrawTimes(userBattle.get(0).getDrawTimes()+1);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+50);
-					  log.info("exp-->"+tempExp);
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
-				  }
-				  
-				 userBattleService.updateBattle(userBattle.get(0).getUserId(), userBattle.get(0).getGameType(),
-						 userBattle.get(0).getWinTimes(),userBattle.get(0).getLostTime(), userBattle.get(0).getWinMoney(), 
-						 userBattle.get(0).getLostMoney(),userBattle.get(0).getDrawTimes());
-			  }
-			  else
-			  {
-				  //add
-				  if(Integer.valueOf(result)>0)
-				  {
-					  userBattleService.addUserBattle(Long.valueOf(account), 
-							  GameType.values()[Integer.valueOf(gameType)].toString(), 
-							  1, 0, Long.valueOf((result)), 0,0);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+Integer.valueOf(result)*0.02);
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
-				  }
-				  else if(Integer.valueOf(result)<0)
-				  {
-					  userBattleService.addUserBattle(Long.valueOf(account), 
-							  GameType.values()[Integer.valueOf(gameType)].toString(), 
-							  0, 1, 0,Long.valueOf(result),0);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+(0-Integer.valueOf(result))*0.005);
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
-				  }
-				  else
-				  {
-					  userBattleService.addUserBattle(Long.valueOf(account), 
-							  GameType.values()[Integer.valueOf(gameType)].toString(), 
-							  0, 0, 0,Long.valueOf(result),1);
-					  int tempExp=user.getExp();
-					  int updateExp=(int) (tempExp+50);
-					  user.setExp(updateExp);
-					  user.setLevel(Utility.getLevel(updateExp));
-					  userProfileService.updateExp(user);
-				  }
-			  }
-			  		  
-			  //update userProfile		  
-			  user.setGold(user.getGold()+Integer.valueOf(result)+prize);
-			  user.setDiamond(user.getDiamond());
-			  
-			  int vidoPokerSum=battleProfileService.vidoPokerSum(2, 1, Utility.getDateString(), Utility.getNextDateString(), 2);
-			  
-			  userProfileService.updateGold(user);
-			  
-			  List <User> listUpdate=userProfileService.queryUserById(Long.valueOf(account));
-			  
-			  user=listUpdate.get(0);
-			  
-			  String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
-			  if(snsId==null) snsId="";
-			  Map <String,Object> map=new HashMap<String, Object>();
-			  
-			  map.put("userInfo", user);
-			  map.put("snsId", snsId);
-			  
-			  if("VideoPoker".equals(GameType.values()[Integer.valueOf(gameType)].toString()))
-				  
-				  map.put("videoPokerSum", vidoPokerSum);
-			  
-			 
-			  responseJSON = JSONObject.fromObject(map).toString();
-			  
-			  response.setStatus(200);
-			  
-			  
-			  
-			 
-			 //update rank information
-			  
-			 if(Integer.valueOf(isSpecialWin)>0)
-			 {
-				 
-			  List <RankType> rankTypeList=rankTypeService.queryById(1);
-					
-			  log.info("rankType-->"+rankTypeList.size());
-					
-			  if(rankTypeList.size()>0)
-			  {
-				RankType rankType=rankTypeList.get(0);
+					  flag = battleProfileService.addBattleProfile(Long.valueOf(battleId),Long.valueOf(account), null, 
+				    			2, Integer.parseInt(battleType),GameType.values()[Integer.valueOf(gameType)].toString(),
+				    			Utility.getNowString(), result, null,Integer.valueOf(level),Integer.valueOf(isSpecialWin));
+					  
+					  List <User> list=userProfileService.queryUserById(Long.valueOf(account));
+					  
+					  User user=null;
+					  
+					  if(list.size()>0) user=list.get(0);
+					  
+					  if(flag)
+					  {
+					   
+						 //add or update userHistory
+						 log.info(" end battle add battleHistory");
+					     
+						 List <UserBattleHistory >  userBattle=userBattleService.queryUser(Long.valueOf(account), 
+							  GameType.values()[Integer.valueOf(gameType)].toString());
+					 
+					   if(userBattle.size()>0)
+					   
+					   {
+						  //update 
+						  if(Integer.valueOf(result)>0)
+						  {
+							  userBattle.get(0).setWinMoney(userBattle.get(0).getWinMoney()+Integer.valueOf(result));
+							  userBattle.get(0).setWinTimes( userBattle.get(0).getWinTimes()+1);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+Integer.valueOf(result)*0.02);
+							  log.info("exp-->"+tempExp);
 						
-				String startTime=rankType.getStartTime();
-				String endTime=rankType.getEndTime();
-						
-				List <RankUserInfo> rankUserInfo=rankUserService.queryByTypeUser(1, Integer.valueOf(account));
-					
-				if(rankUserInfo.size()>0)
-				{
-					//update
-					log.info("updaet rankUser-->"+rankUserInfo.size());
-					String updateTime=Utility.getNowString();
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+							  
+						  }
+						  else if(Integer.valueOf(result)<0)
+						  {
+							  userBattle.get(0).setLostMoney(userBattle.get(0).getLostMoney()+(0-Integer.valueOf(result)));
+							  userBattle.get(0).setLostTime( userBattle.get(0).getLostTime()+1);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+(0-Integer.valueOf(result))*0.005);
+							  log.info("exp-->"+tempExp);
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+						  }
+						  else
+						  {
+							  userBattle.get(0).setDrawTimes(userBattle.get(0).getDrawTimes()+1);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+50);
+							  log.info("exp-->"+tempExp);
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+						  }
+						  
+						 userBattleService.updateBattle(userBattle.get(0).getUserId(), userBattle.get(0).getGameType(),
+								 userBattle.get(0).getWinTimes(),userBattle.get(0).getLostTime(), userBattle.get(0).getWinMoney(), 
+								 userBattle.get(0).getLostMoney(),userBattle.get(0).getDrawTimes());
+					  }
+					  else
+					  {
+						  //add
+						  if(Integer.valueOf(result)>0)
+						  {
+							  userBattleService.addUserBattle(Long.valueOf(account), 
+									  GameType.values()[Integer.valueOf(gameType)].toString(), 
+									  1, 0, Long.valueOf((result)), 0,0);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+Integer.valueOf(result)*0.02);
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+						  }
+						  else if(Integer.valueOf(result)<0)
+						  {
+							  userBattleService.addUserBattle(Long.valueOf(account), 
+									  GameType.values()[Integer.valueOf(gameType)].toString(), 
+									  0, 1, 0,Long.valueOf(result),0);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+(0-Integer.valueOf(result))*0.005);
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+						  }
+						  else
+						  {
+							  userBattleService.addUserBattle(Long.valueOf(account), 
+									  GameType.values()[Integer.valueOf(gameType)].toString(), 
+									  0, 0, 0,Long.valueOf(result),1);
+							  int tempExp=user.getExp();
+							  int updateExp=(int) (tempExp+50);
+							  user.setExp(updateExp);
+							  user.setLevel(Utility.getLevel(updateExp));
+							  userProfileService.updateExp(user);
+						  }
+					  }
+					  		  
+					  //update userProfile		  
+					  user.setGold(user.getGold()+Integer.valueOf(result)+prize);
+					  user.setDiamond(user.getDiamond());
+					  
+					  int vidoPokerSum=battleProfileService.vidoPokerSum(2, 1, Utility.getDateString(), Utility.getNextDateString(), 2);
+					  
+					  userProfileService.updateGold(user);
+					  
+					  List <User> listUpdate=userProfileService.queryUserById(Long.valueOf(account));
+					  
+					  user=listUpdate.get(0);
+					  
+					  String snsId=userLogInService.getAccount(Long.valueOf(account)).getSnsId();
+					  if(snsId==null) snsId="";
+					  Map <String,Object> map=new HashMap<String, Object>();
+					  
+					  map.put("userInfo", user);
+					  map.put("snsId", snsId);
+					  
+					  if("VideoPoker".equals(GameType.values()[Integer.valueOf(gameType)].toString()))
+						  
+						  map.put("videoPokerSum", vidoPokerSum);
+					  
+					 
+					  responseJSON = JSONObject.fromObject(map).toString();
+					  
+					  response.setStatus(200);
+					  
+					  
+					  
+					 
+					 //update rank information
+					  
+					 if(Integer.valueOf(isSpecialWin)>0)
+					 {
 						 
-					if(updateTime.compareTo(startTime)>=0&&updateTime.compareTo(endTime)<=0)
-					{
-						log.info("update updateTime-->"+updateTime);
-						int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						log.info("loseTimes-->"+loseTime);
-						int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						log.info("drawTimes-->"+loseTime);
-						int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-						RankUserInfo rankUser=new RankUserInfo();
-						rankUser.setUserId(Integer.valueOf(account));
-						rankUser.setRankValue(total);
-					    rankUser.setTypeId(rankType.getTypeId());
-						rankUser.setUpdateTime(updateTime);
-						rankUser.setDrawTime(drawTime);
-						rankUser.setWinTime(winTime);
-						rankUser.setLoseTime(loseTime);
-						rankUser.setTotalMoney(totalMoney);
-						rankUser.setWinMoney(winMoney);
-						rankUser.setLoseMoney(loseMoney);
-							 
-						rankUserService.updateRankType(rankUser);
-					}
+					  List <RankType> rankTypeList=rankTypeService.queryById(1);
+							
+					  log.info("rankType-->"+rankTypeList.size());
+							
+					  if(rankTypeList.size()>0)
+					  {
+						RankType rankType=rankTypeList.get(0);
+								
+						String startTime=rankType.getStartTime();
+						String endTime=rankType.getEndTime();
+								
+						List <RankUserInfo> rankUserInfo=rankUserService.queryByTypeUser(1, Integer.valueOf(account));
+							
+						if(rankUserInfo.size()>0)
+						{
+							//update
+							log.info("updaet rankUser-->"+rankUserInfo.size());
+							String updateTime=Utility.getNowString();
+								 
+							if(updateTime.compareTo(startTime)>=0&&updateTime.compareTo(endTime)<=0)
+							{
+								log.info("update updateTime-->"+updateTime);
+								int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								log.info("loseTimes-->"+loseTime);
+								int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								log.info("drawTimes-->"+loseTime);
+								int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+								RankUserInfo rankUser=new RankUserInfo();
+								rankUser.setUserId(Integer.valueOf(account));
+								rankUser.setRankValue(total);
+							    rankUser.setTypeId(rankType.getTypeId());
+								rankUser.setUpdateTime(updateTime);
+								rankUser.setDrawTime(drawTime);
+								rankUser.setWinTime(winTime);
+								rankUser.setLoseTime(loseTime);
+								rankUser.setTotalMoney(totalMoney);
+								rankUser.setWinMoney(winMoney);
+								rankUser.setLoseMoney(loseMoney);
+									 
+								rankUserService.updateRankType(rankUser);
+							}
+							else
+							{
+								log.info("updaet updateTime expriedTime-->"+updateTime);
+								RankUserInfo rankUser=new RankUserInfo();
+								rankUser.setUserId(Integer.valueOf(account));
+								rankUser.setRankValue(0);
+								rankUser.setTypeId(rankType.getTypeId());
+								rankUser.setUpdateTime(updateTime);
+								rankUser.setDrawTime(0);
+								rankUser.setWinTime(0);
+								rankUser.setLoseTime(0);
+								rankUser.setTotalMoney(0);
+								rankUser.setWinMoney(0);
+								rankUser.setLoseMoney(0);
+									 
+								rankUserService.updateRankType(rankUser);
+							}
+								
+					   }
+					   else
+						{
+						   //add
+						   log.info("add rankUser-->");
+						   int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+						   int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+						   int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+						   int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+						   int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+						   int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+						   int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+							//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+								 
+						    rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString(),winTime,loseTime,drawTime,totalMoney,winMoney,loseMoney);
+									
+					    }	
+					  }
+					 }
 					else
 					{
-						log.info("updaet updateTime expriedTime-->"+updateTime);
-						RankUserInfo rankUser=new RankUserInfo();
-						rankUser.setUserId(Integer.valueOf(account));
-						rankUser.setRankValue(0);
-						rankUser.setTypeId(rankType.getTypeId());
-						rankUser.setUpdateTime(updateTime);
-						rankUser.setDrawTime(0);
-						rankUser.setWinTime(0);
-						rankUser.setLoseTime(0);
-						rankUser.setTotalMoney(0);
-						rankUser.setWinMoney(0);
-						rankUser.setLoseMoney(0);
-							 
-						rankUserService.updateRankType(rankUser);
-					}
-						
-			   }
-			   else
-				{
-				   //add
-				   log.info("add rankUser-->");
-				   int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-				   int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-				   int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-				   int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-				   int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-				   int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-				   int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-					//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-						 
-				    rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString(),winTime,loseTime,drawTime,totalMoney,winMoney,loseMoney);
+						 List <RankType> rankTypeList=rankTypeService.queryById(1);
 							
-			    }	
-			  }
-			 }
-			else
-			{
-				 List <RankType> rankTypeList=rankTypeService.queryById(1);
-					
-				  log.info("rankTypeAdd-->"+rankTypeList.size());
-						
-				  if(rankTypeList.size()>0)
-				  {
-					RankType rankType=rankTypeList.get(0);
-							
-					String startTime=rankType.getStartTime();
-					String endTime=rankType.getEndTime();
-							
-					List <RankUserInfo> rankUserInfo=rankUserService.queryByTypeUser(1, Integer.valueOf(account));
-						
-					if(rankUserInfo.size()<=0)
-					{
-						//add
-						log.info("add rankUser-->");
-						int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString(),winTime,loseTime,drawTime,totalMoney,winMoney,loseMoney);
-					}
-					else
-					{
-						//update
-						log.info("updaet rankUser-->"+rankUserInfo.size());
-						String updateTime=Utility.getNowString();
-						log.info("updaet updateTime-->"+updateTime);
-						int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						log.info("loseTimes-->"+loseTime);
-						int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
-						log.info("drawTimes-->"+loseTime);
-						int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
-						//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-						RankUserInfo rankUser=new RankUserInfo();
-						rankUser.setUserId(Integer.valueOf(account));
-						rankUser.setRankValue(total);
-					    rankUser.setTypeId(rankType.getTypeId());
-						rankUser.setUpdateTime(updateTime);
-						rankUser.setDrawTime(drawTime);
-						rankUser.setWinTime(winTime);
-						rankUser.setLoseTime(loseTime);
-						rankUser.setTotalMoney(totalMoney);
-						rankUser.setWinMoney(winMoney);
-						rankUser.setLoseMoney(loseMoney);
-							 
-						rankUserService.updateRankType(rankUser);
-					}
-				  }
-		    }  
-			 
-		// update/add userResult
-			 
-		List <UserBattleResult> resultList=userResultService.userBattleGameResult(Integer.valueOf(account), 
-				Integer.valueOf(battleType),Integer.valueOf(gameType));
-		
-		int totalResult,winResult,loseResult;
-			 
-	    if(resultList.size()>0)
-	    {
-		   //update
-		   totalResult=battleProfileService.totalReuslt(Long.valueOf(account), 2, Integer.valueOf(battleType));
-		   winResult=battleProfileService.totalWinResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
-		   loseResult=battleProfileService.totalLoseResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
-			
-		  userResultService.updateResult(Integer.valueOf(account),Integer.valueOf(battleType),
-					 Integer.valueOf(gameType), totalResult, winResult, loseResult);
-		}
-	    else
-		{
-			 totalResult=battleProfileService.totalReuslt(Long.valueOf(account), 2, Integer.valueOf(battleType));
-			 winResult=battleProfileService.totalWinResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
-		     loseResult=battleProfileService.totalLoseResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
-				 userResultService.addUserResult(Integer.valueOf(account),Integer.valueOf(battleType),
-					 Integer.valueOf(gameType), totalResult, winResult, loseResult);
-				 
-		}
-	    
-	    List <RankType> rankTypeList=rankTypeService.queryById(2);
+						  log.info("rankTypeAdd-->"+rankTypeList.size());
+								
+						  if(rankTypeList.size()>0)
+						  {
+							RankType rankType=rankTypeList.get(0);
+									
+							String startTime=rankType.getStartTime();
+							String endTime=rankType.getEndTime();
+									
+							List <RankUserInfo> rankUserInfo=rankUserService.queryByTypeUser(1, Integer.valueOf(account));
+								
+							if(rankUserInfo.size()<=0)
+							{
+								//add
+								log.info("add rankUser-->");
+								int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString(),winTime,loseTime,drawTime,totalMoney,winMoney,loseMoney);
+							}
+							else
+							{
+								//update
+								log.info("updaet rankUser-->"+rankUserInfo.size());
+								String updateTime=Utility.getNowString();
+								log.info("updaet updateTime-->"+updateTime);
+								int total=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int winTime=battleProfileService.isSpecialWin(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								int loseTime=battleProfileService.isSpecialLoseNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								log.info("loseTimes-->"+loseTime);
+								int drawTime=battleProfileService.isSpecialDrawNum(Long.valueOf(account), 2, 1, startTime, endTime,Integer.valueOf(gameType));
+								log.info("drawTimes-->"+loseTime);
+								int totalMoney=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int winMoney=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								int loseMoney=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, 1, startTime, endTime);
+								//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+								RankUserInfo rankUser=new RankUserInfo();
+								rankUser.setUserId(Integer.valueOf(account));
+								rankUser.setRankValue(total);
+							    rankUser.setTypeId(rankType.getTypeId());
+								rankUser.setUpdateTime(updateTime);
+								rankUser.setDrawTime(drawTime);
+								rankUser.setWinTime(winTime);
+								rankUser.setLoseTime(loseTime);
+								rankUser.setTotalMoney(totalMoney);
+								rankUser.setWinMoney(winMoney);
+								rankUser.setLoseMoney(loseMoney);
+									 
+								rankUserService.updateRankType(rankUser);
+							}
+						  }
+				    }  
+					 
+				// update/add userResult
+					 
+				List <UserBattleResult> resultList=userResultService.userBattleGameResult(Integer.valueOf(account), 
+						Integer.valueOf(battleType),Integer.valueOf(gameType));
 				
-	    RankType rankType=rankTypeList.get(0);
-			 
-		// update/add userResult
-	    
-	    List <RankUserInfo> rankList=rankUserService.queryByTypeUser(2, Integer.valueOf(account));
-			 
-		if(rankList.size()>0)
-		{
-			int winTime=battleProfileService.totalWinNumt(Long.valueOf(account), 2, 1);
-			int loseTime=battleProfileService.totalLoseNum(Long.valueOf(account), 2, 1);
-		    int drawTime=battleProfileService.totalDrawNum(Long.valueOf(account), 2, 1);
-					
-		    //rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-			RankUserInfo rankUser=new RankUserInfo();
-			rankUser.setUserId(Integer.valueOf(account));
-			rankUser.setRankValue(winTime);
-			rankUser.setTypeId(rankType.getTypeId());
-			rankUser.setUpdateTime(Utility.getNowString());
-			rankUser.setDrawTime(drawTime);
-			rankUser.setWinTime(winTime);
-			rankUser.setLoseTime(loseTime);
-			rankUser.setTotalMoney(totalResult);
-			rankUser.setWinMoney(winResult);
-			rankUser.setLoseMoney(loseResult);
-						 
-			rankUserService.updateRankType(rankUser);
-						 
-		}
-		else
-		{
-			int winTime=battleProfileService.totalWinNumt(Long.valueOf(account), 2, 1);
-			int loseTime=battleProfileService.totalLoseNum(Long.valueOf(account), 2, 1);
-			int drawTime=battleProfileService.totalDrawNum(Long.valueOf(account), 2, 1);
-					
-			//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-			RankUserInfo rankUser=new RankUserInfo();
-			rankUser.setUserId(Integer.valueOf(account));
-			rankUser.setRankValue(winTime);
-			rankUser.setTypeId(rankType.getTypeId());
-			rankUser.setUpdateTime(Utility.getNowString());
-		    rankUser.setDrawTime(drawTime);
-			rankUser.setWinTime(winTime);
-			rankUser.setLoseTime(loseTime);
-				 
-			rankUserService.addRankUser(Integer.valueOf(account), 2, winTime, 
-						 Utility.getNowString(),winTime,loseTime,drawTime,totalResult,winResult,loseResult);
-				 
-		}
-		
-		// update/add daily userResult
-		
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-		Calendar day=Calendar.getInstance();
-	
-	
-		String yesToday=format.format(day.getTime());
-		
-		String createTime=yesToday+" 00:00:00";
-		
-		String endTime=yesToday+" 23:59:59";
-		
-		totalResult=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
-		winResult=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
-		loseResult=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
-					
-		rankTypeList=rankTypeService.queryById(3);
-						
-		rankType=rankTypeList.get(0);
+				int totalResult,winResult,loseResult;
 					 
-		// update/add userResult
+			    if(resultList.size()>0)
+			    {
+				   //update
+				   totalResult=battleProfileService.totalReuslt(Long.valueOf(account), 2, Integer.valueOf(battleType));
+				   winResult=battleProfileService.totalWinResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
+				   loseResult=battleProfileService.totalLoseResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
+					
+				  userResultService.updateResult(Integer.valueOf(account),Integer.valueOf(battleType),
+							 Integer.valueOf(gameType), totalResult, winResult, loseResult);
+				}
+			    else
+				{
+					 totalResult=battleProfileService.totalReuslt(Long.valueOf(account), 2, Integer.valueOf(battleType));
+					 winResult=battleProfileService.totalWinResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
+				     loseResult=battleProfileService.totalLoseResult(Long.valueOf(account), 2, Integer.valueOf(battleType));
+						 userResultService.addUserResult(Integer.valueOf(account),Integer.valueOf(battleType),
+							 Integer.valueOf(gameType), totalResult, winResult, loseResult);
+						 
+				}
 			    
-		rankList=rankUserService.queryByTypeUser(3, Integer.valueOf(account));
+			    List <RankType> rankTypeList=rankTypeService.queryById(2);
+						
+			    RankType rankType=rankTypeList.get(0);
 					 
-		if(rankList.size()>0)
-		{
-			int winTime=battleProfileService.totalWinNumtWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-			int loseTime=battleProfileService.totalLoseNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-			int drawTime=battleProfileService.totalDrawNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-			
-			RankUserInfo rankUser=new RankUserInfo();
-			rankUser.setUserId(Integer.valueOf(account));
-			rankUser.setRankValue(winTime);
-			rankUser.setTypeId(rankType.getTypeId());
-			rankUser.setUpdateTime(Utility.getNowString());
-			rankUser.setDrawTime(drawTime);
-			rankUser.setWinTime(winTime);
-			rankUser.setLoseTime(loseTime);
-			rankUser.setTotalMoney(totalResult);
-			rankUser.setWinMoney(winResult);
-			rankUser.setLoseMoney(loseResult);
+				// update/add userResult
+			    
+			    List <RankUserInfo> rankList=rankUserService.queryByTypeUser(2, Integer.valueOf(account));
+					 
+				if(rankList.size()>0)
+				{
+					int winTime=battleProfileService.totalWinNumt(Long.valueOf(account), 2, 1);
+					int loseTime=battleProfileService.totalLoseNum(Long.valueOf(account), 2, 1);
+				    int drawTime=battleProfileService.totalDrawNum(Long.valueOf(account), 2, 1);
+							
+				    //rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+					RankUserInfo rankUser=new RankUserInfo();
+					rankUser.setUserId(Integer.valueOf(account));
+					rankUser.setRankValue(winTime);
+					rankUser.setTypeId(rankType.getTypeId());
+					rankUser.setUpdateTime(Utility.getNowString());
+					rankUser.setDrawTime(drawTime);
+					rankUser.setWinTime(winTime);
+					rankUser.setLoseTime(loseTime);
+					rankUser.setTotalMoney(totalResult);
+					rankUser.setWinMoney(winResult);
+					rankUser.setLoseMoney(loseResult);
 								 
-			rankUserService.updateRankType(rankUser);
+					rankUserService.updateRankType(rankUser);
 								 
-		}
-		else
-		{
-			int winTime=battleProfileService.totalWinNumtWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-			int loseTime=battleProfileService.totalLoseNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-			int drawTime=battleProfileService.totalDrawNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+				}
+				else
+				{
+					int winTime=battleProfileService.totalWinNumt(Long.valueOf(account), 2, 1);
+					int loseTime=battleProfileService.totalLoseNum(Long.valueOf(account), 2, 1);
+					int drawTime=battleProfileService.totalDrawNum(Long.valueOf(account), 2, 1);
 							
 					//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-			RankUserInfo rankUser=new RankUserInfo();
-			rankUser.setUserId(Integer.valueOf(account));
-			rankUser.setRankValue(winTime);
-			rankUser.setTypeId(rankType.getTypeId());
-			rankUser.setUpdateTime(Utility.getNowString());
-			rankUser.setDrawTime(drawTime);
-			rankUser.setWinTime(winTime);
-			rankUser.setLoseTime(loseTime);
+					RankUserInfo rankUser=new RankUserInfo();
+					rankUser.setUserId(Integer.valueOf(account));
+					rankUser.setRankValue(winTime);
+					rankUser.setTypeId(rankType.getTypeId());
+					rankUser.setUpdateTime(Utility.getNowString());
+				    rankUser.setDrawTime(drawTime);
+					rankUser.setWinTime(winTime);
+					rankUser.setLoseTime(loseTime);
 						 
-			rankUserService.addRankUser(Integer.valueOf(account), 3, winTime, 
+					rankUserService.addRankUser(Integer.valueOf(account), 2, winTime, 
 								 Utility.getNowString(),winTime,loseTime,drawTime,totalResult,winResult,loseResult);
 						 
-	}
-			 
-	}
-	else
-	{
-		ErrorResponse errorResponse = new ErrorResponse();
-		errorResponse.setErrorMessage("add battle fail!");
-		errorResponse.setErrorAction("");
-		errorResponse.setErrorCode(ErrorCode.Battle_StartBattleFail);
+				}
+				
+				// update/add daily userResult
+				
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Calendar day=Calendar.getInstance();
+			
+			
+				String yesToday=format.format(day.getTime());
+				
+				String createTime=yesToday+" 00:00:00";
+				
+				String endTime=yesToday+" 23:59:59";
+				
+				totalResult=battleProfileService.totalReusltWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
+				winResult=battleProfileService.totalWinResultWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
+				loseResult=battleProfileService.totalLoseResultWithDate(Long.valueOf(account), 2, Integer.valueOf(battleType), createTime, endTime);
+							
+				rankTypeList=rankTypeService.queryById(3);
+								
+				rankType=rankTypeList.get(0);
+							 
+				// update/add userResult
+					    
+				rankList=rankUserService.queryByTypeUser(3, Integer.valueOf(account));
+							 
+				if(rankList.size()>0)
+				{
+					int winTime=battleProfileService.totalWinNumtWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+					int loseTime=battleProfileService.totalLoseNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+					int drawTime=battleProfileService.totalDrawNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
 					
-		responseJSON = JSONObject.fromObject(errorResponse).toString();
-		response.setStatus(401);
-	}
-					
-	try {
-		
-		responseJSON=CustomBase64.encode(responseJSON);
-		response.setCharacterEncoding("utf-8");
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		System.out.println(responseJSON);
-		out.println(responseJSON);
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}  
-			  
-	break;
+					RankUserInfo rankUser=new RankUserInfo();
+					rankUser.setUserId(Integer.valueOf(account));
+					rankUser.setRankValue(winTime);
+					rankUser.setTypeId(rankType.getTypeId());
+					rankUser.setUpdateTime(Utility.getNowString());
+					rankUser.setDrawTime(drawTime);
+					rankUser.setWinTime(winTime);
+					rankUser.setLoseTime(loseTime);
+					rankUser.setTotalMoney(totalResult);
+					rankUser.setWinMoney(winResult);
+					rankUser.setLoseMoney(loseResult);
+										 
+					rankUserService.updateRankType(rankUser);
+										 
+				}
+				else
+				{
+					int winTime=battleProfileService.totalWinNumtWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+					int loseTime=battleProfileService.totalLoseNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+					int drawTime=battleProfileService.totalDrawNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
+									
+							//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+					RankUserInfo rankUser=new RankUserInfo();
+					rankUser.setUserId(Integer.valueOf(account));
+					rankUser.setRankValue(winTime);
+					rankUser.setTypeId(rankType.getTypeId());
+					rankUser.setUpdateTime(Utility.getNowString());
+					rankUser.setDrawTime(drawTime);
+					rankUser.setWinTime(winTime);
+					rankUser.setLoseTime(loseTime);
+								 
+					rankUserService.addRankUser(Integer.valueOf(account), 3, winTime, 
+										 Utility.getNowString(),winTime,loseTime,drawTime,totalResult,winResult,loseResult);
+								 
+			}
+					 
+			}
+			else
+			{
+				ErrorResponse errorResponse = new ErrorResponse();
+				errorResponse.setErrorMessage("add battle fail!");
+				errorResponse.setErrorAction("");
+				errorResponse.setErrorCode(ErrorCode.Battle_StartBattleFail);
+							
+				responseJSON = JSONObject.fromObject(errorResponse).toString();
+				response.setStatus(401);
+			}
+							
+			try {
+				
+				responseJSON=CustomBase64.encode(responseJSON);
+				response.setCharacterEncoding("utf-8");
+				response.setContentType("text/html");
+				PrintWriter out = response.getWriter();
+				System.out.println(responseJSON);
+				out.println(responseJSON);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+					  
+			break;
 
 		  case BossBattle:
 			  
 			  log.info(" end battle bossBattle ");
+			  
+			  List <Configuration> listConfig=configurationDAO.querAll();
+			    
+			  if(listConfig.size()>0)
+			  {
+				  Configuration configuration=listConfig.get(0);
+				  DataStore.setting.put("bossRewardNum", configuration.getBossRewardNum());
+		
+			  }
+			  
+			  log.info("bossRewardNum-->"+(Integer) DataStore.setting.get("bossRewardNum"));
 				
 			  flag=false;
 			  
@@ -1229,13 +1247,13 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 							{
 								//update itemUser
 								ItemUser itemUser=itemUsers.get(0);
-								itemUser.setItemNum(itemUser.getItemNum()+(Integer)DataStore.setting.get("bossRewardNum"));
+								itemUser.setItemNum(itemUser.getItemNum()+(Integer) DataStore.setting.get("bossRewardNum"));
 								itemUserConfigService.updateItemUser(itemUser.getUserId(), itemUser.getItemName(),itemUser.getGameType(),
 					    		itemUser.getItemNum());
 					    	
 							}else
 							{
-								itemUserConfigService.addItemUser(item.getId(),Integer.valueOf(account),item.getItemName(), (Integer)DataStore.setting.get("bossRewardNum"),
+								itemUserConfigService.addItemUser(item.getId(),Integer.valueOf(account),item.getItemName(), (Integer) DataStore.setting.get("bossRewardNum"),
 					    		item.getGameType(),item.getComment());
 							}
 							//add itemHistory
