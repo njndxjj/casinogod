@@ -250,6 +250,11 @@
             <result name="error">/configPage/eventError.jsp</result>
         </action>
         
+        <action name="queryEventById" class="eventAction" method="findEventByIdbbb">  
+            <result name="success">/configPage/updateEvent.jsp</result>  
+            <result name="error">/configPage/eventError.jsp</result>
+        </action>
+        
          <action name="addRank" class="rankTypeAction" method="addRank">  
             <result  type="redirectAction" name="success">
                 <param name="actionName">querryRank.action</param>
@@ -744,6 +749,8 @@
         <action name="showEvent" class="showEvent" method="showEvent">  
         </action>
         <action name="showBlackJackRank" class="showRank" method="showBlackJack">  
+        </action>
+         <action name="showWinMoney" class="showRank" method="showWinMoney">  
         </action>
         <action name="showResultBattle" class="showRank" method="showUserBattle">  
         </action>

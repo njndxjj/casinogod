@@ -116,10 +116,10 @@
           <label class="control-label" for="env">环境</label>
           <div class="controls">
           <label class="radio">
-         <input type="radio" name="env" id="env1" value="production" checked>production
+         <input type="radio" name="env" id="production" value="2" checked>production
          </label>
          <label class="radio">
-         <input type="radio" name="env" id="env2" value="sandbox">sandbox
+         <input type="radio" name="env" id="sandbox" value="1">sandbox
          </label>
          </div>
          </div>

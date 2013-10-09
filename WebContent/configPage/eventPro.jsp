@@ -132,7 +132,7 @@
          <td>${eventInfo.enable}</td>
          <td>
          <a href="deleteEvent.action?eventId=${eventInfo.eventId}"> 删除</a>
-         <a href="queryEvent.action?eventId=${eventInfo.eventId}">更新</a>
+         <a href="queryEventById.action?eventId=${eventInfo.eventId}">更新</a>
          </td>
      </tr>  
      </s:iterator> 

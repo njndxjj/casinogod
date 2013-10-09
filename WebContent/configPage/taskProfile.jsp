@@ -141,12 +141,17 @@
          <td>${taskInfo.gameType}</td>
          <td>${taskInfo.itemId}  </td>
          <td>${taskInfo.itemNum}</td>  
-          <td>${taskInfo.status}</td> 
-           <td>${taskInfo.isDaily}</td> 
-            <td>${taskInfo.description}</td> 
+         <td>${taskInfo.status}</td> 
+         <td>${taskInfo.isDaily}</td> 
+         <td>${taskInfo.description}</td> 
          <td>
-         <a href="findTaskByType.action?taskType=${taskInfo.taskType}&taskRate=${taskInfo.taskRate}">更新</a>
-         <a href="deleteTask.action?taskType=${taskInfo.taskType}&taskRate=${taskInfo.taskRate}">删除</a>
+            <s:if test="#taskInfo.status==0">
+               <a href="findTaskByType.action?taskType=${taskInfo.taskType}&taskRate=${taskInfo.taskRate}">更新</a>
+               <a href="deleteTask.action?taskType=${taskInfo.taskType}&taskRate=${taskInfo.taskRate}">删除</a>
+             </s:if>
+             <s:else>
+                                         已删除
+             </s:else>
          </td>
      </tr>  
      </s:iterator> 

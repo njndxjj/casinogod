@@ -242,6 +242,145 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 	}
 	
 	
+	public void showWinMoney()
+	
+	{
+		
+		String responseJSON  = "";
+		
+		String postdata="";
+		String decode="";
+	    
+	    try {
+		
+	    	postdata=Utility.postdata(resquest);
+	    	decode=CustomBase64.decode(postdata);
+	    	System.out.println("showWinMoney-->"+postdata);
+	    	System.out.println("showWinMoney--->"+CustomBase64.decode(postdata));
+		
+	    } catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+	    String account=Utility.splitString(decode, "account");
+		
+		int rank=0;
+		
+		int i=1;
+		
+		if(Integer.valueOf(account)>0)
+		{
+			List <RankType> rankTypeList=rankTypeService.queryById(2);
+			
+			if(rankTypeList.size()>0)
+			{
+				
+				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winMoney");
+				
+				List <SimpleUser> userList=new ArrayList<SimpleUser>();
+				List <String> snsIds=new ArrayList<String>();
+				
+				for(RankUserInfo rankUser: rankUserInfoList)
+				{
+					
+					SimpleUser simpleUser=new SimpleUser();
+					User user=new User();
+					
+					user=userProfileService.queryUserById(Long.valueOf(rankUser.getUserId())).get(0);
+					String snsId=userLogInService.getAccount(Long.valueOf(rankUser.getUserId())).getSnsId();
+					simpleUser.setGold(user.getGold());
+					simpleUser.setExp(user.getExp());
+					simpleUser.setGender(user.getGender());
+					simpleUser.setImage(user.getImage());
+					simpleUser.setLevel(user.getLevel());
+					simpleUser.setNickName(user.getNickName());
+					simpleUser.setUserId(user.getUserId());
+					
+					userList.add(simpleUser);
+					if(snsId==null) snsId="";
+					snsIds.add(snsId);
+					
+					if(rankUser.getUserId()==Integer.valueOf(account))
+						rank=i;
+					i++;
+				}
+				
+				Map <Object,Object> rankInfor=new HashMap<Object, Object>();
+				
+				int rankSize=(Integer)DataStore.setting.get("rankSize");
+				
+				if(rankUserInfoList.size()>=rankSize)
+				{
+					if(rank<=rankSize)
+					{
+						rankInfor.put("rankUserInfoList", rankUserInfoList.subList(0, rankSize));
+						rankInfor.put("simpleUser", userList.subList(0, rankSize));	
+						rankInfor.put("snsId", snsIds.subList(0, rankSize));
+					}
+					else
+					{
+						List <RankUserInfo> list =new ArrayList<RankUserInfo>();
+						list.addAll(rankUserInfoList.subList(0, rankSize));
+						
+						List <String> snsList=new ArrayList<String>();
+						snsList.addAll(snsIds.subList(0, rankSize));
+						
+						list.add(rankUserInfoList.get(rank));
+						snsList.add(snsIds.get(rank));
+						
+						List <SimpleUser> simpleList=new ArrayList<SimpleUser>();
+						simpleList.addAll(userList.subList(0, rankSize));
+						
+						
+						rankInfor.put("rankUserInfoList", list);
+						rankInfor.put("snsId", snsList);
+						rankInfor.put("simpleUser", simpleList);
+					}
+				}
+				else
+				{
+					rankInfor.put("rankUserInfoList", rankUserInfoList);
+				    rankInfor.put("snsId", snsIds);
+				    rankInfor.put("simpleUser", userList);
+				}
+				
+				
+				
+				rankInfor.put("rank", rank);
+				
+				responseJSON+=JSONObject.fromObject(rankInfor).toString();
+				response.setStatus(200);
+					
+			}
+			
+		}
+		else
+		{
+			 ErrorResponse errorResponse = new ErrorResponse();
+			 errorResponse.setErrorMessage("rank fail!");
+			 errorResponse.setErrorAction("");
+			 errorResponse.setErrorCode(ErrorCode.Battle_rankBlackJack);
+				
+			 responseJSON = JSONObject.fromObject(errorResponse).toString();
+			 response.setStatus(401);
+		}
+		
+		
+		try {
+			responseJSON=CustomBase64.encode(responseJSON);
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+			out.println(responseJSON);
+				
+		} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+	}
+	
+	
 	public void showTotalNum()
 	
 	{

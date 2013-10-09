@@ -1,14 +1,7 @@
 package com.casinogod.action;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import javapns.Push;
-import javapns.communication.exceptions.CommunicationException;
-import javapns.communication.exceptions.KeystoreException;
-import javapns.notification.PushedNotification;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +31,7 @@ public class PushNotificationAction extends ActionSupport implements ServletResp
 	
 	private String notes;
 	
-	private int env;
+	private String env;
 	
 	private String text;
 	
@@ -83,10 +76,10 @@ public class PushNotificationAction extends ActionSupport implements ServletResp
 		this.notes = notes;
 	}
 	
-	public void setEnv(int env) {
+   
+	public void setEnv(String env) {
 		this.env = env;
 	}
-	
 
 	public void setSendList(String sendList) {
 		this.sendList = sendList;
@@ -142,12 +135,12 @@ public class PushNotificationAction extends ActionSupport implements ServletResp
 		return flag?SUCCESS:ERROR;
 	}
 	
-	public String pushNotification() throws CommunicationException, KeystoreException
+	public String pushNotification() 
 	{
 		//invoke push method
 	    PushNotificationThread pn=new PushNotificationThread();
 	     
-	    boolean production=EnvType.values()[env].toString().equalsIgnoreCase(("Production"));
+	    boolean production=EnvType.values()[Integer.valueOf(this.env)].toString().equalsIgnoreCase(("Production"));
 	    
 	    List <String> tokens=new ArrayList<String>();
 	    

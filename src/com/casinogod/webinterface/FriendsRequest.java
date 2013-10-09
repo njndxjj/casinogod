@@ -272,6 +272,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 					SimpleUser simpleUser=new SimpleUser();
 					
 					String snsId=userLogInService.getAccount(Long.valueOf(userid)).getSnsId();
+					
 					if(snsId==null) snsId="";
 					
 					snsIds.add(snsId);
@@ -388,6 +389,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			
 			String snsId=userLogInService.getAccount(Long.valueOf(userId)).getSnsId();
 			if(snsId==null) snsId="";
+			
 			snsIds.add(snsId);
 				
 			simpleUser.setGold(user.getGold());
@@ -1026,6 +1028,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 					SimpleUser simpleUser=new SimpleUser();
 					String snsId=userLogInService.getAccount(Long.valueOf(userId)).getSnsId();
 					if(snsId==null) snsId="";
+					
 					snsIds.add(snsId);
 					
 					simpleUser.setGold(user.getGold());

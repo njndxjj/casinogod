@@ -55,7 +55,7 @@ public class BoardCastPro extends ActionSupport implements ServletResponseAware,
 		this.response=response;
 	}
 
-	public void queryAll() throws UnsupportedEncodingException
+	public void queryAll()
 	{
 
 		List <BoardCastInfo> list=boardCastService.queryall();
@@ -71,7 +71,12 @@ public class BoardCastPro extends ActionSupport implements ServletResponseAware,
 	       
 	       responseJSON +=JSONObject.fromObject(map).toString();
 	       
-	       responseJSON=CustomBase64.encode(responseJSON);
+	       try {
+			responseJSON=CustomBase64.encode(responseJSON);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    	
 		   response.setStatus(200);	
 	    
@@ -86,7 +91,12 @@ public class BoardCastPro extends ActionSupport implements ServletResponseAware,
 				
 			responseJSON = JSONObject.fromObject(errorResponse).toString();
 			
-			responseJSON=CustomBase64.encode(responseJSON);
+			try {
+				responseJSON=CustomBase64.encode(responseJSON);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			 
 			
 			response.setStatus(401);
