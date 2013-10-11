@@ -169,6 +169,8 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware,S
 					   user.setGold(user.getGold());
 					   
 					   userProfileService.updateGold(user);
+					   
+					   
 					    
 					   CreateJson prodcut=new CreateJson();
 					   prodcut.add("status", 0);

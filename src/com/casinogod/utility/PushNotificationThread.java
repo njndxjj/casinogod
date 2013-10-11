@@ -60,8 +60,8 @@ public class PushNotificationThread extends TestFoundation {
 		verifyKeystore(keystore, password, production);
 
 		/* Push an alert */
-//	    pushSimplePayloadUsingThreads(keystore, password, production, tokens, simulation, threads);
-		pushSimplePayloadUsingQueue(keystore, password, production, tokens, simulation, threads,text);
+	    pushSimplePayloadUsingThreads(keystore, password, production, tokens, simulation, threads);
+//		pushSimplePayloadUsingQueue(keystore, password, production, tokens, simulation, threads,text);
 		
 	}
 

@@ -3,6 +3,8 @@ package com.casinogod.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import javapns.notification.PushedNotification;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,9 +45,9 @@ public class PushNotificationAction extends ActionSupport implements ServletResp
 	
 //	private final static String root=new File("WebContent").getAbsolutePath();
 	
-//	private final static String keystore="D:\\workspace\\CasinoGod\\WebContent\\pnkey\\PokerKingAPNCertificates.p12";
+	private final static String keystore="D:\\workspace\\CasinoGod\\WebContent\\pnkey\\PokerKingAPNCertificates.p12";
 	
-	private final static String keystore="/usr/local/apache-tomcat-6.0.37/webapps/CasinoGod/WebContent/pnkey/PokerKingAPNCertificates.p12";
+//	private final static String keystore="/usr/local/apache-tomcat-6.0.37/webapps/CasinoGod/pnkey/PokerKingAPNCertificates.p12";
 	
 	private final static String password="GodCasino201#";
 	

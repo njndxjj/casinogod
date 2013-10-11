@@ -264,6 +264,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		}
 	    
 	    String account=Utility.splitString(decode, "account");
+	    String typeId=Utility.splitString(decode, "typeId");
 		
 		int rank=0;
 		
@@ -271,7 +272,7 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 		
 		if(Integer.valueOf(account)>0)
 		{
-			List <RankType> rankTypeList=rankTypeService.queryById(2);
+			List <RankType> rankTypeList=rankTypeService.queryById(Integer.valueOf(typeId));
 			
 			if(rankTypeList.size()>0)
 			{
