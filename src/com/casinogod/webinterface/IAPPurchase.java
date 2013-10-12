@@ -16,9 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.casinogod.pojo.Product;
+import com.casinogod.pojo.SimpleUser;
 import com.casinogod.pojo.User;
 import com.casinogod.service.IAPLogService;
 import com.casinogod.service.ProductService;
+import com.casinogod.service.UserLogIn;
 import com.casinogod.service.UserProfileService;
 import com.casinogod.utility.ConnectUtiltiy;
 import com.casinogod.utility.CreateJson;
@@ -41,6 +43,8 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware,S
 	
 	private IAPLogService iAPLogService;
 	
+	private  UserLogIn userLogInService;
+	
 	private HttpServletResponse response;
 	
 	private static Logger log = Logger.getLogger(IAPPurchase.class); 
@@ -58,6 +62,12 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware,S
 
 	public void setiAPLogService(IAPLogService iAPLogService) {
 		this.iAPLogService = iAPLogService;
+	}
+	
+	
+
+	public void setUserLogInService(UserLogIn userLogInService) {
+		this.userLogInService = userLogInService;
 	}
 
 	public void iapPurchase()
@@ -170,13 +180,23 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware,S
 					   
 					   userProfileService.updateGold(user);
 					   
+					   user=userProfileService.queryUserById(Long.valueOf(account)).get(0);
 					   
-					    
-					   CreateJson prodcut=new CreateJson();
-					   prodcut.add("status", 0);
-					   prodcut.add("product_id", appProductId);
+					   SimpleUser simpleUser=new SimpleUser();
+				
+						String snsId=userLogInService.getAccount(user.getUserId()).getSnsId();
+						simpleUser.setGold(user.getGold());
+						simpleUser.setExp(user.getExp());
+						simpleUser.setGender(user.getGender());
+						simpleUser.setImage(user.getImage());
+						simpleUser.setLevel(user.getLevel());
+						simpleUser.setNickName(user.getNickName());
+						simpleUser.setUserId(user.getUserId());
+	//				   CreateJson prodcut=new CreateJson();
+	//				   prodcut.add("status", 0);
+	//				   prodcut.add("product_id", appProductId);
 				   
-					   responseJSON=prodcut.normalToString(true);
+					   responseJSON=net.sf.json.JSONObject.fromObject(simpleUser).toString();
 				   
 					   response.setStatus(200);
 					   

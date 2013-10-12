@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javapns.communication.exceptions.CommunicationException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -331,7 +333,12 @@ public class ShareBoss extends ActionSupport implements ServletResponseAware,Ser
 		}
 		finally
 		{
-			pn.sendPush(keystore, password, production, tokens, true, 2,"快来加入raidBoss战斗吧!!");
+			try {
+				pn.sendPush(keystore, password, production, tokens, true, 2,"快来加入raidBoss战斗吧!!");
+			} catch (CommunicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	
   }

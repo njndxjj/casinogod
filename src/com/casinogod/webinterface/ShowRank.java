@@ -279,6 +279,8 @@ public class ShowRank extends ActionSupport implements ServletResponseAware,Serv
 				
 				List <RankUserInfo> rankUserInfoList=rankUserService.queryByType(rankTypeList.get(0).getTypeId(),"winMoney");
 				
+			
+				
 				List <SimpleUser> userList=new ArrayList<SimpleUser>();
 				List <String> snsIds=new ArrayList<String>();
 				

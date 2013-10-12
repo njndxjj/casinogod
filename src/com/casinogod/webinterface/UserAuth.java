@@ -2,7 +2,6 @@ package com.casinogod.webinterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -23,12 +22,14 @@ import com.casinogod.pojo.AuthToken;
 import com.casinogod.pojo.Configuration;
 import com.casinogod.pojo.LogInReward;
 import com.casinogod.pojo.LogInRewardConfig;
+import com.casinogod.pojo.RankUserInfo;
 import com.casinogod.pojo.User;
 import com.casinogod.pojo.UserAuthResponse;
 import com.casinogod.service.AuthTokenService;
 import com.casinogod.service.FriendInvitedService;
 import com.casinogod.service.LogInRewardConfigService;
 import com.casinogod.service.LogInRewardService;
+import com.casinogod.service.RankUserService;
 import com.casinogod.service.UserDeviceService;
 import com.casinogod.service.UserLogIn;
 import com.casinogod.service.UserProfile;
@@ -63,6 +64,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 	
 	private FriendInvitedService friendInvitedService;
 	
+	private RankUserService rankUserService;
 
 	
 	private ConfigurationDAOImpl configurationDAO;
@@ -81,12 +83,20 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 	public void setFriendInvitedService(FriendInvitedService friendInvitedService) {
 		this.friendInvitedService = friendInvitedService;
 	}
+	
+	
+
+	public void setRankUserService(RankUserService rankUserService) {
+		this.rankUserService = rankUserService;
+	}
+
+
 
 	private static Logger log = Logger.getLogger(UserAuth.class); 
     
   //private HttpServletRequest request=ServletActionContext.getRequest();
    
-    public void userAuth() throws UnsupportedEncodingException  {
+    public void userAuth() {
         
     User user=null ;  
     
@@ -290,7 +300,7 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
         		
         	}
         }
-       String snsid=userLogInService.getAccount(user.getUserId()).getSnsId();
+        String snsid=userLogInService.getAccount(user.getUserId()).getSnsId();
         UserAuthResponse uaResponse = new UserAuthResponse();
 	    uaResponse.setUserinfo(user);
 	    uaResponse.setSnsId(snsid);
@@ -314,6 +324,42 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 		else
 		{
 			authTokenService.addAuth(user.getUserId(), uaResponse.getToken());
+		}
+		
+		
+		// update/add daily userResult
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+		
+		Calendar day=Calendar.getInstance();
+	
+		day.add(Calendar.DATE, -1);
+		
+		String yesday=format.format(day.getTime());
+		
+		log.info("yesterday--->"+yesday);
+	
+			    
+		 List <RankUserInfo> rankList=rankUserService.queryByTypeUser(3,(int)user.getUserId());
+					 
+		if(rankList.size()>0&&rankList.get(0).getUpdateTime().compareTo(yesday)<0)
+		{
+		
+			
+			RankUserInfo rankUser=new RankUserInfo();
+			rankUser.setUserId((int)user.getUserId());
+			rankUser.setRankValue(0);
+			rankUser.setTypeId(3);
+			rankUser.setUpdateTime(Utility.getDateString());
+			rankUser.setDrawTime(0);
+			rankUser.setWinTime(0);
+			rankUser.setLoseTime(0);
+			rankUser.setTotalMoney(0);
+			rankUser.setWinMoney(0);
+			rankUser.setLoseMoney(0);
+								 
+			rankUserService.updateRankType(rankUser);
+								 
 		}
 
 		response.setStatus(200);	

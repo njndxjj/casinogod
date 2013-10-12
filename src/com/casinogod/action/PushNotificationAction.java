@@ -3,6 +3,7 @@ package com.casinogod.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import javapns.communication.exceptions.CommunicationException;
 import javapns.notification.PushedNotification;
 
 import javax.servlet.http.HttpServletRequest;
@@ -169,9 +170,12 @@ public class PushNotificationAction extends ActionSupport implements ServletResp
 	    
 	    System.out.println("keystore-->"+keystore);
 	   
-	    pn.sendPush(keystore, password, production, tokens, true, 2,text);
-//	    List<PushedNotification> notifications = Push.test(keystore, password, production, tokens.get(0));
-//	    PushNotificationThread.printPushedNotifications(notifications);	    		
+	    try {
+			pn.sendPush(keystore, password, production, tokens, true, 2,this.text);
+		} catch (CommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    		
 	    return SUCCESS;
 	}
 }

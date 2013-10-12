@@ -1208,12 +1208,14 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 				// update/add daily userResult
 				
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				
 				Calendar day=Calendar.getInstance();
 			
 			
 				String today=format.format(day.getTime());
-				
+			
 				String createTime=today;
+				
 				
 				String endTime=Utility.getNowString();
 				
@@ -1255,9 +1257,9 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 					int winTime=battleProfileService.totalWinNumtWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
 					int loseTime=battleProfileService.totalLoseNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
 					int drawTime=battleProfileService.totalDrawNumWithDate(Long.valueOf(account), 2, 1,createTime,endTime);
-									
-							//rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
-					RankUserInfo rankUser=new RankUserInfo();
+										
+				     //rankUserService.addRankUser(Integer.valueOf(account), 1, total, Utility.getNowString());
+				    RankUserInfo rankUser=new RankUserInfo();
 					rankUser.setUserId(Integer.valueOf(account));
 					rankUser.setRankValue(winTime);
 					rankUser.setTypeId(rankType.getTypeId());
@@ -1265,11 +1267,12 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 					rankUser.setDrawTime(drawTime);
 					rankUser.setWinTime(winTime);
 					rankUser.setLoseTime(loseTime);
-								 
+									 
 					rankUserService.addRankUser(Integer.valueOf(account), 3, winTime, 
-										 Utility.getNowString(),winTime,loseTime,drawTime,totalResult,winResult,loseResult);
-								 
-			    }
+											 Utility.getNowString(),winTime,loseTime,drawTime,totalResult,winResult,loseResult);
+									 
+				    
+				}
 					 
 			}
 			else
