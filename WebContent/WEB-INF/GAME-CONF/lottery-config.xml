@@ -15,8 +15,16 @@
      <g5>
 	    <rate>4</rate>
     </g5>
-     <g6>
+    <g6>
 	    <rate>2</rate>
     </g6>
+    
+    <gold>
+	    <first>10000</first>
+    </gold>
+    
+    <diamond>
+	    <first>100</first>
+    </diamond>
    
 </config>
