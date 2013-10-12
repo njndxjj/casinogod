@@ -12,7 +12,7 @@ public interface ItemUserDAO {
 	
 	public void insertItemUser(ItemUser itemUser);
 	
-	public List <ItemUser> getItem(long userId,String itemName,int gameType);
+	public List <ItemUser> getItem(long userId,int itemName,int gameType);
 	
 	public List <ItemUser> getUserItem(int itemId);
 	

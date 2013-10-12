@@ -36,6 +36,7 @@ import com.casinogod.service.UserProfile;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.DataStore;
 import com.casinogod.utility.ErrorCode;
+import com.casinogod.utility.GameConfig;
 import com.casinogod.utility.MD5Util;
 import com.casinogod.utility.Utility;
 import com.opensymphony.xwork2.ActionContext;
@@ -175,6 +176,19 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     		gender=userProfileService.addUserSNA(nickName, password, gender?"f":"m", "test@test.com", "123456", UserType.values()[Integer.valueOf(userType)].toString(), snsId, snsToken);
     		DataStore.registerSex.put("gender", gender);
     		user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(userType)].toString(), snsId); 
+    		
+    		//add user gold
+    		
+    		 String configName = "lottery-config.xml";
+    		 GameConfig config = new GameConfig(configName);
+    		
+    	//	System.out.println(config.getConfigValue("g13000110","gid"));
+    		
+    		user.setGold(Integer.valueOf(config.getConfigValue("gold","first")));
+            user.setDiamond(Integer.valueOf(config.getConfigValue("diamond","first")));
+         	flag = userProfileService.updateGold(user);
+         	
+         	user=userProfileService.queryUserById(user.getUserId()).get(0);
     		
         }
     	

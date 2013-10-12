@@ -112,6 +112,12 @@
            <textarea rows="3" name="sendList" placeholder="@10000@122||@all"></textarea>
            </div>
            </div>
+           <div class="control-group">
+           <label class="control-label" for="text">提示内容</label>
+           <div class="controls">
+           <textarea rows="3" name="text" placeholder="welcome to casinoGod"></textarea>
+           </div>
+           </div>
           <div class="control-group">
           <label class="control-label" for="env">环境</label>
           <div class="controls">

@@ -52,8 +52,8 @@
                   userId = #userId#
                 </isGreaterThan>
             </isNotNull>
-            <isNotEmpty prepend="and " property="itemName">
-             itemName = #itemName#
+            <isNotEmpty prepend="and " property="itemId">
+             itemId = #itemId#
             </isNotEmpty>
             <isNotNull property="gameType">
                 <!-- isGreaterThan判断参数是否大于compareValue,isGreaterEquals是大于等于 -->

@@ -388,9 +388,9 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 						    userProfileService.updateGold(invitedUser);
 									
 							List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),
-									item.getItemName(),item.getGameType());
+									item.getId(),item.getGameType());
 							
-							List <ItemUser> itemInviteUsers=itemUserConfigService.getItem(Integer.valueOf(friendInvite.getInviteCode()),item.getItemName(),item.getGameType());
+							List <ItemUser> itemInviteUsers=itemUserConfigService.getItem(Integer.valueOf(friendInvite.getInviteCode()),item.getId(),item.getGameType());
 							
 							if(itemUsers.size()>0)
 							{
@@ -602,7 +602,7 @@ public class InviteFriend extends ActionSupport implements ServletResponseAware,
 							else
 							{
 								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),
-										item.getItemName(),item.getGameType());
+										item.getId(),item.getGameType());
 								  
 								//update itemUser
 								ItemUser itemUser=itemUsers.get(0);

@@ -32,12 +32,12 @@ public class ItemUserDAOImpl extends SqlMapClientDaoSupport implements ItemUserD
 		return list;
 	}
 	
-	public List <ItemUser> getItem (long userId, String itemName, int gameType) {
+	public List <ItemUser> getItem (long userId, int itemName, int gameType) {
 		// TODO Auto-generated method stub
 		List <ItemUser> list=null;
 		ItemUser itemUser=new ItemUser();
 		itemUser.setUserId(userId);
-		itemUser.setItemName(itemName);
+		itemUser.setItemId(itemName);
 		itemUser.setGameType(gameType);
 		
 		list=this.getSqlMapClientTemplate().queryForList("itemUser.getItem", itemUser);

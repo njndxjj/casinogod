@@ -13,7 +13,7 @@ public interface ItemUserConfig {
 	
 	public List <ItemUser> queryByUserId(long userId);
 		
-	public List <ItemUser> getItem(long userId,String itemName,int gameType);
+	public List <ItemUser> getItem(long userId,int itemName,int gameType);
 	
 	public void updateItemUser(long userId,String itemName,int gameType,int itemNum);
 	

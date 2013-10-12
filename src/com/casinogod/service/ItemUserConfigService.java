@@ -48,7 +48,7 @@ public class ItemUserConfigService implements ItemUserConfig {
 		return true;
 	}
 
-	public List<ItemUser> getItem(long userId, String itemName, int gameType) {
+	public List<ItemUser> getItem(long userId, int itemName, int gameType) {
 		// TODO Auto-generated method stub
 		return itemUserDAO.getItem(userId, itemName, gameType);
 	}

@@ -233,7 +233,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 						  }
 						  else
 						  {
-							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
+							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getId(),item.getGameType());
 									  
 							  //update itemUser
 							  ItemUser itemUser=itemUsers.get(0);
@@ -363,7 +363,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 						  }
 						  else
 						  {
-							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
+							  List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getId(),item.getGameType());
 									  
 							  //update itemUser
 							  ItemUser itemUser=itemUsers.get(0);
@@ -502,7 +502,7 @@ public class TaskComplete extends ActionSupport implements ServletResponseAware,
 							}
 							else
 							{
-								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
+								List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getId(),item.getGameType());
 								  
 								//update itemUser
 								ItemUser itemUser=itemUsers.get(0);

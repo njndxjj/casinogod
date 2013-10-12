@@ -189,7 +189,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 					String purchaseTime=Utility.getNowString();
 			   
 					//add or update itemUser;
-					List <ItemUser> itemUsers=itemUserConfigService.getItem(this.userId,this.itemName,this.gameType);
+					List <ItemUser> itemUsers=itemUserConfigService.getItem(this.userId,this.itemId,this.gameType);
 			  
 					if(itemUsers.size()>0)
 					{
@@ -254,7 +254,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 			{
 			
 			  //update itemUser;
-			  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemName,this.gameType);
+			  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemId,this.gameType);
 			  
 			  //update itemUser
 			  ItemUser itemUser=itemUsersBuy.get(0);
@@ -273,7 +273,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 			{
 				
 				// update itemUser;
-				List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemName,this.gameType);
+				List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemId,this.gameType);
 				  
 				//update itemUser
 				ItemUser itemUser=itemUsersBuy.get(0);
@@ -291,7 +291,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 			
       //update or add gift item
 			
-	 List <ItemUser> itemUsersGift=itemUserConfigService.getItem(this.giftUserId,this.itemName,this.gameType);		
+	 List <ItemUser> itemUsersGift=itemUserConfigService.getItem(this.giftUserId,this.itemId,this.gameType);		
 	 
 	 if(itemUsersGift.size()>0)
 	 {
@@ -351,7 +351,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 				{
 				
 				  //update itemUser;
-				  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemName,this.gameType);
+				  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemId,this.gameType);
 				  
 				  //update itemUser
 				  ItemUser itemUser=itemUsersBuy.get(0);
@@ -377,7 +377,7 @@ List <User> list=userProfileService.queryUserById(this.userId);
 				{
 					
 					// update itemUser;
-					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemName,this.gameType);
+					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(this.userId,this.itemId,this.gameType);
 					  
 					//update itemUser
 					ItemUser itemUser=itemUsersBuy.get(0);

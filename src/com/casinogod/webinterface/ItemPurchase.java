@@ -302,7 +302,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 					String purchaseTime=Utility.getNowString();
 			   
 					//add or update itemUser;
-					List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
+					List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getId(),item.getGameType());
 			  
 					if(itemUsers.size()>0)
 					{
@@ -416,7 +416,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 			
 			  //update itemUser;
 			  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
-					  itemUserTemp.getItemName(),itemUserTemp.getGameType());
+					  itemUserTemp.getItemId(),itemUserTemp.getGameType());
 			  
 			  //update itemUser
 			  ItemUser itemUser=itemUsersBuy.get(0);
@@ -439,7 +439,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				
 				// update itemUser;
 				List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
-						itemUserTemp.getItemName(),itemUserTemp.getGameType());
+						itemUserTemp.getItemId(),itemUserTemp.getGameType());
 				  
 				//update itemUser
 				ItemUser itemUser=itemUsersBuy.get(0);
@@ -464,7 +464,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 		//update or add gift item
 		
 		List <ItemUser> itemUsersGift=itemUserConfigService.getItem(Integer.valueOf(giftUserId),
-				itemUserTemp.getItemName(),itemUserTemp.getGameType());		
+				itemUserTemp.getItemId(),itemUserTemp.getGameType());		
 	
 		if(itemUsersGift.size()>0)
 		
@@ -596,7 +596,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				
 				  //update itemUser;
 				  List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),
-						  itemUserTemp.getItemName(),itemUserTemp.getGameType());
+						  itemUserTemp.getItemId(),itemUserTemp.getGameType());
 				  
 				  //update itemUser
 				  ItemUser itemUser=itemUsersBuy.get(0);
@@ -618,7 +618,7 @@ public class ItemPurchase extends ActionSupport implements ServletResponseAware,
 				{
 					
 					// update itemUser;
-					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),itemUserTemp.getItemName(),
+					List <ItemUser> itemUsersBuy=itemUserConfigService.getItem(Integer.valueOf(account),itemUserTemp.getItemId(),
 							itemUserTemp.getGameType());
 					  
 					//update itemUser

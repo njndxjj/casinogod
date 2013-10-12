@@ -1393,7 +1393,7 @@ public class StartBattle extends ActionSupport implements ServletResponseAware,S
 						 }
 						   
 						 //add or update itemUser;
-						 List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getItemName(),item.getGameType());
+						 List <ItemUser> itemUsers=itemUserConfigService.getItem(Integer.valueOf(account),item.getId(),item.getGameType());
 					  
 							if(itemUsers.size()>0)
 							{
