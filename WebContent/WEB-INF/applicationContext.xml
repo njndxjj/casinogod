@@ -545,6 +545,7 @@
     </bean>
     <bean name="pnservice" class="com.casinogod.action.PushNotificationAction"> 
         <property name="userDeviceService" ref="userDeviceService" />  
+    
     </bean>
     
     <bean name="lotteryAction" class="com.casinogod.action.LotteryHistoryAction"> 
@@ -626,6 +627,7 @@
         <property name="authTokenService" ref="authTokenService" />
         <property name="friendInvitedService" ref="friendInvitedService" /> 
         <property name="configurationDAO" ref="configurationDAO" />
+        <property name="rankUserService" ref="rankUserService" /> 
     </bean>
     
       <bean name="updateUserProfile" class="com.casinogod.webinterface.UserProfile"> 
@@ -665,6 +667,7 @@
         <property name="userProfileService" ref="userProfileService" /> 
         <property name="productService" ref="productService" /> 
         <property name="iAPLogService" ref="iAPLogService" /> 
+        <property name="userLogInService" ref="userLogInService" />
     </bean>
     <bean name="boardCastPro" class="com.casinogod.webinterface.BoardCastPro"> 
         <property name="boardCastService" ref="boardCastService" />  
