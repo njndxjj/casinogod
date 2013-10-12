@@ -493,7 +493,7 @@
         
     <!--  spring 集成 struts2    -->
     <!-- 产生一个叫Login的实例之前，调用set‘Service’方法，注入上一个实例‘LoginService’ --> 
-    <bean name="login" class="com.casinogod.action.Login"> 
+    <bean name="login" class="com.casinogod.action.Login" scope="prototype"> 
         <property name="userLogInService" ref="userLogInService" />  
         <property name="userProfileService" ref="userProfileService" /> 
         <property name="logInRewardConfigService" ref="logInRewardConfigService" />
@@ -705,7 +705,7 @@
          <property name="chatRoomService" ref="chatRoomService" />   
     </bean>
     
-    <bean name="inviteFriend" class="com.casinogod.webinterface.InviteFriend"> 
+    <bean name="inviteFriend" class="com.casinogod.webinterface.InviteFriend" > 
         <property name="friendInvitedService" ref="friendInvitedService" /> 
         <property name="invitedTableService" ref="invitedTableService" />   
         <property name="userProfileService" ref="userProfileService" />
