@@ -946,7 +946,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		    {
 		    	for(String account1:users.get(0).getFriendList().split("#"))
 		    	{
-		    		if(account1!=null)
+		    		if(account1!=null&&"".equals(account1))
 		    			friendList.add(account1);
 		    	}
 		    	
@@ -999,6 +999,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			HashMap< String, Object> map = new HashMap<String, Object>();
 	    	
 			map.put("friends", simpleList);
+			map.put("snsId", snsIds);
 			       
 			responseJSON +=JSONObject.fromObject(map).toString();
 			    	
