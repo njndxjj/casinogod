@@ -34,7 +34,9 @@ public class GameConfig {
 	public  String getConfigPath(){
 		if(path == null) {
 			path = this.getClass().getResource("").getPath();
-			path = path.substring(path.indexOf("/"), path.indexOf("build"))+"WebContent\\WEB-INF"+File.separator+"GAME-CONF"+File.separator+name+".xml";
+			System.out.println("path1-->"+path);
+			path = path.substring(path.indexOf("/"), path.indexOf("WEB-INF"))+"WEB-INF"+File.separator+"GAME-CONF"+File.separator+name;
+			System.out.println("path2-->"+path);
 		}
 		return path;
 	}
@@ -162,10 +164,10 @@ public class GameConfig {
 	
 	public static void main(String args[])
 	{
-		 String configName = "sogou-config";
+		 String configName = "lottery-config.xml";
 		 GameConfig config = new GameConfig(configName);
 		
-		System.out.println(config.getConfigValue("g13000110","gid"));
+		System.out.println(config.getConfigValue("gold","first"));
 	}
 
 }

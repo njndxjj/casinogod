@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+    <gold>10000</gold>
+    
+    <diamond>0</diamond>  
+   
+    <gameDownloadUrl>https://itunes.apple.com/cn/app/wei-bo/id350962117?l=e&amp;mk=8</gameDownloadUrl>
+    <bannerImageUrl>http://112.124.3.221:8080/CasinoGod/pic/bannerImageUrl.jpg</bannerImageUrl>
+    <bannerJumpUrl>http://www.weibo.com</bannerJumpUrl>
+    
+   
+</config>

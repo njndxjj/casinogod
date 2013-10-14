@@ -5,8 +5,11 @@ package com.casinogod.webinterface;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,20 +20,15 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
-import cn.org.rapid_framework.util.CalendarUtils;
-
-import com.casinogod.action.AuthorityInterceptor;
 import com.casinogod.pojo.FriendRequest;
 import com.casinogod.pojo.SimpleUser;
 import com.casinogod.pojo.User;
-import com.casinogod.service.ItemConfigService;
 import com.casinogod.service.RequestConfigService;
 import com.casinogod.service.UserLogIn;
 import com.casinogod.service.UserProfileService;
 import com.casinogod.utility.CustomBase64;
 import com.casinogod.utility.ErrorCode;
 import com.casinogod.utility.Utility;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class FriendsRequest extends ActionSupport implements ServletResponseAware,ServletRequestAware{
@@ -142,7 +140,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		if(users.size()>0)
 		{
 		
-		if(userList.size()>0)
+		if(userList.size()>0&&userList.size()<5)
 			 
 		{       
 			for(String userId:userList)
@@ -169,6 +167,56 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 			}
 			
 		}
+		
+		
+		if(userList.size()>5)
+			 
+		{
+			//int k=0;
+			
+			Collection< String> randUser=new HashSet<String>();
+			
+			Random random = new Random();
+			
+			for(int i=0;i<5;i++)
+			{
+				int j=random.nextInt(userList.size());
+				
+				while(randUser.contains(userList.get(j)))
+				{
+					j=random.nextInt(userList.size());
+				}
+				
+				randUser.add(userList.get(j));
+			}
+			
+			for(String userId:randUser)
+			{
+				User user=userProfileService.queryUserById(Long.valueOf(userId)).get(0);
+				
+				String snsId=userLogInService.getAccount(Long.valueOf(userId)).getSnsId();
+				
+				if(snsId==null) snsId="";
+				
+				snsIds.add(snsId);
+				
+				SimpleUser simpleUser=new SimpleUser();
+				
+				simpleUser.setGold(user.getGold());
+				simpleUser.setExp(user.getExp());
+				simpleUser.setGender(user.getGender());
+				simpleUser.setImage(user.getImage());
+				simpleUser.setLevel(user.getLevel());
+				simpleUser.setNickName(user.getNickName());
+				simpleUser.setUserId(user.getUserId());
+				
+				simpleList.add(simpleUser);
+			}
+			
+		}
+		
+		
+		
 			
 		HashMap< String, Object> map = new HashMap<String, Object>();
 			    	

@@ -91,6 +91,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 		this.rankUserService = rankUserService;
 	}
 
+	
+	public final String configName = "sys-config.xml";
+
+	public  GameConfig config = new GameConfig(configName); 
 
 
 	private static Logger log = Logger.getLogger(UserAuth.class); 
@@ -178,14 +182,9 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
     		user=userLogInService.logInSNS(UserType.values()[Integer.valueOf(userType)].toString(), snsId); 
     		
     		//add user gold
-    		
-    		 String configName = "lottery-config.xml";
-    		 GameConfig config = new GameConfig(configName);
-    		
-    	//	System.out.println(config.getConfigValue("g13000110","gid"));
-    		
-    		user.setGold(Integer.valueOf(config.getConfigValue("gold","first")));
-            user.setDiamond(Integer.valueOf(config.getConfigValue("diamond","first")));
+
+    		user.setGold(Integer.valueOf(config.getConfigValue("gold")));
+            user.setDiamond(Integer.valueOf(config.getConfigValue("diamond")));
          	flag = userProfileService.updateGold(user);
          	
          	user=userProfileService.queryUserById(user.getUserId()).get(0);
@@ -320,7 +319,10 @@ public class UserAuth extends ActionSupport implements ServletResponseAware,Serv
 	    uaResponse.setSnsId(snsid);
 	    String tokenString=Utility.randomString(16);
 	    uaResponse.setToken(tokenString);//Need real code	    
-	    uaResponse.setGameServerUrl(GameServerFactory.getGameServer(user.getUserId()));	    
+	    uaResponse.setGameServerUrl(GameServerFactory.getGameServer(user.getUserId()));	
+	    uaResponse.setBannerImageUrl(config.getConfigValue("bannerImageUrl"));
+	    uaResponse.setBannerJumpUrl(config.getConfigValue("bannerJumpUrl"));
+	    uaResponse.setGameDownloadUrl(config.getConfigValue("gameDownloadUrl"));
 //	    String tokenValue=CustomBase64.encode(URLEncoder.encode(uaResponse.getToken(),"utf-8"));
 		responseJSON = JSONObject.fromObject(uaResponse).toString();
 //	    DataStore.registerToken.put(String.valueOf(user.getUserId()), uaResponse.getToken());

@@ -19,12 +19,6 @@
 	    <rate>2</rate>
     </g6>
     
-    <gold>
-	    <first>10000</first>
-    </gold>
-    
-    <diamond>
-	    <first>100</first>
-    </diamond>
+   
    
 </config>
