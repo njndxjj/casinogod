@@ -956,6 +956,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		}
 		
 		List <SimpleUser> simpleList=new ArrayList<SimpleUser>();
+		
 		List <String> snsIds=new ArrayList<String>();
 		
 		if(flag)			 
@@ -985,7 +986,7 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		  }
 			
 			HashMap< String, Object> map = new HashMap<String, Object>();
-			    	
+		 		   	
 			map.put("friends", simpleList);
 			map.put("snsId", snsIds);
 			       
@@ -998,15 +999,17 @@ public class FriendsRequest extends ActionSupport implements ServletResponseAwar
 		{
 			HashMap< String, Object> map = new HashMap<String, Object>();
 	    	
-			map.put("friends", simpleList);
-			map.put("snsId", snsIds);
-			       
+
+			map.put("friends", "");
+			map.put("snsId", "");      
+
 			responseJSON +=JSONObject.fromObject(map).toString();
 			    	
-		    response.setStatus(501);	
+		    response.setStatus(200);	
 		}
 		
 		try {
+		System.out.println("response mess-->"+responseJSON);
 		responseJSON=CustomBase64.encode(responseJSON);	
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("text/html");
