@@ -137,6 +137,32 @@ public class IAPPurchase extends ActionSupport implements ServletResponseAware,S
 		
 		   log.info("status vaule: " +status);
 		   
+		   
+		   if(21007==status)
+		   {
+			   try {
+		    	   	
+				     success=ConnectUtiltiy.send(receipt,sandBox);
+				     	
+				     Thread.sleep(100);
+						
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				    
+			   receiptObject=new JSONObject(success);
+					   
+			   log.info("receiptObject :"+receiptObject.toString());
+					   
+			   status=receiptObject.getInt("status");
+					   
+			   log.info("status vaule: " +status);
+		   }
+		   
 		   if(status==0)
 		   {
 			   //valid receipt

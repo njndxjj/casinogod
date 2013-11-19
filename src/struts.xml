@@ -250,7 +250,7 @@
             <result name="error">/configPage/eventError.jsp</result>
         </action>
         
-        <action name="queryEventById" class="eventAction" method="findEventByIdbbb">  
+        <action name="queryEventById" class="eventAction" method="findEventById">  
             <result name="success">/configPage/updateEvent.jsp</result>  
             <result name="error">/configPage/eventError.jsp</result>
         </action>

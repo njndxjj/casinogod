@@ -8,10 +8,11 @@ import com.casinogod.pojo.LogInRewardConfig;
 
 public class LogInRewardConfigService implements RewardConfig {
 	
-private LogInConfigDAOImpl logInConfigDAO;
+    private LogInConfigDAOImpl logInConfigDAO;
 	
 	private LogInRewardConfig logInRewardConfig;
 	
+
 	public void setLogInConfigDAO(LogInConfigDAOImpl logInConfigDAO) {
 		this.logInConfigDAO = logInConfigDAO;
 	}
